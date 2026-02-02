@@ -258,7 +258,7 @@ export default function DashboardPage() {
                   <div className="text-center py-12 bg-surface rounded-[24px] border-2 border-dashed border-outline/20">
                     <p className="text-on-surface-variant font-medium mb-6">尚未设置偏好，点击下方按钮开始配置</p>
                     <Link href="/dashboard/settings">
-                      <Button className="m3-button-pill bg-secondary text-on-secondary">
+                      <Button className="m3-button-pill bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90">
                         <Settings className="mr-2 h-4 w-4" />
                         立即配置
                       </Button>
@@ -279,7 +279,7 @@ export default function DashboardPage() {
                   ) : (
                     <>
                       <CheckCircle2 className="mr-3 h-6 w-6" />
-                      开始扫描槽位
+                      开始检查Slot
                     </>
                   )}
                 </Button>

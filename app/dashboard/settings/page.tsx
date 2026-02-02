@@ -253,7 +253,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between p-4 bg-surface-variant/10 rounded-2xl">
                 <div className="space-y-0.5">
                   <span className="text-sm font-black uppercase tracking-widest text-on-surface-variant">开启 TG 通知</span>
-                  <p className="text-xs text-on-surface-variant opacity-60">通过 Telegram Bot 接收秒级同步</p>
+                  <p className="text-xs text-on-surface-variant opacity-60">通过 Telegram Bot 接收秒级同步: @visashengenuk_xq_bot</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
@@ -291,7 +291,8 @@ export default function SettingsPage() {
                   <Button
                     onClick={handleTestTelegram}
                     disabled={testing}
-                    className="w-full m3-button-pill bg-primary/10 text-primary hover:bg-primary/20 h-12"
+                    variant="outline"
+                    className="w-full m3-button-pill border-2 border-primary text-primary hover:bg-primary/10 h-12 font-bold"
                   >
                     {testing ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> 发送测试指令</>}
                   </Button>
@@ -335,7 +336,8 @@ export default function SettingsPage() {
                   <Button
                     onClick={handleTestEmail}
                     disabled={testingEmail}
-                    className="w-full m3-button-pill bg-tertiary/10 text-tertiary hover:bg-tertiary/20 h-12"
+                    variant="outline"
+                    className="w-full m3-button-pill border-2 border-tertiary text-tertiary hover:bg-tertiary/10 h-12 font-bold"
                   >
                     {testingEmail ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> 发送测试邮件</>}
                   </Button>

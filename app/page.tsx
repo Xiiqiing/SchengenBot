@@ -79,7 +79,7 @@ export default function LandingPage() {
         <div className="text-center max-w-4xl mx-auto space-y-8">
           <div className="inline-flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-medium animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Zap className="w-4 h-4" />
-            基于 Material Design 3 的实时系统
+            实时通知
           </div>
 
           <h1 className="text-6xl md:text-8xl font-black tracking-tight text-on-surface mb-6">
@@ -88,7 +88,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-xl md:text-2xl text-on-surface-variant font-medium max-w-2xl mx-auto leading-relaxed">
-            自动化追踪申根国家签证库。{step === 'code' ? '请输入内测邀请码开启您的专属监控服务。' : '请输入邮箱同步您的监控设置与通知偏好。'}
+            自动化追踪申根国家签证库。{step === 'code' ? '输入邀请码开启服务。' : '请输入邮箱同步您的监控设置与通知偏好。'}
           </p>
 
           <div className="max-w-md mx-auto w-full pt-8">
@@ -145,7 +145,7 @@ export default function LandingPage() {
               )}
               <div className="flex items-center justify-center gap-2 mt-6 text-on-surface-variant/70 text-sm font-medium">
                 <Shield className="w-4 h-4" />
-                {step === 'code' ? '邀请制预览版' : '设置将自动云端同步'}
+                {step === 'code' ? '预览版' : '设置将自动云端同步'}
               </div>
             </Card>
           </div>
@@ -157,7 +157,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 text-center">
           <div className="h-px w-24 bg-outline/20 mx-auto mb-8" />
           <p className="text-sm font-medium text-on-surface-variant/60 tracking-widest lowercase">
-            SCHENGEN BOT • MATERIAL DESIGN 3 • 2026
+            SCHENGEN BOT • 2026
           </p>
         </div>
       </footer>
