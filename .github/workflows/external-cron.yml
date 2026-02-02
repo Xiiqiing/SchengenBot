@@ -16,6 +16,7 @@ jobs:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           # REPLACE TEHIS WITH YOUR ACTUAL VERCEL DOMAIN
           VERCEL_URL: "https://schengen-6ntkdfkx5-xiiqiings-projects.vercel.app"
+        run: |
           echo "Triggering Vercel Cron at $VERCEL_URL/api/cron/check"
           # Capture both HTTP code and content
           response_code=$(curl -s -o response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$VERCEL_URL/api/cron/check")
