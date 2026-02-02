@@ -74,14 +74,17 @@ export class NotificationService {
   /**
    * Email bildirimi gönder
    */
+  /**
+   * Email bildirimi gönder
+   */
   async sendEmailNotification(
     to: string,
     subject: string,
     html: string
-  ): Promise<boolean> {
+  ): Promise<{ success: boolean; error?: any }> {
     if (!this.resend) {
       console.warn('Resend API key not found');
-      return false;
+      return { success: false, error: 'Resend API key missing' };
     }
 
     try {
@@ -94,13 +97,13 @@ export class NotificationService {
 
       if (error) {
         console.error('Email send error:', error);
-        return false;
+        return { success: false, error: error };
       }
 
-      return true;
+      return { success: true };
     } catch (error) {
       console.error('Email notification error:', error);
-      return false;
+      return { success: false, error: error };
     }
   }
 

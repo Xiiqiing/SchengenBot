@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       <p style="color: gray; font-size: 12px;">Schengen Visa Appointment Bot</p>
     `;
 
-        const success = await notificationService.sendEmailNotification(
+        const { success, error } = await notificationService.sendEmailNotification(
             email,
             '🧪 SchengenBot 测试邮件',
             html
@@ -37,8 +37,12 @@ export async function POST(request: Request) {
         if (success) {
             return NextResponse.json({ success: true });
         } else {
+            console.error('Test email failed details:', error);
+            // Extract meaningful message from Resend error object if possible
+            const errorMessage = error?.message || error?.name || JSON.stringify(error);
+
             return NextResponse.json(
-                { success: false, error: 'Failed to send email. Check server logs.' },
+                { success: false, error: `发送失败: ${errorMessage}` },
                 { status: 500 }
             );
         }
