@@ -70,20 +70,20 @@ export class NotificationService {
 
     const first = appointments[0];
     const country = getCountryByCode(first.mission_country);
-    
+
     let message = `🎉 <b>${country?.nameTr || first.mission_country} için randevu bulundu!</b>\n\n`;
 
     appointments.forEach((apt, index) => {
       if (index > 0) message += '\n━━━━━━━━━━━━━━━━━━━━\n\n';
-      
+
       message += `📅 <b>Tarih:</b> ${formatDateTR(apt.appointment_date)}\n`;
       message += `🏢 <b>Merkez:</b> ${apt.center_name}\n`;
       message += `📋 <b>Kategori:</b> ${apt.visa_category}\n`;
-      
+
       if (apt.visa_subcategory) {
         message += `📝 <b>Alt Kategori:</b> ${apt.visa_subcategory}\n`;
       }
-      
+
       message += `\n🔗 <a href="${apt.book_now_link}">Randevu Al</a>`;
     });
 
@@ -110,7 +110,7 @@ export class NotificationService {
           options.telegram.botToken,
           message
         );
-        
+
         results.push({ type: 'telegram', success });
 
         // Veritabanına kaydet
@@ -122,10 +122,10 @@ export class NotificationService {
           success,
         });
       } catch (error: any) {
-        results.push({ 
-          type: 'telegram', 
-          success: false, 
-          error: error.message 
+        results.push({
+          type: 'telegram',
+          success: false,
+          error: error.message
         });
 
         await createNotification({
@@ -148,7 +148,7 @@ export class NotificationService {
     // Web bildirimi
     if (options.web?.enabled) {
       results.push({ type: 'web', success: true });
-      
+
       await createNotification({
         user_id: options.userId,
         appointment_id: options.appointmentId,
@@ -182,6 +182,16 @@ Artık randevu bulunduğunda bildirim alacaksınız.
     } catch (error: any) {
       return { success: false, error: error.message };
     }
+  }
+  /**
+   * Send a general status message (e.g. "Checked Manchester: No slots")
+   */
+  async sendCheckStatus(
+    chatId: string,
+    botToken: string,
+    message: string
+  ): Promise<boolean> {
+    return await this.sendTelegramNotification(chatId, botToken, message);
   }
 }
 

@@ -78,6 +78,30 @@ export async function GET(request: NextRequest) {
     // Check UK appointment
     const result = await appointmentService.checkUK(city, country, visaType);
 
+    // Send notification if userId is provided (Manual Check "Verbose Mode")
+    const userId = searchParams.get('userId');
+    if (userId) {
+      try {
+        const { getUserPreferences } = await import('@/lib/supabase/client');
+        const { notificationService } = await import('@/lib/services/notification-service');
+        const preferences = await getUserPreferences(userId);
+
+        if (preferences?.telegram_enabled && preferences?.telegram_chat_id) {
+          const botToken = process.env.TELEGRAM_BOT_TOKEN;
+          if (botToken) {
+            const statusMsg = result.isAvailable
+              ? `🎉 <b>Manual Check: ${city} -> ${country}</b>\n✅ Found ${result.totalSlots} slots!`
+              : `🔍 <b>Manual Check: ${city} -> ${country}</b>\n❌ No slots available.`;
+
+            // Fire and forget (don't await to block response)
+            notificationService.sendCheckStatus(preferences.telegram_chat_id, botToken, statusMsg);
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to send manual check notification:', err);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       result,

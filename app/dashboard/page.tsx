@@ -92,13 +92,12 @@ export default function DashboardPage() {
           setCheckProgress(`正在检查 (${currentStep}/${totalSteps}): ${cityName} → ${countryName}`);
 
 
-          // Random delay (2-5s) to prevent rate limiting & allow UI update visibility
-          if (currentStep > 1) {
-            await new Promise(r => setTimeout(r, Math.floor(Math.random() * 3000) + 2000));
-          }
+          // Always wait a bit (1-3s) to make sure user sees the progress
+          console.log(`Step ${currentStep}: Delaying...`);
+          await new Promise(r => setTimeout(r, Math.floor(Math.random() * 2000) + 1000));
 
           try {
-            const response = await fetch(`/api/appointments/check?source=UK&city=${city}&country=${country}`);
+            const response = await fetch(`/api/appointments/check?source=UK&city=${city}&country=${country}&userId=${userId}`);
             const data = await response.json();
 
             let resultItem;
@@ -141,12 +140,13 @@ export default function DashboardPage() {
       }
 
       setUkCheckCount(prev => prev + 1);
+      setCheckProgress('Check Complete!');
     } catch (error) {
       console.error('UK Check error:', error);
       alert('检查失败!');
     } finally {
       setCheckingUK(false);
-      setCheckProgress('');
+      setTimeout(() => setCheckProgress(''), 3000);
     }
   };
 

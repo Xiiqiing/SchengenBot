@@ -236,7 +236,13 @@ export class AppointmentService {
     preferences: UserPreferences
   ): Promise<void> {
     for (const result of results) {
-      if (result.appointments.length === 0) continue;
+      if (result.appointments.length === 0) {
+        if (preferences.telegram_enabled && preferences.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
+          const statusMsg = `🔍 <b>Auto Check (Cron): ${result.city} -> ${result.country}</b>\n❌ No slots available.`;
+          notificationService.sendCheckStatus(preferences.telegram_chat_id, process.env.TELEGRAM_BOT_TOKEN, statusMsg).catch(e => console.warn(e));
+        }
+        continue;
+      }
 
       try {
         await notificationService.sendAppointmentNotifications(
