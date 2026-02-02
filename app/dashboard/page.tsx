@@ -91,6 +91,12 @@ export default function DashboardPage() {
 
           setCheckProgress(`正在检查 (${currentStep}/${totalSteps}): ${cityName} → ${countryName}`);
 
+
+          // Random delay (2-5s) to prevent rate limiting & allow UI update visibility
+          if (currentStep > 1) {
+            await new Promise(r => setTimeout(r, Math.floor(Math.random() * 3000) + 2000));
+          }
+
           try {
             const response = await fetch(`/api/appointments/check?source=UK&city=${city}&country=${country}`);
             const data = await response.json();
@@ -117,11 +123,11 @@ export default function DashboardPage() {
             }
 
             // Incrementally add result
-            setUkResults(prev => [...prev, resultItem]);
+            setUkResults((prev: any[]) => [...prev, resultItem]);
 
           } catch (err) {
             console.error(`Error checking ${city}/${country}:`, err);
-            setUkResults(prev => [...prev, {
+            setUkResults((prev: any[]) => [...prev, {
               city,
               country,
               isAvailable: false,
