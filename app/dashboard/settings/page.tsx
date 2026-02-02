@@ -249,20 +249,20 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-4 bg-surface-variant/30 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
                 <div className="space-y-0.5">
                   <span className="body-large font-medium text-on-surface">开启 TG 通知</span>
                   <p className="body-medium text-on-surface-variant">通过 Telegram Bot 接收秒级同步</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
-                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-200 ${preferences.telegram_enabled
-                    ? 'bg-primary'
-                    : 'bg-surface-variant border-2 border-outline'}`}
+                  className={`relative inline-flex h-[31px] w-[51px] items-center rounded-full transition-colors duration-200 focus:outline-none ${preferences.telegram_enabled
+                    ? 'bg-[#0071e3]'
+                    : 'bg-[#E9E9EA]'}`}
                 >
-                  <span className={`block rounded-full shadow-sm transition-all duration-200 ${preferences.telegram_enabled
-                    ? 'h-6 w-6 translate-x-7 bg-on-primary'
-                    : 'h-4 w-4 translate-x-1.5 bg-outline'}`} />
+                  <span className={`inline-block h-[27px] w-[27px] transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${preferences.telegram_enabled
+                    ? 'translate-x-[22px]'
+                    : 'translate-x-[2px]'}`} />
                 </button>
               </div>
 
@@ -304,7 +304,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* 通知渠道 - Email */}
-          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-xl font-black flex items-center gap-2">
                 <Mail className="w-6 h-6 text-tertiary" />
@@ -312,20 +312,20 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-4 bg-surface-variant/30 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
                 <div className="space-y-0.5">
                   <span className="body-large font-medium text-on-surface">开启邮件通知</span>
                   <p className="body-medium text-on-surface-variant">通过电子邮件接收最新预约通知</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, email_enabled: !prev.email_enabled }))}
-                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-200 ${preferences.email_enabled
-                    ? 'bg-tertiary'
-                    : 'bg-surface-variant border-2 border-outline'}`}
+                  className={`relative inline-flex h-[31px] w-[51px] items-center rounded-full transition-colors duration-200 focus:outline-none ${preferences.email_enabled
+                    ? 'bg-[#0071e3]'
+                    : 'bg-[#E9E9EA]'}`}
                 >
-                  <span className={`block rounded-full shadow-sm transition-all duration-200 ${preferences.email_enabled
-                    ? 'h-6 w-6 translate-x-7 bg-on-tertiary'
-                    : 'h-4 w-4 translate-x-1.5 bg-outline'}`} />
+                  <span className={`inline-block h-[27px] w-[27px] transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${preferences.email_enabled
+                    ? 'translate-x-[22px]'
+                    : 'translate-x-[2px]'}`} />
                 </button>
               </div>
 
@@ -355,7 +355,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* 自动检查配置 */}
-          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-xl font-black flex items-center gap-2">
                 <Clock className="w-6 h-6 text-primary" />
@@ -363,20 +363,20 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-4 bg-surface-variant/30 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
                 <div className="space-y-0.5">
                   <span className="body-large font-medium text-on-surface">激活自动模式</span>
                   <p className="body-medium text-on-surface-variant">后台自动定时爵取数据</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, auto_check_enabled: !prev.auto_check_enabled }))}
-                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-200 ${preferences.auto_check_enabled
-                    ? 'bg-primary'
-                    : 'bg-surface-variant border-2 border-outline'}`}
+                  className={`relative inline-flex h-[31px] w-[51px] items-center rounded-full transition-colors duration-200 focus:outline-none ${preferences.auto_check_enabled
+                    ? 'bg-[#0071e3]'
+                    : 'bg-[#E9E9EA]'}`}
                 >
-                  <span className={`block rounded-full shadow-sm transition-all duration-200 ${preferences.auto_check_enabled
-                    ? 'h-6 w-6 translate-x-7 bg-on-primary'
-                    : 'h-4 w-4 translate-x-1.5 bg-outline'}`} />
+                  <span className={`inline-block h-[27px] w-[27px] transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${preferences.auto_check_enabled
+                    ? 'translate-x-[22px]'
+                    : 'translate-x-[2px]'}`} />
                 </button>
               </div>
 
