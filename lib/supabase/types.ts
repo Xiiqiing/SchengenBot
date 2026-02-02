@@ -20,6 +20,7 @@ export interface UserPreferences {
   telegram_enabled: boolean;
   telegram_chat_id?: string;
   email_enabled: boolean;
+  email_address?: string;
   web_enabled: boolean;
   sound_enabled: boolean;
   auto_check_enabled: boolean;
