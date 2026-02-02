@@ -71,23 +71,23 @@ export class NotificationService {
     const first = appointments[0];
     const country = getCountryByCode(first.mission_country);
 
-    let message = `🎉 <b>${country?.nameTr || first.mission_country} için randevu bulundu!</b>\n\n`;
+    let message = `🎉 <b>发现 ${country?.nameTr || first.mission_country} 可预约名额!</b>\n\n`;
 
     appointments.forEach((apt, index) => {
       if (index > 0) message += '\n━━━━━━━━━━━━━━━━━━━━\n\n';
 
-      message += `📅 <b>Tarih:</b> ${formatDateTR(apt.appointment_date)}\n`;
-      message += `🏢 <b>Merkez:</b> ${apt.center_name}\n`;
-      message += `📋 <b>Kategori:</b> ${apt.visa_category}\n`;
+      message += `📅 <b>日期:</b> ${formatDateTR(apt.appointment_date)}\n`;
+      message += `🏢 <b>中心:</b> ${apt.center_name}\n`;
+      message += `📋 <b>类别:</b> ${apt.visa_category}\n`;
 
       if (apt.visa_subcategory) {
-        message += `📝 <b>Alt Kategori:</b> ${apt.visa_subcategory}\n`;
+        message += `📝 <b>子类别:</b> ${apt.visa_subcategory}\n`;
       }
 
-      message += `\n🔗 <a href="${apt.book_now_link}">Randevu Al</a>`;
+      message += `\n🔗 <a href="${apt.book_now_link}">立即预约</a>`;
     });
 
-    message += '\n\n⚠️ <i>Hemen rezervasyon yapmanızı öneririz!</i>';
+    message += '\n\n⚠️ <i>建议立即预订!</i>';
 
     return message;
   }
@@ -167,13 +167,13 @@ export class NotificationService {
     botToken: string
   ): Promise<{ success: boolean; error?: string }> {
     const message = `
-🤖 <b>Test Bildirimi</b>
+🤖 <b>测试通知</b>
 
-✅ Telegram bot başarıyla bağlandı!
+✅ Telegram Bot 连接成功!
 
-Artık randevu bulunduğunda bildirim alacaksınız.
+现在起，一旦发现可预约名额，您将收到通知。
 
-<i>Schengen Visa Appointment Bot</i>
+<i>申根签证预约机器人 (SchengenBot)</i>
     `.trim();
 
     try {

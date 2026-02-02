@@ -140,7 +140,7 @@ export default function DashboardPage() {
       }
 
       setUkCheckCount(prev => prev + 1);
-      setCheckProgress('Check Complete!');
+      setCheckProgress('检查完成!');
     } catch (error) {
       console.error('UK Check error:', error);
       alert('检查失败!');
@@ -240,7 +240,7 @@ export default function DashboardPage() {
             <Card className="border-2 border-purple-200 bg-purple-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  🇬🇧 UK Appointment Check
+                  🇬🇧 英国签证预约检查
                 </CardTitle>
                 <CardDescription>
                   检查所选城市和国家的签证预约
@@ -332,20 +332,20 @@ export default function DashboardPage() {
                               {countryInfo?.flag || '🏳️'} {result.country} - {result.city}
                             </span>
                             <Badge variant={result.isAvailable ? "default" : "secondary"}>
-                              {result.isAvailable ? `${result.totalSlots} Slots` : 'No Slots'}
+                              {result.isAvailable ? `${result.totalSlots} 个名额` : '无名额'}
                             </Badge>
                           </div>
 
                           {result.isAvailable ? (
                             <div className="space-y-3">
                               <p className="text-sm text-green-700 font-medium">
-                                ✅ {result.totalSlots} appointments available over {result.totalDays} days
+                                ✅ 发现 {result.totalSlots} 个可用名额 (跨越 {result.totalDays} 天)
                               </p>
 
                               {result.slots?.slice(0, 3).map((slot: any, i: number) => (
                                 <div key={i} className="text-sm bg-white p-3 rounded border">
                                   <p className="font-medium">📅 {slot.date}</p>
-                                  <p className="text-gray-600">{slot.slotsAvailable} slots - seen {slot.lastSeen}</p>
+                                  <p className="text-gray-600">{slot.slotsAvailable} 个名额 - 发现于 {slot.lastSeen}</p>
                                 </div>
                               ))}
 
@@ -356,7 +356,7 @@ export default function DashboardPage() {
                                   rel="noopener noreferrer"
                                   className="block w-full text-center py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                                 >
-                                  Book at VFS →
+                                  前往 VFS 预约 →
                                 </a>
                               )}
 
@@ -366,7 +366,7 @@ export default function DashboardPage() {
                             </div>
                           ) : (
                             <div className="text-sm text-gray-600">
-                              <p>❌ No appointments available</p>
+                              <p>❌ 暂无可用名额</p>
                               {result.lastChecked && (
                                 <p className={`mt-1 text-xs ${result.error ? 'text-red-500' : 'text-gray-400'}`}>
                                   最后检查: {result.lastChecked}

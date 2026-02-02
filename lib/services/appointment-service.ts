@@ -238,7 +238,7 @@ export class AppointmentService {
     for (const result of results) {
       if (result.appointments.length === 0) {
         if (preferences.telegram_enabled && preferences.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
-          const statusMsg = `🔍 <b>Auto Check (Cron): ${result.city} -> ${result.country}</b>\n❌ No slots available.`;
+          const statusMsg = `🔍 <b>自动检查 (Cron): ${result.city} -> ${result.country}</b>\n❌ 暂无可用名额。`;
           notificationService.sendCheckStatus(preferences.telegram_chat_id, process.env.TELEGRAM_BOT_TOKEN, statusMsg).catch(e => console.warn(e));
         }
         continue;
