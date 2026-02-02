@@ -25,63 +25,36 @@ const config = {
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
 
-        // M3 Primary colors
+        // Apple Blue
         primary: {
           DEFAULT: "hsl(var(--primary) / <alpha-value>)",
-          foreground: "hsl(var(--on-primary) / <alpha-value>)",
-          container: "hsl(var(--primary-container) / <alpha-value>)",
+          foreground: "hsl(var(--primary-foreground) / <alpha-value>)",
         },
-        "on-primary": "hsl(var(--on-primary) / <alpha-value>)",
-        "primary-container": "hsl(var(--primary-container) / <alpha-value>)",
-        "on-primary-container": "hsl(var(--on-primary-container) / <alpha-value>)",
 
-        // M3 Secondary colors
+        // Map M3 Secondary/Container to Apple Gray scaling
         secondary: {
           DEFAULT: "hsl(var(--secondary) / <alpha-value>)",
-          foreground: "hsl(var(--on-secondary) / <alpha-value>)",
-          container: "hsl(var(--secondary-container) / <alpha-value>)",
+          foreground: "hsl(var(--secondary-foreground) / <alpha-value>)",
         },
-        "on-secondary": "hsl(var(--on-secondary) / <alpha-value>)",
-        "secondary-container": "hsl(var(--secondary-container) / <alpha-value>)",
-        "on-secondary-container": "hsl(var(--on-secondary-container) / <alpha-value>)",
+        // Legacy M3 compatibility Mappings
+        "primary-container": "hsl(var(--secondary) / <alpha-value>)", // Light Gray
+        "on-primary-container": "hsl(var(--foreground) / <alpha-value>)", // Black
 
-        // M3 Tertiary colors
-        tertiary: {
-          DEFAULT: "hsl(var(--tertiary) / <alpha-value>)",
-          foreground: "hsl(var(--on-tertiary) / <alpha-value>)",
-          container: "hsl(var(--tertiary-container) / <alpha-value>)",
-        },
-        "on-tertiary": "hsl(var(--on-tertiary) / <alpha-value>)",
-        "tertiary-container": "hsl(var(--tertiary-container) / <alpha-value>)",
-        "on-tertiary-container": "hsl(var(--on-tertiary-container) / <alpha-value>)",
+        "secondary-container": "hsl(var(--secondary) / <alpha-value>)",
+        "on-secondary-container": "hsl(var(--foreground) / <alpha-value>)",
 
-        // M3 Error colors
-        error: {
-          DEFAULT: "hsl(var(--error) / <alpha-value>)",
-          foreground: "hsl(var(--on-error) / <alpha-value>)",
-          container: "hsl(var(--error-container) / <alpha-value>)",
-        },
-        "on-error": "hsl(var(--on-error) / <alpha-value>)",
-        "error-container": "hsl(var(--error-container) / <alpha-value>)",
-        "on-error-container": "hsl(var(--on-error-container) / <alpha-value>)",
+        "tertiary": "hsl(var(--primary) / <alpha-value>)", // Map to Blue
+        "tertiary-container": "hsl(var(--secondary) / <alpha-value>)",
 
-        // M3 Surface colors
-        surface: {
-          DEFAULT: "hsl(var(--surface) / <alpha-value>)",
-          variant: "hsl(var(--surface-variant) / <alpha-value>)",
-        },
-        "on-surface": "hsl(var(--on-surface) / <alpha-value>)",
-        "surface-variant": "hsl(var(--surface-variant) / <alpha-value>)",
-        "on-surface-variant": "hsl(var(--on-surface-variant) / <alpha-value>)",
+        "surface": "hsl(var(--card) / <alpha-value>)",
+        "on-surface": "hsl(var(--foreground) / <alpha-value>)",
 
-        // M3 Outline colors
-        outline: {
-          DEFAULT: "hsl(var(--outline) / <alpha-value>)",
-          variant: "hsl(var(--outline-variant) / <alpha-value>)",
-        },
-        "outline-variant": "hsl(var(--outline-variant) / <alpha-value>)",
+        "surface-variant": "hsl(var(--muted) / <alpha-value>)",
+        "on-surface-variant": "hsl(var(--muted-foreground) / <alpha-value>)",
 
-        // Legacy compatibility
+        "outline": "hsl(var(--muted-foreground) / 0.5)",
+        "outline-variant": "hsl(var(--muted-foreground) / 0.2)",
+
         destructive: {
           DEFAULT: "hsl(var(--destructive) / <alpha-value>)",
           foreground: "hsl(var(--destructive-foreground) / <alpha-value>)",
@@ -117,10 +90,21 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        // Apple Scale Animation
+        "scale-in": {
+          "0%": { transform: "scale(0.95)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "scale-in": "scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+        "fade-in": "fade-in 0.3s ease-out",
       },
     },
   },

@@ -3,90 +3,86 @@
 @tailwind utilities;
 
 @layer base {
+
   :root {
-    /* M3 Color System - Neutral Violet with lower saturation */
-    /* Primary: Violet (toned down) */
-    --primary: 262 52% 47%;
-    --on-primary: 0 0% 100%;
-    --primary-container: 262 100% 94%;
-    --on-primary-container: 262 100% 12%;
-
-    /* Secondary: Neutral violet */
-    --secondary: 270 10% 46%;
-    --on-secondary: 0 0% 100%;
-    --secondary-container: 270 30% 92%;
-    --on-secondary-container: 270 15% 15%;
-
-    /* Tertiary: Soft pink */
-    --tertiary: 335 45% 48%;
-    --on-tertiary: 0 0% 100%;
-    --tertiary-container: 335 80% 93%;
-    --on-tertiary-container: 335 80% 12%;
-
-    /* Error */
-    --error: 0 75% 42%;
-    --on-error: 0 0% 100%;
-    --error-container: 0 100% 93%;
-    --on-error-container: 0 100% 10%;
-
-    /* M3 Neutral Surfaces */
-    --background: 270 5% 97%;
-    --foreground: 270 5% 10%;
-
-    --surface: 270 5% 99%;
-    --on-surface: 270 5% 10%;
-    --surface-variant: 270 10% 90%;
-    --on-surface-variant: 270 5% 30%;
+    /* Apple Color Palette */
+    --background: 0 0% 96%;
+    /* #f5f5f7 - Apple Light Gray */
+    --foreground: 240 3% 12%;
+    /* #1d1d1f - Apple Text Black */
 
     --card: 0 0% 100%;
-    --card-foreground: 270 5% 10%;
+    --card-foreground: 240 3% 12%;
 
-    --border: 270 5% 85%;
-    --outline: 270 5% 50%;
-    --outline-variant: 270 5% 80%;
-
-    /* Radius */
-    --radius: 1rem;
-    --radius-full: 9999px;
-
-    /* Legacy Compatibility */
-    --input: 270 5% 85%;
-    --ring: 262 52% 47%;
-    --muted: 270 5% 94%;
-    --muted-foreground: 270 5% 40%;
-    --accent: 270 10% 94%;
-    --accent-foreground: 270 10% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 270 5% 10%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --popover-foreground: 240 3% 12%;
 
-    /* M3 Elevation */
-    --elevation-1: 0px 1px 2px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.08);
-    --elevation-2: 0px 2px 4px rgba(0, 0, 0, 0.1), 0px 4px 8px rgba(0, 0, 0, 0.08);
-    --elevation-3: 0px 4px 8px rgba(0, 0, 0, 0.1), 0px 8px 16px rgba(0, 0, 0, 0.08);
+    /* Apple Blue #0071e3 (HSL: 210, 100%, 45%) */
+    --primary: 210 100% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Apple Secondary (Gray) usually #e8e8ed */
+    --secondary: 240 5% 92%;
+    --secondary-foreground: 240 3% 12%;
+
+    /* Apple Muted */
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 2% 52%;
+    /* #86868b */
+
+    --accent: 210 100% 96%;
+    /* Very light blue for hover */
+    --accent-foreground: 210 100% 45%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 210 100% 45%;
+
+    --radius: 1.2rem;
+    /* 20px-24px rounded */
+
+    /* Global Nav Blur Background */
+    --nav-bg: 240 3% 9%;
+    /* #161617 */
   }
 
   .dark {
-    --primary: 262 80% 75%;
-    --on-primary: 262 100% 12%;
-    --primary-container: 262 50% 25%;
-    --on-primary-container: 262 100% 90%;
+    --background: 0 0% 0%;
+    /* Apple Black */
+    --foreground: 0 0% 96%;
+    /* #f5f5f7 */
 
-    --background: 270 10% 8%;
-    --foreground: 270 5% 90%;
+    --card: 240 3% 12%;
+    /* #1d1d1f */
+    --card-foreground: 0 0% 96%;
 
-    --surface: 270 10% 12%;
-    --on-surface: 270 5% 90%;
-    --surface-variant: 270 10% 20%;
-    --on-surface-variant: 270 5% 70%;
+    --popover: 240 3% 12%;
+    --popover-foreground: 0 0% 96%;
 
-    --card: 270 10% 14%;
-    --card-foreground: 270 5% 90%;
+    /* Apple Dark Blue #2997ff */
+    --primary: 209 100% 58%;
+    --primary-foreground: 0 0% 0%;
 
-    --border: 270 10% 25%;
-    --outline: 270 5% 45%;
-    --outline-variant: 270 5% 30%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 209 100% 58%;
+
+    --nav-bg: 0 0% 0%;
   }
 }
 
@@ -97,12 +93,6 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  /* M3 Typography Scale */
-  .headline-large {
-    @apply text-3xl font-normal tracking-tight;
     line-height: 1.25;
   }
 

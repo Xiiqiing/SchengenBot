@@ -153,31 +153,17 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background text-on-surface">
       {/* Header */}
-      <header className="bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline/10">
+      <header className="bg-white/80 backdrop-blur-md sticky top-[48px] z-40 border-b border-black/5">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
-                <Bell className="w-7 h-7 text-on-primary" />
+              <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <Bell className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-black tracking-tight">控制中心</h1>
-                <p className="text-sm font-medium text-on-surface-variant">Schengen Bot Dashboard</p>
+                <h1 className="text-2xl font-bold tracking-tight text-black">控制中心</h1>
+                <p className="text-sm font-medium text-gray-500">Overview</p>
               </div>
-            </div>
-            <div className="flex gap-3">
-              <Link href="/dashboard/history">
-                <Button variant="ghost" className="m3-button-pill bg-surface-variant/50 text-on-surface-variant hover:bg-surface-variant">
-                  <History className="w-4 h-4 mr-2" />
-                  历史记录
-                </Button>
-              </Link>
-              <Link href="/dashboard/settings">
-                <Button className="m3-button-pill bg-primary text-on-primary hover:bg-primary/90 shadow-md">
-                  <Settings className="w-4 h-4 mr-2" />
-                  偏好设置
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -192,12 +178,12 @@ export default function DashboardPage() {
             { label: '已推送通知', value: stats?.total_notifications || 0, icon: Bell, color: 'text-secondary' },
             { label: '自动监控', value: preferences?.auto_check_enabled ? '已激活' : '待开启', icon: Clock, color: preferences?.auto_check_enabled ? 'text-green-600' : 'text-on-surface-variant/50' }
           ].map((stat, i) => (
-            <Card key={i} className="m3-card p-6 bg-surface-variant/20 hover:bg-surface-variant/40 border-none">
+            <Card key={i} className="bg-white rounded-[24px] shadow-sm p-6 border-none hover:shadow-md transition-shadow duration-300">
               <div className="flex flex-row items-center justify-between mb-4">
-                <span className="text-sm font-bold uppercase tracking-widest text-on-surface-variant/70">{stat.label}</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-gray-400">{stat.label}</span>
                 <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </div>
-              <div className="text-3xl font-black">{stat.value}</div>
+              <div className="text-3xl font-bold text-black">{stat.value}</div>
             </Card>
           ))}
         </div>
@@ -205,12 +191,12 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-8 space-y-8">
-            <Card className="m3-card p-1 bg-surface-variant/10 border border-outline/10">
-              <CardHeader className="p-6 pb-2">
-                <CardTitle className="text-2xl font-black flex items-center gap-3">
+            <Card className="bg-white rounded-[32px] shadow-sm border-none p-2 block overflow-hidden">
+              <CardHeader className="p-8 pb-4">
+                <CardTitle className="text-2xl font-bold flex items-center gap-3 text-black">
                   🇬🇧 英国中心实时检查
                 </CardTitle>
-                <CardDescription className="text-base font-medium text-on-surface-variant/70">
+                <CardDescription className="text-base text-gray-500">
                   即时检索选定城市与国家的最新预约槽位
                 </CardDescription>
               </CardHeader>
@@ -269,7 +255,7 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleUKCheck}
                   disabled={checkingUK}
-                  className={`w-full h-16 m3-button-pill text-lg font-black tracking-widest transition-all ${checkingUK ? 'bg-surface-variant text-on-surface-variant' : 'bg-primary text-on-primary hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-primary/20'}`}
+                  className={`w-full h-16 rounded-full text-lg font-bold tracking-wider transition-all shadow-lg ${checkingUK ? 'bg-gray-100 text-gray-400' : 'bg-primary text-white hover:scale-[1.02] hover:shadow-xl shadow-blue-500/30'}`}
                 >
                   {checkingUK ? (
                     <>
@@ -279,7 +265,7 @@ export default function DashboardPage() {
                   ) : (
                     <>
                       <CheckCircle2 className="mr-3 h-6 w-6" />
-                      开始检查Slot
+                      开始检查
                     </>
                   )}
                 </Button>

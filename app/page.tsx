@@ -92,7 +92,7 @@ export default function LandingPage() {
           </p>
 
           <div className="max-w-md mx-auto w-full pt-8">
-            <Card className="m3-card p-6 bg-surface border border-outline/20">
+            <Card className="p-8 bg-white/80 backdrop-blur-xl rounded-[32px] border border-white/20 shadow-2xl">
               {step === 'code' ? (
                 <form onSubmit={handleVerifyCode} className="space-y-4">
                   <div className="relative group">
@@ -105,10 +105,11 @@ export default function LandingPage() {
                       required
                     />
                   </div>
+                  </div>
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full m3-button-pill h-14 bg-primary text-on-primary hover:bg-primary/90 shadow-lg shadow-primary/20 text-lg uppercase tracking-wider"
+                    className="w-full rounded-full h-14 bg-[#0071e3] text-white hover:bg-[#0077ED] shadow-lg shadow-blue-500/30 text-lg font-semibold tracking-wide transition-all active:scale-[0.98]"
                     disabled={loading}
                   >
                     {loading ? (
@@ -118,49 +119,49 @@ export default function LandingPage() {
                     )}
                   </Button>
                 </form>
-              ) : (
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <input
-                    type="email"
-                    placeholder="您的电子邮箱"
-                    className="w-full px-6 py-4 rounded-full border-2 border-outline/50 bg-surface focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-lg font-medium placeholder:text-on-surface-variant/50"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    autoFocus
-                  />
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full m3-button-pill h-14 bg-primary text-on-primary hover:bg-primary/90 shadow-lg shadow-primary/20 text-lg"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <Clock className="h-6 w-6 animate-spin" />
-                    ) : (
-                      '进入控制中心'
-                    )}
-                  </Button>
-                </form>
+            ) : (
+            <form onSubmit={handleLogin} className="space-y-4">
+              <input
+                type="email"
+                placeholder="您的电子邮箱"
+                className="w-full px-6 py-4 rounded-full border-2 border-outline/50 bg-surface focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-lg font-medium placeholder:text-on-surface-variant/50"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoFocus
+              />
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full rounded-full h-14 bg-[#0071e3] text-white hover:bg-[#0077ED] shadow-lg shadow-blue-500/30 text-lg font-semibold tracking-wide transition-all active:scale-[0.98]"
+                disabled={loading}
+              >
+                {loading ? (
+                  <Clock className="h-6 w-6 animate-spin" />
+                ) : (
+                  '进入控制中心'
+                )}
+              </Button>
+            </form>
               )}
-              <div className="flex items-center justify-center gap-2 mt-6 text-on-surface-variant/70 text-sm font-medium">
-                <Shield className="w-4 h-4" />
-                {step === 'code' ? '预览版' : '设置将自动云端同步'}
-              </div>
-            </Card>
-          </div>
+            <div className="flex items-center justify-center gap-2 mt-6 text-on-surface-variant/70 text-sm font-medium">
+              <Shield className="w-4 h-4" />
+              {step === 'code' ? '预览版' : '设置将自动云端同步'}
+            </div>
+          </Card>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="pb-12">
-        <div className="container mx-auto px-4 text-center">
-          <div className="h-px w-24 bg-outline/20 mx-auto mb-8" />
-          <p className="text-sm font-medium text-on-surface-variant/60 tracking-widest lowercase">
-            SCHENGEN BOT • 2026
-          </p>
-        </div>
-      </footer>
     </div>
+
+      {/* Footer */ }
+  <footer className="pb-12">
+    <div className="container mx-auto px-4 text-center">
+      <div className="h-px w-24 bg-outline/20 mx-auto mb-8" />
+      <p className="text-sm font-medium text-on-surface-variant/60 tracking-widest lowercase">
+        SCHENGEN BOT • 2026
+      </p>
+    </div>
+  </footer>
+    </div >
   );
 }

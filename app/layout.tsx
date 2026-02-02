@@ -1,17 +1,14 @@
 import type { Metadata } from 'next'
-import { Roboto } from 'next/font/google'
+import { Inter } from 'next/font/google'
+import { AppleGlobalNav } from '@/components/apple-global-nav'
 import './globals.css'
 
-const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
-  display: 'swap',
-})
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Schengen Visa Appointment Bot',
-  description: 'Gerçek zamanlı Schengen vize randevu bildirim sistemi - 17 ülke desteği',
-  keywords: ['schengen', 'visa', 'appointment', 'vize', 'randevu', 'telegram', 'bot'],
+  description: 'Real-time Schengen visa appointment notification system',
+  keywords: ['schengen', 'visa', 'appointment', 'bot'],
 }
 
 export default function RootLayout({
@@ -21,8 +18,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" suppressHydrationWarning>
-      <body className={roboto.className}>
-        {children}
+      <body className={inter.className}>
+        <AppleGlobalNav />
+        <div className="pt-[48px] min-h-screen bg-[#f5f5f7]">
+          {children}
+        </div>
       </body>
     </html>
   )

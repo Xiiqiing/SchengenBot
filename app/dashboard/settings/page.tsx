@@ -5,7 +5,6 @@ import { Save, TestTube, ArrowLeft, Bell, Globe, Clock, Mail } from 'lucide-reac
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Ripple } from '@/components/ui/ripple';
 import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
@@ -201,13 +200,12 @@ export default function SettingsPage() {
                   <button
                     key={country.code}
                     onClick={() => toggleCountry(country.code)}
-                    className={`relative overflow-hidden p-3 rounded-xl transition-all flex flex-col items-center justify-center gap-2 border ${preferences.countries.includes(country.code)
-                      ? 'border-primary bg-primary-container text-on-primary-container'
-                      : 'border-outline-variant bg-surface hover:bg-surface-variant/50'}`}
+                    className={`relative p-4 rounded-2xl transition-all duration-200 flex flex-col items-center justify-center gap-2 border active:scale-[0.96] ${preferences.countries.includes(country.code)
+                      ? 'border-primary border-2 bg-white shadow-md shadow-blue-500/10'
+                      : 'border-transparent bg-white shadow-sm hover:shadow-md hover:scale-[1.02]'}`}
                   >
-                    <div className="text-2xl">{country.flag}</div>
-                    <div className="label-medium">{country.nameTr}</div>
-                    <Ripple />
+                    <div className="text-3xl filter drop-shadow-sm">{country.flag}</div>
+                    <div className={`text-sm font-semibold ${preferences.countries.includes(country.code) ? 'text-primary' : 'text-gray-900'}`}>{country.nameTr}</div>
                   </button>
                 ))}
               </div>
@@ -230,13 +228,12 @@ export default function SettingsPage() {
                   <button
                     key={city.code}
                     onClick={() => toggleCity(city.code)}
-                    className={`relative overflow-hidden p-3 rounded-[20px] transition-all border-2 text-sm font-black uppercase tracking-tighter ${preferences.cities.includes(city.code)
-                      ? 'border-tertiary bg-tertiary-container text-on-tertiary-container'
-                      : 'border-outline/10 bg-surface-variant/10 hover:border-outline/30'
+                    className={`relative p-3 rounded-2xl transition-all duration-200 border text-sm font-semibold active:scale-[0.96] ${preferences.cities.includes(city.code)
+                      ? 'border-tertiary border-2 bg-white shadow-md text-tertiary'
+                      : 'border-transparent bg-white shadow-sm hover:shadow-md hover:scale-[1.02] text-gray-700'
                       }`}
                   >
                     {city.nameEn}
-                    <Ripple />
                   </button>
                 ))}
               </div>
