@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, Settings, History, Command } from 'lucide-react';
+import { LayoutGrid, Settings, History, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
@@ -20,7 +20,7 @@ export function AppleGlobalNav() {
                 {/* Logo Area */}
                 <Link href="/" className="text-[#f5f5f7] hover:opacity-80 transition-opacity">
                     <div className="flex items-center gap-2">
-                        <Command className="w-5 h-5" />
+                        <Bot className="w-5 h-5" />
                         <span className="font-semibold tracking-tight text-sm">SchengenBot</span>
                     </div>
                 </Link>
