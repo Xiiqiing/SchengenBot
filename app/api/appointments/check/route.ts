@@ -86,14 +86,22 @@ export async function GET(request: NextRequest) {
         const { notificationService } = await import('@/lib/services/notification-service');
         const preferences = await getUserPreferences(userId);
 
+        console.log(`[ManualCheck] User: ${userId}, City: ${city}, Country: ${country}, Available: ${result.isAvailable}`);
+        console.log(`[ManualCheck] Prefs: Enabled=${preferences?.telegram_enabled}, ChatID=${preferences?.telegram_chat_id}, HasToken=${!!process.env.TELEGRAM_BOT_TOKEN}`);
+
         if (preferences?.telegram_enabled && preferences?.telegram_chat_id) {
           const botToken = process.env.TELEGRAM_BOT_TOKEN;
           if (botToken) {
             if (result.isAvailable) {
+              console.log('[ManualCheck] Sending success notification...');
               const statusMsg = `🎉 <b>手动检查: ${city} -> ${country}</b>\n✅ 发现 ${result.totalSlots} 个可用名额!`;
               // Fire and forget (don't await to block response)
               notificationService.sendCheckStatus(preferences.telegram_chat_id, botToken, statusMsg);
+            } else {
+              console.log('[ManualCheck] No notification sent (No slots available)');
             }
+          } else {
+            console.error('[ManualCheck] Missing TELEGRAM_BOT_TOKEN');
           }
         }
       } catch (err) {
