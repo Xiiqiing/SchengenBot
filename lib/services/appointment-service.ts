@@ -15,6 +15,7 @@ import {
 } from '../supabase/client';
 import type { AppointmentData } from '../api/schengen-api';
 import type { UserPreferences } from '../supabase/types';
+import { UK_CITIES } from '../constants/countries';
 
 export interface CheckResult {
   country: string;
@@ -49,6 +50,7 @@ export class AppointmentService {
     return result;
   }
 
+
   /**
    * Çoklu ülke ve şehir için kontrol
    */
@@ -57,24 +59,110 @@ export class AppointmentService {
     cities: string[],
     userId?: string
   ): Promise<CheckResult[]> {
-    const resultsMap = await schengenAPI.checkMultiple(countries, cities);
+    // 1. Şehirleri ayır (UK vs Diğerleri)
+    const ukCityCodes = UK_CITIES.map(c => c.code);
+    const ukCitiesToCheck = cities.filter(c => ukCityCodes.includes(c));
+    const otherCitiesToCheck = cities.filter(c => !ukCityCodes.includes(c));
+
     const results: CheckResult[] = [];
+    let totalFound = 0;
 
-    for (const [key, appointments] of resultsMap.entries()) {
-      const [country, city] = key.split('-');
+    // 2. Diğer şehirleri kontrol et (Mevcut API)
+    if (otherCitiesToCheck.length > 0) {
+      try {
+        const resultsMap = await schengenAPI.checkMultiple(countries, otherCitiesToCheck);
 
-      results.push({
-        country,
-        city,
-        appointments,
-        checked_at: new Date(),
-      });
+        for (const [key, appointments] of resultsMap.entries()) {
+          const [country, city] = key.split('-');
 
-      // Kullanıcı varsa veritabanına kaydet
-      if (userId && appointments.length > 0) {
-        await this.saveAppointments(userId, appointments);
+          if (appointments.length > 0) {
+            results.push({
+              country,
+              city,
+              appointments,
+              checked_at: new Date(),
+            });
+
+            // Veritabanına kaydet
+            if (userId) {
+              await this.saveAppointments(userId, appointments);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('SchengenAPI check error:', error);
       }
     }
+
+    // 3. UK şehirlerini kontrol et (Scraper)
+    if (ukCitiesToCheck.length > 0) {
+      try {
+        // Her şehir-ülke kombinasyonu için kontrol oluştur
+        const ukChecks = [];
+        for (const city of ukCitiesToCheck) {
+          for (const country of countries) {
+            ukChecks.push({ city, country });
+          }
+        }
+
+        const ukResults = await ukScraper.checkMultiple(ukChecks);
+
+        for (const res of ukResults) {
+          if (res.isAvailable && res.slots.length > 0) {
+            // UKAppointmentData -> AppointmentData dönüşümü
+            const appointments: AppointmentData[] = res.slots.map((slot, index) => {
+              // Tarihi parse et (örn: "03 Feb (Tue)")
+              const dateParts = slot.date.split(' '); // ["03", "Feb", "(Tue)"]
+              const day = parseInt(dateParts[0]);
+              const monthStr = dateParts[1];
+              const monthMap: Record<string, number> = {
+                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+                'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+              };
+
+              const now = new Date();
+              const month = monthMap[monthStr] || 0;
+              let year = now.getFullYear();
+
+              // Eğer ay geçmişse, sonraki yıl demektir
+              if (month < now.getMonth()) {
+                year++;
+              }
+
+              const date = new Date(year, month, day);
+              const dateStr = date.toISOString().split('T')[0];
+
+              return {
+                id: Date.now() + index, // Geçici ID
+                source_country: 'UK',
+                mission_country: res.country,
+                center_name: res.city,
+                appointment_date: dateStr,
+                visa_category: 'Tourism',
+                visa_subcategory: null,
+                book_now_link: res.bookingLink || '',
+              };
+            });
+
+            results.push({
+              country: res.country,
+              city: res.city,
+              appointments,
+              checked_at: new Date(),
+            });
+
+            // Veritabanına kaydet
+            if (userId) {
+              await this.saveAppointments(userId, appointments);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('UK Scraper check error:', error);
+      }
+    }
+
+    totalFound = results.reduce((sum, r) => sum + r.appointments.length, 0);
 
     // Kontrol geçmişini kaydet
     if (userId) {
@@ -82,7 +170,7 @@ export class AppointmentService {
         user_id: userId,
         countries,
         cities,
-        found_count: results.reduce((sum, r) => sum + r.appointments.length, 0),
+        found_count: totalFound,
       });
     }
 
