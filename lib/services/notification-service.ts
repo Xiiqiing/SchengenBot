@@ -190,13 +190,13 @@ export class NotificationService {
       const emailHtml = message.replace(/\n/g, '<br>');
 
       try {
-        const success = await this.sendEmailNotification(
+        const { success, error } = await this.sendEmailNotification(
           options.email.address,
           subject,
           emailHtml
         );
 
-        results.push({ type: 'email', success });
+        results.push({ type: 'email', success, error: error ? JSON.stringify(error) : undefined });
 
         await createNotification({
           user_id: options.userId,
@@ -204,6 +204,7 @@ export class NotificationService {
           type: 'email',
           message,
           success,
+          error_message: error ? JSON.stringify(error) : undefined
         });
       } catch (error: any) {
         results.push({ type: 'email', success: false, error: error.message });
