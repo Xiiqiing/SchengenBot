@@ -5,6 +5,7 @@ import { Save, TestTube, ArrowLeft, Bell, Globe, Clock, Mail } from 'lucide-reac
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Ripple } from '@/components/ui/ripple';
 import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
@@ -168,10 +169,10 @@ export default function SettingsPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/dashboard">
-              <button className="m3-button-text">
+              <Button variant="ghost" className="gap-2">
                 <ArrowLeft className="w-4 h-4" />
                 返回主页
-              </button>
+              </Button>
             </Link>
             <div>
               <h1 className="headline-medium text-on-surface">偏好设置</h1>
@@ -196,17 +197,17 @@ export default function SettingsPage() {
             </div>
             <div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                {COUNTRIES.map((country) => (
-                  <button
-                    key={country.code}
-                    onClick={() => toggleCountry(country.code)}
-                    className={`p-3 rounded-xl transition-all flex flex-col items-center justify-center gap-2 border ${preferences.countries.includes(country.code)
-                      ? 'border-primary bg-primary-container text-on-primary-container'
-                      : 'border-outline-variant bg-surface hover:bg-surface-variant/50'}`}
-                  >
-                    <div className="text-2xl">{country.flag}</div>
-                    <div className="label-medium">{country.nameTr}</div>
-                  </button>
+                <button
+                  key={country.code}
+                  onClick={() => toggleCountry(country.code)}
+                  className={`relative overflow-hidden p-3 rounded-xl transition-all flex flex-col items-center justify-center gap-2 border ${preferences.countries.includes(country.code)
+                    ? 'border-primary bg-primary-container text-on-primary-container'
+                    : 'border-outline-variant bg-surface hover:bg-surface-variant/50'}`}
+                >
+                  <div className="text-2xl">{country.flag}</div>
+                  <div className="label-medium">{country.nameTr}</div>
+                  <Ripple />
+                </button>
                 ))}
               </div>
             </div>
@@ -228,12 +229,13 @@ export default function SettingsPage() {
                   <button
                     key={city.code}
                     onClick={() => toggleCity(city.code)}
-                    className={`p-3 rounded-[20px] transition-all border-2 text-sm font-black uppercase tracking-tighter ${preferences.cities.includes(city.code)
+                    className={`relative overflow-hidden p-3 rounded-[20px] transition-all border-2 text-sm font-black uppercase tracking-tighter ${preferences.cities.includes(city.code)
                       ? 'border-tertiary bg-tertiary-container text-on-tertiary-container'
                       : 'border-outline/10 bg-surface-variant/10 hover:border-outline/30'
                       }`}
                   >
                     {city.nameEn}
+                    <Ripple />
                   </button>
                 ))}
               </div>
@@ -398,13 +400,13 @@ export default function SettingsPage() {
 
           {/* 保存按钮 */}
           <div className="pt-6">
-            <button
+            <Button
               onClick={handleSave}
               disabled={saving}
-              className="w-full m3-button-filled h-14 text-base"
+              className="w-full h-14 text-base"
             >
-              {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="h-5 w-5" /> 保存所有配置</>}
-            </button>
+              {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="h-5 w-5 mr-2" /> 保存所有配置</>}
+            </Button>
           </div>
         </div>
       </main>
