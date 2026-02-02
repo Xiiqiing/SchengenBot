@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     // Otomatik kontrol aktif olan kullanıcıları getir
     const { data: activeUsers, error } = await supabase
       .from('user_preferences')
-      .select('user_id, countries, cities, telegram_enabled, web_enabled')
+      .select('user_id, countries, cities, telegram_enabled, web_enabled, check_frequency')
       .eq('auto_check_enabled', true);
 
     if (error) throw error;
@@ -51,9 +51,38 @@ export async function GET(request: NextRequest) {
     // Her kullanıcı için kontrol yap
     for (const user of activeUsers) {
       try {
+        // Kontrol sıklığına uyuyor mu?
+        const frequency = user.check_frequency || 60; // Varsayılan 60 dk
+
+        // Son kontrol zamanını al
+        const { data: lastCheck } = await supabase
+          .from('check_history')
+          .select('checked_at')
+          .eq('user_id', user.user_id)
+          .order('checked_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (lastCheck) {
+          const lastCheckTime = new Date(lastCheck.checked_at).getTime();
+          const now = new Date().getTime();
+          const diffMinutes = (now - lastCheckTime) / (1000 * 60);
+
+          // Eğer son kontrol üzerinden geçen süre, belirlenen frekanstan azsa atla
+          if (diffMinutes < frequency) {
+            results.push({
+              userId: user.user_id,
+              status: 'skipped',
+              reason: `Wait ${Math.ceil(frequency - diffMinutes)} mins`
+            });
+            continue;
+          }
+        }
+
         const checkResults = await appointmentService.checkForUser(user.user_id);
         results.push({
           userId: user.user_id,
+          status: 'checked',
           found: checkResults.reduce((sum, r) => sum + r.appointments.length, 0),
         });
       } catch (error) {
