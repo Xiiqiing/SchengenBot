@@ -183,8 +183,9 @@ export class UKAppointmentScraper {
       );
       results.push(result);
 
-      // Small delay between requests to be respectful
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Random delay between 2 and 5 seconds to avoid rate limiting
+      const delay = Math.floor(Math.random() * (5000 - 2000 + 1) + 2000);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
 
     return results;
