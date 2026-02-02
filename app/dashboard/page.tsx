@@ -178,7 +178,7 @@ export default function DashboardPage() {
             { label: '已推送通知', value: stats?.total_notifications || 0, icon: Bell, color: 'text-secondary' },
             { label: '自动监控', value: preferences?.auto_check_enabled ? '已激活' : '待开启', icon: Clock, color: preferences?.auto_check_enabled ? 'text-green-600' : 'text-on-surface-variant/50' }
           ].map((stat, i) => (
-            <Card key={i} className="bg-white rounded-[24px] shadow-sm p-6 border-none hover:shadow-md transition-shadow duration-300">
+            <Card key={i} className="bg-white rounded-2xl shadow-sm p-6 border-none hover:shadow-md transition-shadow duration-300">
               <div className="flex flex-row items-center justify-between mb-4">
                 <span className="text-sm font-bold uppercase tracking-widest text-gray-400">{stat.label}</span>
                 <stat.icon className={`h-5 w-5 ${stat.color}`} />
@@ -191,7 +191,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-8 space-y-8">
-            <Card className="bg-white rounded-[32px] shadow-sm border-none p-2 block overflow-hidden">
+            <Card className="bg-white rounded-2xl shadow-sm border-none p-2 block overflow-hidden">
               <CardHeader className="p-8 pb-4">
                 <CardTitle className="text-2xl font-bold flex items-center gap-3 text-black">
                   🇬🇧 英国中心实时检查
@@ -202,7 +202,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="p-6 pt-2 space-y-6">
                 {preferences ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-surface rounded-[24px] border border-outline/10 shadow-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-[#F5F5F7] rounded-xl border-none">
                     <div>
                       <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">监控国家</p>
                       <div className="flex flex-wrap gap-2">

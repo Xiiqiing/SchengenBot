@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} tracking-tight antialiased`}>
         <AppleGlobalNav />
         <div className="pt-[48px] min-h-screen bg-[#f5f5f7]">
           {children}

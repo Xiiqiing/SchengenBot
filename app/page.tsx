@@ -75,31 +75,28 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-24 flex flex-col items-center justify-center min-h-[85vh]">
-        <div className="text-center max-w-4xl mx-auto space-y-8">
-          <div className="inline-flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-medium animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Zap className="w-4 h-4" />
-            实时通知
-          </div>
-
-          <h1 className="text-6xl md:text-8xl font-black tracking-tight text-on-surface mb-6">
-            申根签证
-            <span className="block text-primary">SLOT 通知</span>
+      <div className="container mx-auto px-4 pt-32 pb-24 flex flex-col items-center justify-center min-h-[85vh]">
+        <div className="text-center max-w-4xl mx-auto space-y-6">
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-[#1d1d1f] mb-4">
+            Schengen
+            <span className="bg-gradient-to-r from-[#0071e3] to-[#2c3b67] bg-clip-text text-transparent ml-4">
+              Bot.
+            </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-on-surface-variant font-medium max-w-2xl mx-auto leading-relaxed">
-            自动化追踪申根国家签证库。{step === 'code' ? '输入邀请码开启服务。' : '请输入邮箱同步您的监控设置与通知偏好。'}
+          <p className="text-2xl md:text-3xl text-[#86868b] font-medium max-w-2xl mx-auto leading-relaxed tracking-tight">
+            你的申根签证，<br className="md:hidden" />智能自动化追踪。
           </p>
 
-          <div className="max-w-md mx-auto w-full pt-8">
-            <Card className="p-8 bg-white/80 backdrop-blur-xl rounded-[32px] border border-white/20 shadow-2xl">
+          <div className="max-w-[380px] mx-auto w-full pt-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-forwards">
+            <Card className="p-10 bg-white rounded-[28px] shadow-[0_20px_40px_rgba(0,0,0,0.08)] border-none ring-1 ring-black/5">
               {step === 'code' ? (
                 <form onSubmit={handleVerifyCode} className="space-y-4">
                   <div className="relative group">
                     <input
                       type="text"
                       placeholder="邀请码"
-                      className="w-full px-6 py-4 rounded-full border-2 border-outline/50 bg-surface focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-lg font-medium placeholder:text-on-surface-variant/50"
+                      className="w-full px-4 py-2.5 rounded-[10px] border-none bg-[#F5F5F7] focus:bg-white focus:ring-2 focus:ring-[#0071e3] outline-none transition-all text-[14px] placeholder:text-gray-400 text-[#1d1d1f] font-medium"
                       value={invitationCode}
                       onChange={(e) => setInvitationCode(e.target.value)}
                       required
@@ -108,12 +105,11 @@ export default function LandingPage() {
 
                   <Button
                     type="submit"
-                    size="lg"
-                    className="w-full rounded-full h-14 bg-[#0071e3] text-white hover:bg-[#0077ED] shadow-lg shadow-blue-500/30 text-lg font-semibold tracking-wide transition-all active:scale-[0.98]"
+                    className="w-full rounded-full h-[36px] bg-[#0071e3] text-white hover:bg-[#0077ED] shadow-sm text-[14px] font-medium transition-all active:scale-[0.98]"
                     disabled={loading}
                   >
                     {loading ? (
-                      <Clock className="h-6 w-6 animate-spin" />
+                      <Clock className="h-4 w-4 animate-spin" />
                     ) : (
                       '立即验证'
                     )}
@@ -123,8 +119,8 @@ export default function LandingPage() {
                 <form onSubmit={handleLogin} className="space-y-4">
                   <input
                     type="email"
-                    placeholder="您的电子邮箱"
-                    className="w-full px-6 py-4 rounded-full border-2 border-outline/50 bg-surface focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-lg font-medium placeholder:text-on-surface-variant/50"
+                    placeholder="name@example.com"
+                    className="w-full px-4 py-2.5 rounded-[10px] border-none bg-[#F5F5F7] focus:bg-white focus:ring-2 focus:ring-[#0071e3] outline-none transition-all text-[14px] placeholder:text-gray-400 text-[#1d1d1f] font-medium"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -132,19 +128,18 @@ export default function LandingPage() {
                   />
                   <Button
                     type="submit"
-                    size="lg"
-                    className="w-full rounded-full h-14 bg-[#0071e3] text-white hover:bg-[#0077ED] shadow-lg shadow-blue-500/30 text-lg font-semibold tracking-wide transition-all active:scale-[0.98]"
+                    className="w-full rounded-full h-[36px] bg-[#0071e3] text-white hover:bg-[#0077ED] shadow-sm text-[14px] font-medium transition-all active:scale-[0.98]"
                     disabled={loading}
                   >
                     {loading ? (
-                      <Clock className="h-6 w-6 animate-spin" />
+                      <Clock className="h-4 w-4 animate-spin" />
                     ) : (
                       '进入控制中心'
                     )}
                   </Button>
                 </form>
               )}
-              <div className="flex items-center justify-center gap-2 mt-6 text-on-surface-variant/70 text-sm font-medium">
+              <div className="flex items-center justify-center gap-2 mt-5 text-gray-400 text-[11px] font-medium">
                 <Shield className="w-4 h-4" />
                 {step === 'code' ? '预览版' : '设置将自动云端同步'}
               </div>
@@ -154,11 +149,11 @@ export default function LandingPage() {
       </div>
 
       {/* Footer */}
-      <footer className="pb-12">
+      <footer className="pb-12 mt-auto">
         <div className="container mx-auto px-4 text-center">
-          <div className="h-px w-24 bg-outline/20 mx-auto mb-8" />
-          <p className="text-sm font-medium text-on-surface-variant/60 tracking-widest lowercase">
-            SCHENGEN BOT • 2026
+          <div className="h-px w-full max-w-[120px] bg-gray-200 mx-auto mb-8" />
+          <p className="text-[11px] font-medium text-gray-400 tracking-widest lowercase font-mono">
+            schengen bot • 2026
           </p>
         </div>
       </footer>

@@ -213,7 +213,7 @@ export default function SettingsPage() {
           </section>
 
           {/* UK城市选择 */}
-          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-xl font-black flex items-center gap-2">
                 🇬🇧 英国城市选择
@@ -241,7 +241,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* 通知渠道 - Telegram */}
-          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-xl font-black flex items-center gap-2">
                 <Bell className="w-6 h-6 text-primary" />
