@@ -20,7 +20,21 @@ export default function DashboardPage() {
   // UK appointment state
   const [checkingUK, setCheckingUK] = useState(false);
   const [ukResults, setUkResults] = useState<any[]>([]); // Changed to array for multiple results
-  const [ukCheckCount, setUkCheckCount] = useState(0);
+  const [ukCheckCount, setUkCheckCount] = useState(() => {
+    // Load from localStorage on mount
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(`ukCheckCount_${getOrCreateUserId()}`);
+      return saved ? parseInt(saved, 10) : 0;
+    }
+    return 0;
+  });
+
+  // Save ukCheckCount to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && ukCheckCount > 0) {
+      localStorage.setItem(`ukCheckCount_${userId}`, ukCheckCount.toString());
+    }
+  }, [ukCheckCount, userId]);
 
   useEffect(() => {
     loadData();
@@ -293,7 +307,7 @@ export default function DashboardPage() {
                   🇬🇧 UK Appointment Check
                 </CardTitle>
                 <CardDescription>
-                  检查所选城市和国家的签证预约 (schengenappointments.com)
+                  检查所选城市和国家的签证预约.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

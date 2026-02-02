@@ -59,14 +59,19 @@ export default function SettingsPage() {
         }),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         alert('设置已保存!');
       } else {
-        alert('保存失败!');
+        // Show actual error from API
+        const errorMsg = data.error || '保存失败!';
+        console.error('Save failed:', data);
+        alert(`保存失败: ${errorMsg}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Save error:', error);
-      alert('Kaydetme hatası!');
+      alert(`保存错误: ${error.message || '未知错误'}`);
     } finally {
       setSaving(false);
     }
