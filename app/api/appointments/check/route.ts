@@ -47,3 +47,47 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+/**
+ * GET /api/appointments/check?source=UK&city=manchester&country=portugal
+ * Check UK-based appointments using schengenappointments.com scraper
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const source = searchParams.get('source');
+    const city = searchParams.get('city');
+    const country = searchParams.get('country');
+    const visaType = searchParams.get('visaType') || 'tourism';
+
+    // Only handle UK source
+    if (source?.toUpperCase() !== 'UK') {
+      return NextResponse.json(
+        { error: 'This endpoint only supports source=UK parameter' },
+        { status: 400 }
+      );
+    }
+
+    if (!city || !country) {
+      return NextResponse.json(
+        { error: 'city and country parameters are required' },
+        { status: 400 }
+      );
+    }
+
+    // Check UK appointment
+    const result = await appointmentService.checkUK(city, country, visaType);
+
+    return NextResponse.json({
+      success: true,
+      result,
+      checked_at: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    console.error('Check UK appointments error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}

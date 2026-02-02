@@ -5,7 +5,7 @@ import { Bell, CheckCircle2, XCircle, Clock, TrendingUp, Settings, History } fro
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { COUNTRIES, CITIES, formatDateTR } from '@/lib/constants/countries';
+import { COUNTRIES, CITIES, UK_CITIES, formatDateTR } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
 
@@ -16,6 +16,10 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [checking, setChecking] = useState(false);
   const [results, setResults] = useState<any[]>([]);
+
+  // UK appointment state
+  const [checkingUK, setCheckingUK] = useState(false);
+  const [ukResult, setUkResult] = useState<any>(null);
 
   useEffect(() => {
     loadData();
@@ -69,7 +73,7 @@ export default function DashboardPage() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         setResults(data.results);
         await loadData(); // Verileri yenile
@@ -79,6 +83,26 @@ export default function DashboardPage() {
       alert('Kontrol sırasında hata oluştu!');
     } finally {
       setChecking(false);
+    }
+  };
+
+  // UK (Manchester -> Portugal) check handler
+  const handleUKCheck = async () => {
+    setCheckingUK(true);
+    setUkResult(null);
+
+    try {
+      const response = await fetch('/api/appointments/check?source=UK&city=manchester&country=portugal');
+      const data = await response.json();
+
+      if (data.success) {
+        setUkResult(data.result);
+      }
+    } catch (error) {
+      console.error('UK Check error:', error);
+      alert('UK check failed!');
+    } finally {
+      setCheckingUK(false);
     }
   };
 
@@ -101,13 +125,13 @@ export default function DashboardPage() {
               <Link href="/dashboard/history">
                 <Button variant="outline" size="sm">
                   <History className="w-4 h-4 mr-2" />
-                  Geçmiş
+                  历史记录
                 </Button>
               </Link>
               <Link href="/dashboard/settings">
                 <Button variant="outline" size="sm">
                   <Settings className="w-4 h-4 mr-2" />
-                  Ayarlar
+                  设置
                 </Button>
               </Link>
             </div>
@@ -120,7 +144,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Toplam Kontrol</CardTitle>
+              <CardTitle className="text-sm font-medium">总检查次数</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -130,7 +154,7 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Bulunan Randevu</CardTitle>
+              <CardTitle className="text-sm font-medium">已找到预约</CardTitle>
               <CheckCircle2 className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
@@ -142,7 +166,7 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Bildirim</CardTitle>
+              <CardTitle className="text-sm font-medium">通知</CardTitle>
               <Bell className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
@@ -154,12 +178,12 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Otomatik Kontrol</CardTitle>
+              <CardTitle className="text-sm font-medium">自动检查</CardTitle>
               <Clock className="h-4 w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
               <Badge variant={preferences?.auto_check_enabled ? "default" : "secondary"}>
-                {preferences?.auto_check_enabled ? 'Aktif' : 'Pasif'}
+                {preferences?.auto_check_enabled ? '已开启' : '已关闭'}
               </Badge>
             </CardContent>
           </Card>
@@ -170,16 +194,16 @@ export default function DashboardPage() {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Manuel Kontrol</CardTitle>
+                <CardTitle>手动检查</CardTitle>
                 <CardDescription>
-                  Seçtiğiniz ülkeler için hemen randevu kontrolü yapın
+                  立即检查您选择的国家的预约
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {preferences ? (
                   <>
                     <div>
-                      <p className="text-sm font-medium mb-2">Seçili Ülkeler:</p>
+                      <p className="text-sm font-medium mb-2">已选国家:</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.countries?.map((code: string) => {
                           const country = COUNTRIES.find(c => c.code === code);
@@ -193,7 +217,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div>
-                      <p className="text-sm font-medium mb-2">Seçili Şehirler:</p>
+                      <p className="text-sm font-medium mb-2">已选城市:</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.cities?.map((code: string) => {
                           const city = CITIES.find(c => c.code === code);
@@ -215,25 +239,108 @@ export default function DashboardPage() {
                       {checking ? (
                         <>
                           <Clock className="mr-2 h-4 w-4 animate-spin" />
-                          Kontrol Ediliyor...
+                          检查中...
                         </>
                       ) : (
                         <>
                           <CheckCircle2 className="mr-2 h-4 w-4" />
-                          Kontrolü Başlat
+                          开始检查
                         </>
                       )}
                     </Button>
                   </>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500 mb-4">Henüz tercih ayarlanmamış</p>
+                    <p className="text-gray-500 mb-4">尚未设置偏好</p>
                     <Link href="/dashboard/settings">
                       <Button>
                         <Settings className="mr-2 h-4 w-4" />
-                        Ayarlara Git
+                        前往设置
                       </Button>
                     </Link>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* UK Appointment Check - Manchester -> Portugal */}
+            <Card className="border-2 border-purple-200 bg-purple-50/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🇬🇧 UK → 🇵🇹 Portugal Check
+                </CardTitle>
+                <CardDescription>
+                  Check Portugal visa appointments from Manchester (schengenappointments.com)
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button
+                  onClick={handleUKCheck}
+                  disabled={checkingUK}
+                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  size="lg"
+                >
+                  {checkingUK ? (
+                    <>
+                      <Clock className="mr-2 h-4 w-4 animate-spin" />
+                      Checking Manchester...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Check Manchester → Portugal
+                    </>
+                  )}
+                </Button>
+
+                {/* UK Result Display */}
+                {ukResult && (
+                  <div className={`p-4 rounded-lg border ${ukResult.isAvailable ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-semibold text-lg">
+                        🇵🇹 Portugal - Manchester
+                      </span>
+                      <Badge variant={ukResult.isAvailable ? "default" : "secondary"}>
+                        {ukResult.isAvailable ? `${ukResult.totalSlots} Slots` : 'No Slots'}
+                      </Badge>
+                    </div>
+
+                    {ukResult.isAvailable ? (
+                      <div className="space-y-3">
+                        <p className="text-sm text-green-700 font-medium">
+                          ✅ {ukResult.totalSlots} appointments available over {ukResult.totalDays} days
+                        </p>
+
+                        {ukResult.slots?.map((slot: any, i: number) => (
+                          <div key={i} className="text-sm bg-white p-3 rounded border">
+                            <p className="font-medium">📅 {slot.date}</p>
+                            <p className="text-gray-600">{slot.slotsAvailable} slots - seen {slot.lastSeen}</p>
+                          </div>
+                        ))}
+
+                        {ukResult.bookingLink && (
+                          <a
+                            href={ukResult.bookingLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full text-center py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                          >
+                            Book at VFS →
+                          </a>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-600">
+                        <p>❌ No appointments available</p>
+                        {ukResult.lastChecked && (
+                          <p className="mt-1 text-xs">{ukResult.lastChecked}</p>
+                        )}
+                      </div>
+                    )}
+
+                    <p className="text-xs text-gray-400 mt-3">
+                      Source: <a href={ukResult.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">schengenappointments.com</a>
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -243,7 +350,7 @@ export default function DashboardPage() {
             {results.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Kontrol Sonuçları</CardTitle>
+                  <CardTitle>检查结果</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -259,10 +366,10 @@ export default function DashboardPage() {
                             </span>
                           </div>
                           <Badge variant={result.appointments.length > 0 ? "default" : "secondary"}>
-                            {result.appointments.length} Randevu
+                            {result.appointments.length} 个预约
                           </Badge>
                         </div>
-                        
+
                         {result.appointments.length > 0 ? (
                           <div className="space-y-2 mt-3">
                             {result.appointments.map((apt: any, i: number) => (
@@ -275,13 +382,13 @@ export default function DashboardPage() {
                                   rel="noopener noreferrer"
                                   className="text-blue-600 hover:underline"
                                 >
-                                  Randevu Al →
+                                  立即预约 →
                                 </a>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-sm text-gray-500">Müsait randevu bulunamadı</p>
+                          <p className="text-sm text-gray-500">暂无可用预约</p>
                         )}
                       </div>
                     ))}
@@ -295,8 +402,8 @@ export default function DashboardPage() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Son Bulunan Randevular</CardTitle>
-                <CardDescription>Son 10 randevu</CardDescription>
+                <CardTitle>最近找到的预约</CardTitle>
+                <CardDescription>最近10条记录</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 max-h-[600px] overflow-y-auto">
@@ -319,14 +426,14 @@ export default function DashboardPage() {
                             rel="noopener noreferrer"
                             className="text-xs text-blue-600 hover:underline"
                           >
-                            Randevu Al →
+                            立即预约 →
                           </a>
                         )}
                       </div>
                     ))
                   ) : (
                     <p className="text-center text-gray-500 py-8">
-                      Henüz randevu bulunamadı
+                      暂未找到预约
                     </p>
                   )}
                 </div>

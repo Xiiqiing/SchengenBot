@@ -33,6 +33,7 @@ export const COUNTRIES: Country[] = [
   { code: 'Luxembourg', name: 'Luxembourg', nameTr: 'Lüksemburg', flag: '🇱🇺' },
   { code: 'Ukraine', name: 'Ukraine', nameTr: 'Ukrayna', flag: '🇺🇦' },
   { code: 'Latvia', name: 'Latvia', nameTr: 'Letonya', flag: '🇱🇻' },
+  { code: 'Portugal', name: 'Portugal', nameTr: 'Portekiz', flag: '🇵🇹' },
 ];
 
 export const CITIES: City[] = [
@@ -59,6 +60,24 @@ export const MONTHS_TR: Record<string, string> = {
   '11': 'Kasım',
   '12': 'Aralık',
 };
+
+// UK Cities for schengenappointments.com scraping
+export interface UKCity {
+  code: string;
+  name: string;
+  nameEn: string;
+}
+
+export const UK_CITIES: UKCity[] = [
+  { code: 'manchester', name: 'Manchester', nameEn: 'Manchester' },
+  { code: 'london', name: 'London', nameEn: 'London' },
+  { code: 'edinburgh', name: 'Edinburgh', nameEn: 'Edinburgh' },
+  { code: 'cardiff', name: 'Cardiff', nameEn: 'Cardiff' },
+];
+
+export function getUKCityByCode(code: string): UKCity | undefined {
+  return UK_CITIES.find(c => c.code === code.toLowerCase());
+}
 
 // Helper functions
 export function getCountryByCode(code: string): Country | undefined {

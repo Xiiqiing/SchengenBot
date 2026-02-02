@@ -4,6 +4,7 @@
  */
 
 import { schengenAPI } from '../api/schengen-api';
+import { ukScraper, type UKAppointmentData } from '../api/uk-scraper';
 import { notificationService } from './notification-service';
 import {
   createAppointment,
@@ -61,7 +62,7 @@ export class AppointmentService {
 
     for (const [key, appointments] of resultsMap.entries()) {
       const [country, city] = key.split('-');
-      
+
       results.push({
         country,
         city,
@@ -186,6 +187,27 @@ export class AppointmentService {
       total_appointments_found: 0,
       last_check: null,
     };
+  }
+
+  /**
+   * UK-based appointment check using schengenappointments.com scraper
+   * For checking appointments from UK cities (Manchester, London, etc.)
+   */
+  async checkUK(
+    city: string,
+    country: string,
+    visaType: string = 'tourism'
+  ): Promise<UKAppointmentData> {
+    return await ukScraper.checkAvailability(city, country, visaType);
+  }
+
+  /**
+   * Check multiple UK city/country combinations
+   */
+  async checkMultipleUK(
+    checks: Array<{ city: string; country: string; visaType?: string }>
+  ): Promise<UKAppointmentData[]> {
+    return await ukScraper.checkMultiple(checks);
   }
 }
 

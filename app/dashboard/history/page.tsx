@@ -48,12 +48,12 @@ export default function HistoryPage() {
             <Link href="/dashboard">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Geri
+                返回
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Geçmiş</h1>
-              <p className="text-sm text-gray-500">Randevu ve bildirim geçmişi</p>
+              <h1 className="text-2xl font-bold text-gray-900">历史记录</h1>
+              <p className="text-sm text-gray-500">预约和通知历史</p>
             </div>
           </div>
         </div>
@@ -67,14 +67,14 @@ export default function HistoryPage() {
             onClick={() => setActiveTab('appointments')}
           >
             <Calendar className="w-4 h-4 mr-2" />
-            Randevular ({appointments.length})
+            预约 ({appointments.length})
           </Button>
           <Button
             variant={activeTab === 'notifications' ? 'default' : 'outline'}
             onClick={() => setActiveTab('notifications')}
           >
             <Bell className="w-4 h-4 mr-2" />
-            Bildirimler ({notifications.length})
+            通知 ({notifications.length})
           </Button>
         </div>
 
@@ -82,9 +82,9 @@ export default function HistoryPage() {
         {activeTab === 'appointments' && (
           <Card>
             <CardHeader>
-              <CardTitle>Bulunan Randevular</CardTitle>
+              <CardTitle>已找到的预约</CardTitle>
               <CardDescription>
-                Sistemin bulduğu tüm randevular
+                系统找到的所有预约
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -111,32 +111,32 @@ export default function HistoryPage() {
                           </div>
                           <div className="text-right">
                             <Badge variant={apt.notified ? "default" : "secondary"}>
-                              {apt.notified ? 'Bildirildi' : 'Bekliyor'}
+                              {apt.notified ? '已通知' : '待处理'}
                             </Badge>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
-                            <span className="text-gray-500">Randevu Tarihi:</span>
+                            <span className="text-gray-500">预约日期:</span>
                             <p className="font-medium">
                               {formatDateTR(apt.appointment_date)}
                             </p>
                           </div>
                           <div>
-                            <span className="text-gray-500">Kategori:</span>
+                            <span className="text-gray-500">类别:</span>
                             <p className="font-medium">{apt.visa_category}</p>
                           </div>
                           {apt.visa_subcategory && (
                             <div>
-                              <span className="text-gray-500">Alt Kategori:</span>
+                              <span className="text-gray-500">子类别:</span>
                               <p className="font-medium">{apt.visa_subcategory}</p>
                             </div>
                           )}
                           <div>
-                            <span className="text-gray-500">Bulunma Tarihi:</span>
+                            <span className="text-gray-500">发现日期:</span>
                             <p className="font-medium">
-                              {new Date(apt.created_at).toLocaleDateString('tr-TR')}
+                              {new Date(apt.created_at).toLocaleDateString('zh-CN')}
                             </p>
                           </div>
                         </div>
@@ -149,7 +149,7 @@ export default function HistoryPage() {
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:underline text-sm font-medium"
                             >
-                              Randevu Almak İçin Tıklayın →
+                              点击预约 →
                             </a>
                           </div>
                         )}
@@ -160,9 +160,9 @@ export default function HistoryPage() {
               ) : (
                 <div className="text-center py-12">
                   <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">Henüz randevu bulunamadı</p>
+                  <p className="text-gray-500">暂未找到预约</p>
                   <p className="text-sm text-gray-400 mt-2">
-                    Kontrol başlattığınızda bulunan randevular burada görünecek
+                    开始检查后，找到的预约将显示在这里
                   </p>
                 </div>
               )}
@@ -174,9 +174,9 @@ export default function HistoryPage() {
         {activeTab === 'notifications' && (
           <Card>
             <CardHeader>
-              <CardTitle>Bildirim Geçmişi</CardTitle>
+              <CardTitle>通知历史</CardTitle>
               <CardDescription>
-                Gönderilen tüm bildirimler
+                已发送的所有通知
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -196,10 +196,10 @@ export default function HistoryPage() {
                           {notif.success ? (
                             <CheckCircle2 className="w-4 h-4 text-green-600" />
                           ) : (
-                            <span className="text-red-600 text-sm">Başarısız</span>
+                            <span className="text-red-600 text-sm">失败</span>
                           )}
                           <span className="text-sm text-gray-500">
-                            {new Date(notif.sent_at).toLocaleString('tr-TR')}
+                            {new Date(notif.sent_at).toLocaleString('zh-CN')}
                           </span>
                         </div>
                       </div>
@@ -210,7 +210,7 @@ export default function HistoryPage() {
                       )}
                       {notif.error_message && (
                         <p className="text-sm text-red-600 mt-2">
-                          Hata: {notif.error_message}
+                          错误: {notif.error_message}
                         </p>
                       )}
                     </div>
@@ -219,9 +219,9 @@ export default function HistoryPage() {
               ) : (
                 <div className="text-center py-12">
                   <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">Henüz bildirim gönderilmedi</p>
+                  <p className="text-gray-500">暂未发送通知</p>
                   <p className="text-sm text-gray-400 mt-2">
-                    Randevu bulunduğunda bildirimler burada görünecek
+                    找到预约时通知将显示在这里
                   </p>
                 </div>
               )}

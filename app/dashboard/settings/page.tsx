@@ -5,7 +5,7 @@ import { Save, TestTube, ArrowLeft, Bell, Globe, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { COUNTRIES, CITIES } from '@/lib/constants/countries';
+import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
 
@@ -60,9 +60,9 @@ export default function SettingsPage() {
       });
 
       if (response.ok) {
-        alert('Ayarlar kaydedildi!');
+        alert('设置已保存!');
       } else {
-        alert('Kaydetme hatası!');
+        alert('保存失败!');
       }
     } catch (error) {
       console.error('Save error:', error);
@@ -74,7 +74,7 @@ export default function SettingsPage() {
 
   const handleTestTelegram = async () => {
     if (!preferences.telegram_chat_id || !botToken) {
-      alert('Lütfen bot token ve chat ID girin!');
+      alert('请输入Bot Token和Chat ID!');
       return;
     }
 
@@ -90,15 +90,15 @@ export default function SettingsPage() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
-        alert('✅ Test bildirimi gönderildi! Telegram\'ı kontrol edin.');
+        alert('✅ 测试通知已发送! 请检查Telegram。');
       } else {
-        alert(`❌ Hata: ${data.error}`);
+        alert(`❌ 错误: ${data.error}`);
       }
     } catch (error) {
       console.error('Test error:', error);
-      alert('Test sırasında hata oluştu!');
+      alert('测试过程中发生错误!');
     } finally {
       setTesting(false);
     }
@@ -131,12 +131,12 @@ export default function SettingsPage() {
             <Link href="/dashboard">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Geri
+                返回
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Ayarlar</h1>
-              <p className="text-sm text-gray-500">Tercihlerinizi yapılandırın</p>
+              <h1 className="text-2xl font-bold text-gray-900">设置</h1>
+              <p className="text-sm text-gray-500">配置您的偏好设置</p>
             </div>
           </div>
         </div>
@@ -149,10 +149,10 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Globe className="w-5 h-5" />
-                Ülke Seçimi
+                国家选择
               </CardTitle>
               <CardDescription>
-                Randevu kontrolü yapmak istediğiniz ülkeleri seçin
+                选择您要检查预约的国家
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -161,11 +161,10 @@ export default function SettingsPage() {
                   <button
                     key={country.code}
                     onClick={() => toggleCountry(country.code)}
-                    className={`p-4 rounded-lg border-2 transition-all ${
-                      preferences.countries.includes(country.code)
-                        ? 'border-blue-600 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`p-4 rounded-lg border-2 transition-all ${preferences.countries.includes(country.code)
+                      ? 'border-blue-600 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                      }`}
                   >
                     <div className="text-3xl mb-2">{country.flag}</div>
                     <div className="text-sm font-medium">{country.nameTr}</div>
@@ -173,37 +172,36 @@ export default function SettingsPage() {
                 ))}
               </div>
               <p className="text-sm text-gray-500 mt-4">
-                Seçili: {preferences.countries.length} ülke
+                已选: {preferences.countries.length} 个国家
               </p>
             </CardContent>
           </Card>
 
-          {/* Şehir Seçimi */}
+          {/* UK城市选择 */}
           <Card>
             <CardHeader>
-              <CardTitle>Şehir Seçimi</CardTitle>
+              <CardTitle>🇬🇧 UK城市选择</CardTitle>
               <CardDescription>
-                Randevu kontrolü yapmak istediğiniz şehirleri seçin
+                选择您要检查预约的英国城市
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {CITIES.map((city) => (
+                {UK_CITIES.map((city) => (
                   <button
                     key={city.code}
                     onClick={() => toggleCity(city.code)}
-                    className={`p-4 rounded-lg border-2 transition-all ${
-                      preferences.cities.includes(city.code)
-                        ? 'border-blue-600 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`p-4 rounded-lg border-2 transition-all ${preferences.cities.includes(city.code)
+                      ? 'border-purple-600 bg-purple-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                      }`}
                   >
-                    <div className="text-sm font-medium">{city.nameTr}</div>
+                    <div className="text-sm font-medium">{city.nameEn}</div>
                   </button>
                 ))}
               </div>
               <p className="text-sm text-gray-500 mt-4">
-                Seçili: {preferences.cities.length} şehir
+                已选: {preferences.cities.length} 个城市
               </p>
             </CardContent>
           </Card>
@@ -213,25 +211,23 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="w-5 h-5" />
-                Telegram Bildirimleri
+                Telegram通知
               </CardTitle>
               <CardDescription>
-                Müsait randevu bulunduğunda Telegram'dan bildirim alın
+                有可用预约时通过Telegram接收通知
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Telegram Bildirimleri</span>
+                <span className="text-sm font-medium">Telegram通知</span>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    preferences.telegram_enabled ? 'bg-blue-600' : 'bg-gray-200'
-                  }`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${preferences.telegram_enabled ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      preferences.telegram_enabled ? 'translate-x-6' : 'translate-x-1'
-                    }`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${preferences.telegram_enabled ? 'translate-x-6' : 'translate-x-1'
+                      }`}
                   />
                 </button>
               </div>
@@ -250,7 +246,7 @@ export default function SettingsPage() {
                       className="w-full px-3 py-2 border rounded-lg"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      @BotFather'dan aldığınız token
+                      请输入从@BotFather获取的token
                     </p>
                   </div>
 
@@ -266,7 +262,7 @@ export default function SettingsPage() {
                       className="w-full px-3 py-2 border rounded-lg"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Bot ile konuşup /start gönderdikten sonra getUpdates ile alın
+                      与Bot对话并发送/start后，通过getUpdates获取
                     </p>
                   </div>
 
@@ -279,12 +275,12 @@ export default function SettingsPage() {
                     {testing ? (
                       <>
                         <Clock className="mr-2 h-4 w-4 animate-spin" />
-                        Test Ediliyor...
+                        测试中...
                       </>
                     ) : (
                       <>
                         <TestTube className="mr-2 h-4 w-4" />
-                        Test Bildirimi Gönder
+                        发送测试通知
                       </>
                     )}
                   </Button>
@@ -298,25 +294,23 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                Otomatik Kontrol
+                自动检查
               </CardTitle>
               <CardDescription>
-                Belirli aralıklarla otomatik randevu kontrolü
+                定时自动检查预约
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Otomatik Kontrol</span>
+                <span className="text-sm font-medium">自动检查</span>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, auto_check_enabled: !prev.auto_check_enabled }))}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    preferences.auto_check_enabled ? 'bg-blue-600' : 'bg-gray-200'
-                  }`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${preferences.auto_check_enabled ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      preferences.auto_check_enabled ? 'translate-x-6' : 'translate-x-1'
-                    }`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${preferences.auto_check_enabled ? 'translate-x-6' : 'translate-x-1'
+                      }`}
                   />
                 </button>
               </div>
@@ -324,7 +318,7 @@ export default function SettingsPage() {
               {preferences.auto_check_enabled && (
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Kontrol Sıklığı (dakika)
+                    检查频率(分钟)
                   </label>
                   <input
                     type="number"
@@ -335,7 +329,7 @@ export default function SettingsPage() {
                     className="w-full px-3 py-2 border rounded-lg"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Minimum 5, maksimum 60 dakika
+                    最少5分钟，最多60分钟
                   </p>
                 </div>
               )}
@@ -352,12 +346,12 @@ export default function SettingsPage() {
             {saving ? (
               <>
                 <Clock className="mr-2 h-4 w-4 animate-spin" />
-                Kaydediliyor...
+                保存中...
               </>
             ) : (
               <>
                 <Save className="mr-2 h-4 w-4" />
-                Ayarları Kaydet
+                保存设置
               </>
             )}
           </Button>
