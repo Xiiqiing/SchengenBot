@@ -89,12 +89,11 @@ export async function GET(request: NextRequest) {
         if (preferences?.telegram_enabled && preferences?.telegram_chat_id) {
           const botToken = process.env.TELEGRAM_BOT_TOKEN;
           if (botToken) {
-            const statusMsg = result.isAvailable
-              ? `🎉 <b>手动检查: ${city} -> ${country}</b>\n✅ 发现 ${result.totalSlots} 个可用名额!`
-              : `🔍 <b>手动检查: ${city} -> ${country}</b>\n❌ 暂无可用名额。`;
-
-            // Fire and forget (don't await to block response)
-            notificationService.sendCheckStatus(preferences.telegram_chat_id, botToken, statusMsg);
+            if (result.isAvailable) {
+              const statusMsg = `🎉 <b>手动检查: ${city} -> ${country}</b>\n✅ 发现 ${result.totalSlots} 个可用名额!`;
+              // Fire and forget (don't await to block response)
+              notificationService.sendCheckStatus(preferences.telegram_chat_id, botToken, statusMsg);
+            }
           }
         }
       } catch (err) {
