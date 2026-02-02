@@ -15,7 +15,7 @@ jobs:
           # You must add this secret in GitHub Repo Settings -> Secrets -> Actions
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           # REPLACE TEHIS WITH YOUR ACTUAL VERCEL DOMAIN
-          VERCEL_URL: "https://schengen-6ntkdfkx5-xiiqiings-projects.vercel.app"
+          VERCEL_URL: "https://schengen-bot.vercel.app"
         run: |
           echo "Triggering Vercel Cron at $VERCEL_URL/api/cron/check"
           # Capture both HTTP code and content
