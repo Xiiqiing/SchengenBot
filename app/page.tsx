@@ -97,32 +97,9 @@ export default function LandingPage() {
         </div>
       </div>
 
-
-
-      {/* Countries */}
-      <div className="container mx-auto px-4 py-16 bg-white">
-        <h2 className="text-3xl font-bold text-center mb-12">国家</h2>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
-          {COUNTRIES.map((country) => (
-            <div
-              key={country.code}
-              className="flex flex-col items-center p-4 rounded-lg border hover:border-blue-500 hover:shadow-md transition-all"
-            >
-              <span className="text-4xl mb-2">{country.flag}</span>
-              <span className="text-sm font-medium text-center">{country.nameTr}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-
       {/* Footer */}
       <footer className="border-t py-8">
         <div className="container mx-auto px-4 text-center text-gray-600">
-          <p className="mb-2">
-            Made by XQ.
-          </p>
           <p className="text-sm">
             仅供教育学习目的。
           </p>
