@@ -42,76 +42,11 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Features */}
-      <div className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Özellikler</h2>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <Card>
-            <CardHeader>
-              <Bell className="w-10 h-10 text-blue-600 mb-4" />
-              <CardTitle>Anında Bildirim</CardTitle>
-              <CardDescription>
-                Müsait randevu bulunduğunda Telegram üzerinden anında bildirim alın
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <Clock className="w-10 h-10 text-blue-600 mb-4" />
-              <CardTitle>Otomatik Kontrol</CardTitle>
-              <CardDescription>
-                5 dakikada bir otomatik kontrol. Siz uyurken bile çalışır
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <Globe className="w-10 h-10 text-blue-600 mb-4" />
-              <CardTitle>17 Ülke Desteği</CardTitle>
-              <CardDescription>
-                Tüm popüler Schengen ülkeleri için randevu takibi
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CheckCircle2 className="w-10 h-10 text-blue-600 mb-4" />
-              <CardTitle>Kolay Kurulum</CardTitle>
-              <CardDescription>
-                3 adımda kurulum. Telegram bot ile hemen başlayın
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <Shield className="w-10 h-10 text-blue-600 mb-4" />
-              <CardTitle>Güvenli</CardTitle>
-              <CardDescription>
-                Verileriniz Supabase'de güvenle saklanır. GDPR uyumlu
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <Zap className="w-10 h-10 text-blue-600 mb-4" />
-              <CardTitle>Hızlı</CardTitle>
-              <CardDescription>
-                Next.js 15 ve React 19 ile ultra hızlı performans
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      </div>
 
       {/* Countries */}
       <div className="container mx-auto px-4 py-16 bg-white">
-        <h2 className="text-3xl font-bold text-center mb-12">Desteklenen Ülkeler</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">国家</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
           {COUNTRIES.map((country) => (
@@ -126,23 +61,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* CTA */}
-      <div className="container mx-auto px-4 py-16">
-        <Card className="max-w-3xl mx-auto bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl mb-4">Hemen Başlayın</CardTitle>
-            <CardDescription className="text-blue-100 text-lg">
-              Ücretsiz hesap oluşturun ve randevu takibine başlayın
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center">
-            <Button size="lg" variant="secondary" onClick={handleGetStarted} className="text-lg px-8">
-              <Bell className="mr-2 h-5 w-5" />
-              Ücretsiz Başla
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Footer */}
       <footer className="border-t py-8">
