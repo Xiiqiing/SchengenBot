@@ -151,9 +151,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-card shadow-sm z-10 relative">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -186,7 +186,7 @@ export default function DashboardPage() {
       <main className="container mx-auto px-4 py-8">
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card>
+          <Card className="border-none shadow-md bg-surface-container">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">总检查次数</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -196,7 +196,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-md bg-surface-container">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">已找到预约</CardTitle>
               <CheckCircle2 className="h-4 w-4 text-green-600" />
@@ -208,7 +208,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-md bg-surface-container">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">通知</CardTitle>
               <Bell className="h-4 w-4 text-blue-600" />
@@ -220,7 +220,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-md bg-surface-container">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">自动检查</CardTitle>
               <Clock className="h-4 w-4 text-orange-600" />
@@ -237,7 +237,7 @@ export default function DashboardPage() {
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-2 space-y-6">
             {/* UK Appointment Check */}
-            <Card className="border-2 border-purple-200 bg-purple-50/30">
+            <Card className="border-none shadow-xl bg-secondary/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   🇬🇧 英国签证预约检查
@@ -325,7 +325,7 @@ export default function DashboardPage() {
                       return (
                         <div
                           key={idx}
-                          className={`p-4 rounded-lg border ${result.isAvailable ? 'bg-green-50 border-green-200' : result.error ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}`}
+                          className={`p-4 rounded-2xl border-none shadow-sm ${result.isAvailable ? 'bg-green-50' : result.error ? 'bg-red-50' : 'bg-white'}`}
                         >
                           <div className="flex items-center justify-between mb-3">
                             <span className="font-semibold text-lg">
@@ -343,7 +343,7 @@ export default function DashboardPage() {
                               </p>
 
                               {result.slots?.slice(0, 3).map((slot: any, i: number) => (
-                                <div key={i} className="text-sm bg-white p-3 rounded border">
+                                <div key={i} className="text-sm bg-white/50 p-3 rounded-xl border-none shadow-sm">
                                   <p className="font-medium">📅 {slot.date}</p>
                                   <p className="text-gray-600">{slot.slotsAvailable} 个名额 - 发现于 {slot.lastSeen}</p>
                                 </div>
@@ -385,7 +385,7 @@ export default function DashboardPage() {
 
           {/* Right Panel - Recent Appointments */}
           <div className="space-y-6">
-            <Card>
+            <Card className="border-none shadow-md">
               <CardHeader>
                 <CardTitle>最近找到的预约</CardTitle>
                 <CardDescription>最近10条记录</CardDescription>
@@ -394,7 +394,7 @@ export default function DashboardPage() {
                 <div className="space-y-3 max-h-[600px] overflow-y-auto">
                   {appointments.length > 0 ? (
                     appointments.map((apt) => (
-                      <div key={apt.id} className="p-3 rounded-lg border text-sm">
+                      <div key={apt.id} className="p-3 rounded-xl bg-secondary/20 border-none shadow-sm text-sm">
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-medium">
                             {COUNTRIES.find(c => c.code === apt.country)?.flag} {apt.country}
