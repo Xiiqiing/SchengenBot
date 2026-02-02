@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, CheckCircle2, XCircle, Clock, TrendingUp, Settings, History } from 'lucide-react';
+import { Bell, CheckCircle2, Clock, TrendingUp, Settings, History } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { COUNTRIES, CITIES, UK_CITIES, formatDateTR } from '@/lib/constants/countries';
+import { COUNTRIES, UK_CITIES, formatDateTR } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
 
@@ -14,14 +14,11 @@ export default function DashboardPage() {
   const [preferences, setPreferences] = useState<any>(null);
   const [appointments, setAppointments] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
-  const [checking, setChecking] = useState(false);
-  const [results, setResults] = useState<any[]>([]);
 
   // UK appointment state
   const [checkingUK, setCheckingUK] = useState(false);
-  const [ukResults, setUkResults] = useState<any[]>([]); // Changed to array for multiple results
+  const [ukResults, setUkResults] = useState<any[]>([]);
   const [ukCheckCount, setUkCheckCount] = useState(() => {
-    // Load from localStorage on mount
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(`ukCheckCount_${getOrCreateUserId()}`);
       return saved ? parseInt(saved, 10) : 0;
@@ -42,21 +39,18 @@ export default function DashboardPage() {
 
   const loadData = async () => {
     try {
-      // Tercihleri yükle
       const prefsRes = await fetch(`/api/preferences?userId=${userId}`);
       if (prefsRes.ok) {
         const data = await prefsRes.json();
         setPreferences(data.preferences);
       }
 
-      // Randevuları yükle
       const apptsRes = await fetch(`/api/appointments?userId=${userId}&limit=10`);
       if (apptsRes.ok) {
         const data = await apptsRes.json();
         setAppointments(data.appointments);
       }
 
-      // İstatistikleri yükle
       const statsRes = await fetch(`/api/stats?userId=${userId}`);
       if (statsRes.ok) {
         const data = await statsRes.json();
@@ -67,45 +61,15 @@ export default function DashboardPage() {
     }
   };
 
-  const handleManualCheck = async () => {
-    if (!preferences?.countries?.length || !preferences?.cities?.length) {
-      alert('Lütfen önce ayarlardan ülke ve şehir seçin!');
-      return;
-    }
-
-    setChecking(true);
-    setResults([]);
-
-    try {
-      const response = await fetch('/api/appointments/check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          countries: preferences.countries,
-          cities: preferences.cities,
-          userId: userId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setResults(data.results);
-        await loadData(); // Verileri yenile
-      }
-    } catch (error) {
-      console.error('Check error:', error);
-      alert('Kontrol sırasında hata oluştu!');
-    } finally {
-      setChecking(false);
-    }
-  };
-
   // UK check handler - uses selected cities and countries from preferences
   const handleUKCheck = async () => {
-    // Use preferences or default to Manchester/Portugal
     const cities = preferences?.cities?.length > 0 ? preferences.cities : ['manchester'];
     const countries = preferences?.countries?.length > 0 ? preferences.countries : ['Portugal'];
+
+    if (cities.length === 0 || countries.length === 0) {
+      alert('请先在设置中选择国家和城市!');
+      return;
+    }
 
     setCheckingUK(true);
     setUkResults([]);
@@ -113,7 +77,6 @@ export default function DashboardPage() {
     try {
       const results: any[] = [];
 
-      // Check all city/country combinations
       for (const city of cities) {
         for (const country of countries) {
           try {
@@ -124,11 +87,31 @@ export default function DashboardPage() {
               results.push({
                 ...data.result,
                 city,
-                country
+                country,
+                checkedAt: data.checked_at
+              });
+            } else {
+              results.push({
+                city,
+                country,
+                isAvailable: false,
+                totalSlots: 0,
+                slots: [],
+                lastChecked: data.error || 'Error',
+                error: true
               });
             }
           } catch (err) {
             console.error(`Error checking ${city}/${country}:`, err);
+            results.push({
+              city,
+              country,
+              isAvailable: false,
+              totalSlots: 0,
+              slots: [],
+              lastChecked: 'Network error',
+              error: true
+            });
           }
         }
       }
@@ -137,7 +120,7 @@ export default function DashboardPage() {
       setUkCheckCount(prev => prev + 1);
     } catch (error) {
       console.error('UK Check error:', error);
-      alert('UK check failed!');
+      alert('检查失败!');
     } finally {
       setCheckingUK(false);
     }
@@ -227,90 +210,70 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Sol Panel - Kontrol */}
+          {/* Main Panel - UK Check */}
           <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>手动检查</CardTitle>
-                <CardDescription>
-                  立即检查您选择的国家的预约
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {preferences ? (
-                  <>
-                    <div>
-                      <p className="text-sm font-medium mb-2">已选国家:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {preferences.countries?.map((code: string) => {
-                          const country = COUNTRIES.find(c => c.code === code);
-                          return (
-                            <Badge key={code} variant="outline">
-                              {country?.flag} {country?.nameTr}
-                            </Badge>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="text-sm font-medium mb-2">已选城市:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {preferences.cities?.map((code: string) => {
-                          const city = CITIES.find(c => c.code === code);
-                          return (
-                            <Badge key={code} variant="outline">
-                              {city?.nameTr}
-                            </Badge>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <Button
-                      onClick={handleManualCheck}
-                      disabled={checking}
-                      className="w-full"
-                      size="lg"
-                    >
-                      {checking ? (
-                        <>
-                          <Clock className="mr-2 h-4 w-4 animate-spin" />
-                          检查中...
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="mr-2 h-4 w-4" />
-                          开始检查
-                        </>
-                      )}
-                    </Button>
-                  </>
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-gray-500 mb-4">尚未设置偏好</p>
-                    <Link href="/dashboard/settings">
-                      <Button>
-                        <Settings className="mr-2 h-4 w-4" />
-                        前往设置
-                      </Button>
-                    </Link>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* UK Appointment Check - Dynamic cities/countries */}
+            {/* UK Appointment Check */}
             <Card className="border-2 border-purple-200 bg-purple-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   🇬🇧 UK Appointment Check
                 </CardTitle>
                 <CardDescription>
-                  检查所选城市和国家的签证预约.
+                  检查所选城市和国家的签证预约
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Show selected countries and cities before checking */}
+                {preferences ? (
+                  <>
+                    <div>
+                      <p className="text-sm font-medium mb-2">已选国家:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {preferences.countries?.length > 0 ? (
+                          preferences.countries.map((code: string) => {
+                            const country = COUNTRIES.find(c => c.code === code);
+                            return (
+                              <Badge key={code} variant="outline">
+                                {country?.flag} {country?.nameTr || code}
+                              </Badge>
+                            );
+                          })
+                        ) : (
+                          <span className="text-sm text-gray-500">默认: 🇵🇹 Portugal</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-medium mb-2">已选城市:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {preferences.cities?.length > 0 ? (
+                          preferences.cities.map((code: string) => {
+                            const city = UK_CITIES.find(c => c.code === code);
+                            return (
+                              <Badge key={code} variant="outline">
+                                {city?.nameEn || code}
+                              </Badge>
+                            );
+                          })
+                        ) : (
+                          <span className="text-sm text-gray-500">默认: Manchester</span>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-gray-500 mb-4">尚未设置偏好，将使用默认设置 (Manchester → Portugal)</p>
+                    <Link href="/dashboard/settings">
+                      <Button variant="outline">
+                        <Settings className="mr-2 h-4 w-4" />
+                        前往设置
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+
                 <Button
                   onClick={handleUKCheck}
                   disabled={checkingUK}
@@ -325,12 +288,12 @@ export default function DashboardPage() {
                   ) : (
                     <>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
-                      手动检查 UK 预约
+                      开始检查
                     </>
                   )}
                 </Button>
 
-                {/* UK Results Display - multiple city/country combinations */}
+                {/* UK Results Display */}
                 {ukResults.length > 0 && (
                   <div className="space-y-3">
                     {ukResults.map((result, idx) => {
@@ -338,11 +301,11 @@ export default function DashboardPage() {
                       return (
                         <div
                           key={idx}
-                          className={`p-4 rounded-lg border ${result.isAvailable ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}
+                          className={`p-4 rounded-lg border ${result.isAvailable ? 'bg-green-50 border-green-200' : result.error ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}`}
                         >
                           <div className="flex items-center justify-between mb-3">
                             <span className="font-semibold text-lg">
-                              {countryInfo?.flag || '�'} {result.country} - {result.city}
+                              {countryInfo?.flag || '🏳️'} {result.country} - {result.city}
                             </span>
                             <Badge variant={result.isAvailable ? "default" : "secondary"}>
                               {result.isAvailable ? `${result.totalSlots} Slots` : 'No Slots'}
@@ -381,7 +344,9 @@ export default function DashboardPage() {
                             <div className="text-sm text-gray-600">
                               <p>❌ No appointments available</p>
                               {result.lastChecked && (
-                                <p className="mt-1 text-xs text-gray-400">最后检查: {result.lastChecked}</p>
+                                <p className={`mt-1 text-xs ${result.error ? 'text-red-500' : 'text-gray-400'}`}>
+                                  最后检查: {result.lastChecked}
+                                </p>
                               )}
                             </div>
                           )}
@@ -392,60 +357,9 @@ export default function DashboardPage() {
                 )}
               </CardContent>
             </Card>
-
-            {/* Sonuçlar */}
-            {results.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>检查结果</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {results.map((result, idx) => (
-                      <div key={idx} className="p-4 rounded-lg border">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl">
-                              {COUNTRIES.find(c => c.code === result.country)?.flag}
-                            </span>
-                            <span className="font-semibold">
-                              {COUNTRIES.find(c => c.code === result.country)?.nameTr} - {result.city}
-                            </span>
-                          </div>
-                          <Badge variant={result.appointments.length > 0 ? "default" : "secondary"}>
-                            {result.appointments.length} 个预约
-                          </Badge>
-                        </div>
-
-                        {result.appointments.length > 0 ? (
-                          <div className="space-y-2 mt-3">
-                            {result.appointments.map((apt: any, i: number) => (
-                              <div key={i} className="text-sm bg-green-50 p-3 rounded">
-                                <p className="font-medium">📅 {formatDateTR(apt.appointment_date)}</p>
-                                <p className="text-gray-600">{apt.center_name}</p>
-                                <a
-                                  href={apt.book_now_link}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 hover:underline"
-                                >
-                                  立即预约 →
-                                </a>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-sm text-gray-500">暂无可用预约</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
 
-          {/* Sağ Panel - Son Randevular */}
+          {/* Right Panel - Recent Appointments */}
           <div className="space-y-6">
             <Card>
               <CardHeader>
