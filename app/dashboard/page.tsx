@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Bell, CheckCircle2, Clock, TrendingUp, Settings, History } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bell, CheckCircle2, Clock, TrendingUp, Settings, History, Zap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -151,31 +151,31 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-on-surface">
       {/* Header */}
-      <header className="bg-card shadow-sm z-10 relative">
+      <header className="bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline/10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Bell className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+                <Bell className="w-7 h-7 text-on-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-sm text-gray-500">Schengen Visa Appointment Bot</p>
+                <h1 className="text-2xl font-black tracking-tight">控制中心</h1>
+                <p className="text-sm font-medium text-on-surface-variant">Schengen Bot Dashboard</p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <Link href="/dashboard/history">
-                <Button variant="outline" size="sm">
+                <Button variant="ghost" className="m3-button-pill bg-surface-variant/50 text-on-surface-variant hover:bg-surface-variant">
                   <History className="w-4 h-4 mr-2" />
                   历史记录
                 </Button>
               </Link>
               <Link href="/dashboard/settings">
-                <Button variant="outline" size="sm">
+                <Button className="m3-button-pill bg-primary text-on-primary hover:bg-primary/90 shadow-md">
                   <Settings className="w-4 h-4 mr-2" />
-                  设置
+                  偏好设置
                 </Button>
               </Link>
             </div>
@@ -183,116 +183,84 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="border-none shadow-md bg-surface-container">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">总检查次数</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{ukCheckCount + (stats?.total_appointments || 0)}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-md bg-surface-container">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">已找到预约</CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                {appointments.length}
+      <main className="container mx-auto px-4 py-10 max-w-7xl">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {[
+            { label: '累计检查', value: ukCheckCount + (stats?.total_appointments || 0), icon: TrendingUp, color: 'text-primary' },
+            { label: '已发现名额', value: appointments.length, icon: CheckCircle2, color: 'text-tertiary' },
+            { label: '已推送通知', value: stats?.total_notifications || 0, icon: Bell, color: 'text-secondary' },
+            { label: '自动监控', value: preferences?.auto_check_enabled ? '已激活' : '待开启', icon: Clock, color: preferences?.auto_check_enabled ? 'text-green-600' : 'text-on-surface-variant/50' }
+          ].map((stat, i) => (
+            <Card key={i} className="m3-card p-6 bg-surface-variant/20 hover:bg-surface-variant/40 border-none">
+              <div className="flex flex-row items-center justify-between mb-4">
+                <span className="text-sm font-bold uppercase tracking-widest text-on-surface-variant/70">{stat.label}</span>
+                <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-md bg-surface-container">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">通知</CardTitle>
-              <Bell className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
-                {stats?.total_notifications || 0}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-md bg-surface-container">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">自动检查</CardTitle>
-              <Clock className="h-4 w-4 text-orange-600" />
-            </CardHeader>
-            <CardContent>
-              <Badge variant={preferences?.auto_check_enabled ? "default" : "secondary"}>
-                {preferences?.auto_check_enabled ? '已开启' : '已关闭'}
-              </Badge>
-            </CardContent>
-          </Card>
+              <div className="text-3xl font-black">{stat.value}</div>
+            </Card>
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Panel - UK Check */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* UK Appointment Check */}
-            <Card className="border-none shadow-xl bg-secondary/30">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  🇬🇧 英国签证预约检查
+          <div className="lg:col-span-8 space-y-8">
+            <Card className="m3-card p-1 bg-surface-variant/10 border border-outline/10">
+              <CardHeader className="p-6 pb-2">
+                <CardTitle className="text-2xl font-black flex items-center gap-3">
+                  🇬🇧 英国中心实时检查
                 </CardTitle>
-                <CardDescription>
-                  检查所选城市和国家的签证预约
+                <CardDescription className="text-base font-medium text-on-surface-variant/70">
+                  即时检索选定城市与国家的最新预约槽位
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Show selected countries and cities before checking */}
+              <CardContent className="p-6 pt-2 space-y-6">
                 {preferences ? (
-                  <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-surface rounded-[24px] border border-outline/10 shadow-sm">
                     <div>
-                      <p className="text-sm font-medium mb-2">已选国家:</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">监控国家</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.countries?.length > 0 ? (
                           preferences.countries.map((code: string) => {
                             const country = COUNTRIES.find(c => c.code === code);
                             return (
-                              <Badge key={code} variant="outline">
-                                {country?.flag} {country?.nameTr || code}
-                              </Badge>
+                              <div key={code} className="px-3 py-1.5 bg-primary-container text-on-primary-container rounded-full text-xs font-bold flex items-center gap-1.5">
+                                <span>{country?.flag}</span>
+                                {country?.nameTr || code}
+                              </div>
                             );
                           })
                         ) : (
-                          <span className="text-sm text-gray-500">默认: 🇵🇹 Portugal</span>
+                          <div className="px-3 py-1.5 bg-surface-variant/50 text-on-surface-variant rounded-full text-xs font-bold">PT Portugal</div>
                         )}
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-sm font-medium mb-2">已选城市:</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">目标城市</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.cities?.length > 0 ? (
                           preferences.cities.map((code: string) => {
                             const city = UK_CITIES.find(c => c.code === code);
                             return (
-                              <Badge key={code} variant="outline">
+                              <div key={code} className="px-3 py-1.5 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">
                                 {city?.nameEn || code}
-                              </Badge>
+                              </div>
                             );
                           })
                         ) : (
-                          <span className="text-sm text-gray-500">默认: Manchester</span>
+                          <div className="px-3 py-1.5 bg-surface-variant/50 text-on-surface-variant rounded-full text-xs font-bold">Manchester</div>
                         )}
                       </div>
                     </div>
-                  </>
+                  </div>
                 ) : (
-                  <div className="text-center py-4">
-                    <p className="text-gray-500 mb-4">尚未设置偏好，将使用默认设置 (Manchester → Portugal)</p>
+                  <div className="text-center py-12 bg-surface rounded-[24px] border-2 border-dashed border-outline/20">
+                    <p className="text-on-surface-variant font-medium mb-6">尚未设置偏好，点击下方按钮开始配置</p>
                     <Link href="/dashboard/settings">
-                      <Button variant="outline">
+                      <Button className="m3-button-pill bg-secondary text-on-secondary">
                         <Settings className="mr-2 h-4 w-4" />
-                        前往设置
+                        立即配置
                       </Button>
                     </Link>
                   </div>
@@ -301,75 +269,78 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleUKCheck}
                   disabled={checkingUK}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                  size="lg"
+                  className={`w-full h-16 m3-button-pill text-lg font-black tracking-widest transition-all ${checkingUK ? 'bg-surface-variant text-on-surface-variant' : 'bg-primary text-on-primary hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-primary/20'}`}
                 >
                   {checkingUK ? (
                     <>
-                      <Clock className="mr-2 h-4 w-4 animate-spin" />
-                      {checkProgress || '正在检查...'}
+                      <Clock className="mr-3 h-6 w-6 animate-spin" />
+                      {checkProgress || '检索中...'}
                     </>
                   ) : (
                     <>
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      开始检查
+                      <CheckCircle2 className="mr-3 h-6 w-6" />
+                      开始扫描槽位
                     </>
                   )}
                 </Button>
 
                 {/* UK Results Display */}
                 {ukResults.length > 0 && (
-                  <div className="space-y-3">
-                    {ukResults.map((result, idx) => {
+                  <div className="grid gap-4 pt-4">
+                    {ukResults.map((result: any, idx: number) => {
                       const countryInfo = COUNTRIES.find(c => c.code.toLowerCase() === result.country?.toLowerCase());
                       return (
                         <div
                           key={idx}
-                          className={`p-4 rounded-2xl border-none shadow-sm ${result.isAvailable ? 'bg-green-50' : result.error ? 'bg-red-50' : 'bg-white'}`}
+                          className={`p-6 rounded-[24px] transition-all border-l-8 ${result.isAvailable ? 'bg-green-50 border-green-600' : result.error ? 'bg-red-50 border-red-600' : 'bg-surface border-outline/20 shadow-sm'}`}
                         >
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="font-semibold text-lg">
-                              {countryInfo?.flag || '🏳️'} {result.country} - {result.city}
-                            </span>
-                            <Badge variant={result.isAvailable ? "default" : "secondary"}>
-                              {result.isAvailable ? `${result.totalSlots} 个名额` : '无名额'}
-                            </Badge>
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="font-black text-xl flex items-center gap-2">
+                              {countryInfo?.flag || '🏳️'} {result.country}
+                              <span className="text-on-surface-variant/30 px-2">|</span>
+                              {result.city}
+                            </h3>
+                            <div className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter ${result.isAvailable ? 'bg-green-600 text-white' : 'bg-surface-variant/50 text-on-surface-variant'}`}>
+                              {result.isAvailable ? `${result.totalSlots} SLOTS` : 'NO DATA'}
+                            </div>
                           </div>
 
                           {result.isAvailable ? (
-                            <div className="space-y-3">
-                              <p className="text-sm text-green-700 font-medium">
-                                ✅ 发现 {result.totalSlots} 个可用名额 (跨越 {result.totalDays} 天)
+                            <div className="space-y-4">
+                              <p className="text-sm text-green-700 font-black flex items-center gap-2">
+                                <Zap className="w-4 h-4" />
+                                发现 {result.totalSlots} 个名额 ({result.totalDays} 天内)
                               </p>
 
-                              {result.slots?.slice(0, 3).map((slot: any, i: number) => (
-                                <div key={i} className="text-sm bg-white/50 p-3 rounded-xl border-none shadow-sm">
-                                  <p className="font-medium">📅 {slot.date}</p>
-                                  <p className="text-gray-600">{slot.slotsAvailable} 个名额 - 发现于 {slot.lastSeen}</p>
-                                </div>
-                              ))}
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {result.slots?.slice(0, 3).map((slot: any, i: number) => (
+                                  <div key={i} className="bg-white p-4 rounded-2xl shadow-sm border border-green-100">
+                                    <p className="font-black text-on-surface">📅 {slot.date}</p>
+                                    <p className="text-xs text-on-surface-variant font-bold mt-1 uppercase">{slot.slotsAvailable} 个可用</p>
+                                  </div>
+                                ))}
+                              </div>
 
                               {result.bookingLink && (
                                 <a
                                   href={result.bookingLink}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="block w-full text-center py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                                  className="m3-button-pill inline-flex items-center justify-center w-full h-12 bg-green-600 text-white hover:bg-green-700 font-black uppercase tracking-widest text-sm"
                                 >
-                                  前往 VFS 预约 →
+                                  前往外部预约系统 →
                                 </a>
-                              )}
-
-                              {result.lastChecked && (
-                                <p className="text-xs text-gray-400">最后检查: {result.lastChecked}</p>
                               )}
                             </div>
                           ) : (
-                            <div className="text-sm text-gray-600">
-                              <p>❌ 暂无可用名额</p>
+                            <div className="text-on-surface-variant font-medium">
+                              <p className="flex items-center gap-2 text-sm">
+                                <Clock className="w-4 h-4 opacity-50" />
+                                当前时段暂无可用号源
+                              </p>
                               {result.lastChecked && (
-                                <p className={`mt-1 text-xs ${result.error ? 'text-red-500' : 'text-gray-400'}`}>
-                                  最后检查: {result.lastChecked}
+                                <p className={`mt-3 text-[10px] font-black uppercase tracking-widest opacity-40`}>
+                                  LAST SCAN: {result.lastChecked}
                                 </p>
                               )}
                             </div>
@@ -384,42 +355,43 @@ export default function DashboardPage() {
           </div>
 
           {/* Right Panel - Recent Appointments */}
-          <div className="space-y-6">
-            <Card className="border-none shadow-md">
-              <CardHeader>
-                <CardTitle>最近找到的预约</CardTitle>
-                <CardDescription>最近10条记录</CardDescription>
+          <div className="lg:col-span-4 space-y-8">
+            <Card className="m3-card bg-surface border border-outline/10 h-full flex flex-col">
+              <CardHeader className="p-6">
+                <CardTitle className="text-xl font-black">最近捕获记录</CardTitle>
+                <CardDescription className="text-sm font-medium tracking-tight">过去数小时内的发现记录</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              <CardContent className="p-6 pt-0 flex-1 overflow-y-auto max-h-[70vh] custom-scrollbar">
+                <div className="space-y-4">
                   {appointments.length > 0 ? (
-                    appointments.map((apt) => (
-                      <div key={apt.id} className="p-3 rounded-xl bg-secondary/20 border-none shadow-sm text-sm">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium">
+                    appointments.map((apt: any) => (
+                      <div key={apt.id} className="p-4 rounded-2xl bg-surface-variant/10 hover:bg-surface-variant/20 transition-all group">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-black text-sm flex items-center gap-1.5">
                             {COUNTRIES.find(c => c.code === apt.country)?.flag} {apt.country}
                           </span>
-                          <Badge variant="outline" className="text-xs">
+                          <span className="text-[10px] font-black text-on-surface-variant/40 uppercase bg-surface-variant/20 px-2 py-0.5 rounded-full">
                             {formatDateTR(apt.appointment_date)}
-                          </Badge>
+                          </span>
                         </div>
-                        <p className="text-xs text-gray-500">{apt.center_name}</p>
+                        <p className="text-xs font-medium text-on-surface-variant mb-3">{apt.center_name}</p>
                         {apt.book_now_link && (
                           <a
                             href={apt.book_now_link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-blue-600 hover:underline"
+                            className="text-xs font-black text-primary hover:underline flex items-center gap-1"
                           >
-                            立即预约 →
+                            立即预约 <Zap className="w-3 h-3" />
                           </a>
                         )}
                       </div>
                     ))
                   ) : (
-                    <p className="text-center text-gray-500 py-8">
-                      暂未找到预约
-                    </p>
+                    <div className="text-center py-20 opacity-30 select-none">
+                      <History className="w-16 h-16 mx-auto mb-4" />
+                      <p className="font-black uppercase tracking-widest text-sm">空空如也</p>
+                    </div>
                   )}
                 </div>
               </CardContent>

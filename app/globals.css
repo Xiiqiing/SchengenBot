@@ -3,75 +3,120 @@
 @tailwind utilities;
 
 @layer base {
-  /* Material Design 3 - Violet Theme */
   :root {
-    --background: 265 60% 98%;   /* M3 Surface Container Low (Light) */
-    --foreground: 265 10% 10%;   /* M3 On Surface */
+    /* M3 Color System - Violet Baseline */
+    --primary: 265 89% 62%;
+    /* Primary */
+    --on-primary: 0 0% 100%;
+    /* On Primary */
+    --primary-container: 265 89% 90%;
+    /* Primary Container */
+    --on-primary-container: 265 89% 10%;
+    /* On Primary Container */
 
-    --card: 265 60% 99%;         /* M3 Surface Container */
+    --secondary: 265 15% 57%;
+    /* Secondary */
+    --on-secondary: 0 0% 100%;
+    --secondary-container: 265 15% 90%;
+    --on-secondary-container: 265 15% 10%;
+
+    --tertiary: 320 60% 55%;
+    /* Tertiary (Pink accent) */
+    --on-tertiary: 0 0% 100%;
+    --tertiary-container: 320 60% 90%;
+    --on-tertiary-container: 320 60% 10%;
+
+    --error: 0 84% 60%;
+    --on-error: 0 0% 100%;
+    --error-container: 0 84% 92%;
+    --on-error-container: 0 84% 10%;
+
+    /* M3 Surface & Containers */
+    --background: 265 40% 98%;
+    /* M3 SurfaceContainerLow */
+    --foreground: 265 10% 10%;
+    /* M3 On Surface */
+
+    --surface: 265 40% 99%;
+    /* M3 Surface */
+    --on-surface: 265 10% 10%;
+    --surface-variant: 265 10% 92%;
+    /* M3 Surface Variant */
+    --on-surface-variant: 265 10% 30%;
+
+    --card: 265 40% 99%;
+    /* Elevated Surface */
     --card-foreground: 265 10% 10%;
 
-    --popover: 265 60% 99%;
-    --popover-foreground: 265 10% 10%;
+    --border: 265 10% 88%;
+    /* Outline */
+    --outline: 265 10% 80%;
+    /* M3 Outline */
 
-    --primary: 265 80% 60%;      /* M3 Primary (Violet) */
-    --primary-foreground: 0 0% 100%;
+    /* Elevation & Interactive States */
+    --radius: 1.75rem;
+    /* M3 Large (28px) */
+    --radius-full: 9999px;
+    /* Pill Buttons */
 
-    --secondary: 265 20% 90%;    /* M3 Secondary Container */
-    --secondary-foreground: 265 40% 20%;
+    /* M3 Elevation Overlays (Simulated with opacity) */
+    --elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+    --elevation-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
 
-    --muted: 265 10% 94%;
-    --muted-foreground: 265 10% 40%;
-
-    --accent: 265 20% 90%;
-    --accent-foreground: 265 40% 20%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 265 10% 88%;       /* M3 Outline Variant */
-    --input: 265 10% 88%;
-    --ring: 265 80% 60%;
-
-    --radius: 1.5rem;            /* M3 Large Radius */
+    /* M3 State Layers */
+    --state-hover-opacity: 0.08;
+    --state-focus-opacity: 0.12;
+    --state-pressed-opacity: 0.12;
   }
 
   .dark {
-    --background: 265 20% 10%;   /* M3 Surface (Dark) */
+    --primary: 265 100% 75%;
+    --on-primary: 265 89% 10%;
+    --primary-container: 265 89% 25%;
+    --on-primary-container: 265 89% 90%;
+
+    --background: 265 20% 6%;
+    /* M3 SurfaceContainerLowest (Dark) */
     --foreground: 265 10% 90%;
 
-    --card: 265 20% 12%;         /* M3 Surface Container (Dark) */
+    --surface: 265 20% 10%;
+    --on-surface: 265 10% 90%;
+    --surface-variant: 265 10% 20%;
+    --on-surface-variant: 265 10% 75%;
+
+    --card: 265 20% 12%;
     --card-foreground: 265 10% 90%;
 
-    --popover: 265 20% 12%;
-    --popover-foreground: 265 10% 90%;
-
-    --primary: 265 80% 75%;      /* M3 Primary (Light Violet for Dark Mode) */
-    --primary-foreground: 265 40% 10%;
-
-    --secondary: 265 20% 25%;    /* M3 Secondary Container (Dark) */
-    --secondary-foreground: 265 10% 90%;
-
-    --muted: 265 20% 20%;
-    --muted-foreground: 265 10% 60%;
-
-    --accent: 265 20% 25%;
-    --accent-foreground: 265 10% 90%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 265 20% 25%;
-    --input: 265 20% 25%;
-    --ring: 265 80% 75%;
+    --border: 265 10% 20%;
+    --outline: 265 10% 35%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* M3 Pill Button Base */
+  .m3-button-pill {
+    @apply rounded-full px-6 py-2.5 font-medium transition-all;
+  }
+
+  /* M3 Card Base */
+  .m3-card {
+    @apply rounded-[28px] border-none transition-all;
+    box-shadow: var(--elevation-1);
+  }
+
+  .m3-card:hover {
+    box-shadow: var(--elevation-2);
   }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Save, TestTube, ArrowLeft, Bell, Globe, Clock, Mail } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -144,324 +144,252 @@ export default function SettingsPage() {
   };
 
   const toggleCountry = (code: string) => {
-    setPreferences(prev => ({
+    setPreferences((prev: any) => ({
       ...prev,
       countries: prev.countries.includes(code)
-        ? prev.countries.filter(c => c !== code)
+        ? prev.countries.filter((c: string) => c !== code)
         : [...prev.countries, code],
     }));
   };
 
   const toggleCity = (code: string) => {
-    setPreferences(prev => ({
+    setPreferences((prev: any) => ({
       ...prev,
       cities: prev.cities.includes(code)
-        ? prev.cities.filter(c => c !== code)
+        ? prev.cities.filter((c: string) => c !== code)
         : [...prev.cities, code],
     }));
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background text-on-surface">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline/10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/dashboard">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" className="m3-button-pill bg-surface-variant/50 text-on-surface-variant hover:bg-surface-variant">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                返回
+                返回主页
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">设置</h1>
-              <p className="text-sm text-gray-500">配置您的偏好设置</p>
+              <h1 className="text-2xl font-black tracking-tight">偏好设置</h1>
+              <p className="text-sm font-medium text-on-surface-variant">自定您的监控策略与通知方式</p>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="space-y-6">
+      <main className="container mx-auto px-4 py-10 max-w-4xl">
+        <div className="space-y-8">
           {/* Ülke Seçimi */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                国家选择
+          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="text-xl font-black flex items-center gap-2">
+                <Globe className="w-6 h-6 text-primary" />
+                目标国家监控
               </CardTitle>
-              <CardDescription>
-                选择您要检查预约的国家
+              <CardDescription className="text-sm font-medium text-on-surface-variant">
+                选择您希望实时追踪预约名额的国家
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <CardContent className="p-0">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {COUNTRIES.map((country) => (
                   <button
                     key={country.code}
                     onClick={() => toggleCountry(country.code)}
-                    className={`p-4 rounded-lg border-2 transition-all ${preferences.countries.includes(country.code)
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                    className={`p-4 rounded-[20px] transition-all flex flex-col items-center justify-center gap-2 border-2 ${preferences.countries.includes(country.code)
+                      ? 'border-primary bg-primary-container text-on-primary-container shadow-md'
+                      : 'border-outline/10 bg-surface-variant/10 hover:border-outline/30'
                       }`}
                   >
-                    <div className="text-3xl mb-2">{country.flag}</div>
-                    <div className="text-sm font-medium">{country.nameTr}</div>
+                    <div className="text-3xl">{country.flag}</div>
+                    <div className="text-xs font-black uppercase tracking-tight">{country.nameTr}</div>
                   </button>
                 ))}
               </div>
-              <p className="text-sm text-gray-500 mt-4">
-                已选: {preferences.countries.length} 个国家
-              </p>
             </CardContent>
           </Card>
 
           {/* UK城市选择 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>🇬🇧 UK城市选择</CardTitle>
-              <CardDescription>
-                选择您要检查预约的英国城市
+          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="text-xl font-black flex items-center gap-2">
+                🇬🇧 英国城市选择
+              </CardTitle>
+              <CardDescription className="text-sm font-medium text-on-surface-variant">
+                选定英国境内的签证中心位置
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <CardContent className="p-0">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {UK_CITIES.map((city) => (
                   <button
                     key={city.code}
                     onClick={() => toggleCity(city.code)}
-                    className={`p-4 rounded-lg border-2 transition-all ${preferences.cities.includes(city.code)
-                      ? 'border-purple-600 bg-purple-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                    className={`p-3 rounded-[20px] transition-all border-2 text-sm font-black uppercase tracking-tighter ${preferences.cities.includes(city.code)
+                      ? 'border-tertiary bg-tertiary-container text-on-tertiary-container'
+                      : 'border-outline/10 bg-surface-variant/10 hover:border-outline/30'
                       }`}
                   >
-                    <div className="text-sm font-medium">{city.nameEn}</div>
+                    {city.nameEn}
                   </button>
                 ))}
               </div>
-              <p className="text-sm text-gray-500 mt-4">
-                已选: {preferences.cities.length} 个城市
-              </p>
             </CardContent>
           </Card>
 
-          {/* Telegram Ayarları */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="w-5 h-5" />
-                Telegram通知
+          {/* 通知渠道 - Telegram */}
+          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="text-xl font-black flex items-center gap-2">
+                <Bell className="w-6 h-6 text-primary" />
+                Telegram 即时推送
               </CardTitle>
-              <CardDescription>
-                有可用预约时通过Telegram接收通知
-              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Telegram通知</span>
+            <CardContent className="p-0 space-y-6">
+              <div className="flex items-center justify-between p-4 bg-surface-variant/10 rounded-2xl">
+                <div className="space-y-0.5">
+                  <span className="text-sm font-black uppercase tracking-widest text-on-surface-variant">开启 TG 通知</span>
+                  <p className="text-xs text-on-surface-variant opacity-60">通过 Telegram Bot 接收秒级同步</p>
+                </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${preferences.telegram_enabled ? 'bg-blue-600' : 'bg-gray-200'
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${preferences.telegram_enabled ? 'bg-primary' : 'bg-outline/20'
                     }`}
                 >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${preferences.telegram_enabled ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                  />
+                  <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${preferences.telegram_enabled ? 'translate-x-7' : 'translate-x-1'}`} />
                 </button>
               </div>
 
               {preferences.telegram_enabled && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Bot Token (Admin)
-                    </label>
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">Bot Token</label>
                     <input
                       type="text"
                       value={botToken}
                       onChange={(e) => setBotToken(e.target.value)}
-                      placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
-                      className="w-full px-3 py-2 border rounded-lg"
+                      placeholder="API TOKEN FROM @BOTFATHER"
+                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none transition-all font-medium"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      请输入从@BotFather获取的token
-                    </p>
-                    <p className="text-xs text-amber-600 mt-2 font-medium">
-                      ⚠️ 注意: 此处输入仅供测试。自动检查需要您在 Vercel 环境变量中配置 TELEGRAM_BOT_TOKEN。
-                    </p>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Chat ID
-                    </label>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">Chat ID</label>
                     <input
                       type="text"
                       value={preferences.telegram_chat_id}
                       onChange={(e) => setPreferences(prev => ({ ...prev, telegram_chat_id: e.target.value }))}
-                      placeholder="123456789"
-                      className="w-full px-3 py-2 border rounded-lg"
+                      placeholder="YOUR NUMERIC CHAT ID"
+                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none transition-all font-medium"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      与Bot对话并发送/start后，通过getUpdates获取
-                    </p>
                   </div>
 
                   <Button
                     onClick={handleTestTelegram}
                     disabled={testing}
-                    variant="outline"
-                    className="w-full"
+                    className="w-full m3-button-pill bg-primary/10 text-primary hover:bg-primary/20 h-12"
                   >
-                    {testing ? (
-                      <>
-                        <Clock className="mr-2 h-4 w-4 animate-spin" />
-                        测试中...
-                      </>
-                    ) : (
-                      <>
-                        <TestTube className="mr-2 h-4 w-4" />
-                        发送测试通知
-                      </>
-                    )}
-                  </Button>
-                </>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Email Ayarları */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mail className="w-5 h-5" />
-                邮件通知
-              </CardTitle>
-              <CardDescription>
-                通过电子邮件接收预约通知
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">邮件通知</span>
-                <button
-                  onClick={() => setPreferences(prev => ({ ...prev, email_enabled: !prev.email_enabled }))}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${preferences.email_enabled ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${preferences.email_enabled ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                  />
-                </button>
-              </div>
-
-              {preferences.email_enabled && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    接收邮箱
-                  </label>
-                  <input
-                    type="email"
-                    value={preferences.email_address || ''}
-                    onChange={(e) => setPreferences(prev => ({ ...prev, email_address: e.target.value }))}
-                    placeholder="your-email@example.com"
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    系统将通过此邮箱发送通知
-                  </p>
-                  <Button
-                    onClick={handleTestEmail}
-                    disabled={testingEmail}
-                    variant="outline"
-                    size="sm"
-                    className="mt-3 w-full"
-                  >
-                    {testingEmail ? (
-                      <>
-                        <Clock className="mr-2 h-4 w-4 animate-spin" />
-                        发送中...
-                      </>
-                    ) : (
-                      <>
-                        <TestTube className="mr-2 h-4 w-4" />
-                        发送测试邮件
-                      </>
-                    )}
+                    {testing ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> 发送测试指令</>}
                   </Button>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Otomatik Kontrol */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5" />
-                自动检查
+          {/* 通知渠道 - Email */}
+          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="text-xl font-black flex items-center gap-2">
+                <Mail className="w-6 h-6 text-tertiary" />
+                电子邮件提醒
               </CardTitle>
-              <CardDescription>
-                定时自动检查预约
-              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">自动检查</span>
+            <CardContent className="p-0 space-y-6">
+              <div className="flex items-center justify-between p-4 bg-surface-variant/10 rounded-2xl">
+                <span className="text-sm font-black uppercase tracking-widest text-on-surface-variant">开启邮件通知</span>
                 <button
-                  onClick={() => setPreferences(prev => ({ ...prev, auto_check_enabled: !prev.auto_check_enabled }))}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${preferences.auto_check_enabled ? 'bg-blue-600' : 'bg-gray-200'
+                  onClick={() => setPreferences(prev => ({ ...prev, email_enabled: !prev.email_enabled }))}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${preferences.email_enabled ? 'bg-tertiary' : 'bg-outline/20'
                     }`}
                 >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${preferences.auto_check_enabled ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                  />
+                  <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${preferences.email_enabled ? 'translate-x-7' : 'translate-x-1'}`} />
+                </button>
+              </div>
+
+              {preferences.email_enabled && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">接收邮箱</label>
+                    <input
+                      type="email"
+                      value={preferences.email_address || ''}
+                      onChange={(e) => setPreferences(prev => ({ ...prev, email_address: e.target.value }))}
+                      placeholder="NAME@DOMAIN.COM"
+                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-tertiary outline-none transition-all font-medium"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleTestEmail}
+                    disabled={testingEmail}
+                    className="w-full m3-button-pill bg-tertiary/10 text-tertiary hover:bg-tertiary/20 h-12"
+                  >
+                    {testingEmail ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> 发送测试邮件</>}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* 自动检查配置 */}
+          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="text-xl font-black flex items-center gap-2">
+                <Clock className="w-6 h-6 text-primary" />
+                后台自动爬取
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 space-y-6">
+              <div className="flex items-center justify-between p-4 bg-surface-variant/10 rounded-2xl">
+                <span className="text-sm font-black uppercase tracking-widest text-on-surface-variant">激活自动模式</span>
+                <button
+                  onClick={() => setPreferences(prev => ({ ...prev, auto_check_enabled: !prev.auto_check_enabled }))}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${preferences.auto_check_enabled ? 'bg-primary' : 'bg-outline/20'
+                    }`}
+                >
+                  <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${preferences.auto_check_enabled ? 'translate-x-7' : 'translate-x-1'}`} />
                 </button>
               </div>
 
               {preferences.auto_check_enabled && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    检查频率(分钟)
-                  </label>
+                <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                  <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">频率 (分钟)</label>
                   <input
                     type="number"
                     min="5"
                     max="60"
                     value={preferences.check_frequency}
                     onChange={(e) => setPreferences(prev => ({ ...prev, check_frequency: parseInt(e.target.value) }))}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none font-black text-xl"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    最少5分钟，最多60分钟
-                  </p>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Kaydet */}
-          <Button
-            onClick={handleSave}
-            disabled={saving}
-            size="lg"
-            className="w-full"
-          >
-            {saving ? (
-              <>
-                <Clock className="mr-2 h-4 w-4 animate-spin" />
-                保存中...
-              </>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                保存设置
-              </>
-            )}
-          </Button>
+          {/* 保存按钮 */}
+          <div className="pt-6">
+            <Button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full m3-button-pill bg-primary text-on-primary h-16 text-xl font-black tracking-widest shadow-xl shadow-primary/20 hover:scale-[1.01] active:scale-[0.98]"
+            >
+              {saving ? <Clock className="animate-spin h-7 w-7" /> : <><Save className="mr-3 h-6 w-6" /> 保存所有配置</>}
+            </Button>
+          </div>
         </div>
       </main>
     </div>
