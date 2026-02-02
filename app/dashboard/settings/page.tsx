@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save, TestTube, ArrowLeft, Bell, Globe, Clock } from 'lucide-react';
+import { Save, TestTube, ArrowLeft, Bell, Globe, Clock, Mail } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,6 +17,8 @@ export default function SettingsPage() {
     check_frequency: 5,
     telegram_enabled: false,
     telegram_chat_id: '',
+    email_enabled: false,
+    email_address: '',
     web_enabled: true,
     sound_enabled: true,
     auto_check_enabled: false,
@@ -293,6 +295,52 @@ export default function SettingsPage() {
                     )}
                   </Button>
                 </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Email Ayarları */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="w-5 h-5" />
+                邮件通知
+              </CardTitle>
+              <CardDescription>
+                通过电子邮件接收预约通知
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">邮件通知</span>
+                <button
+                  onClick={() => setPreferences(prev => ({ ...prev, email_enabled: !prev.email_enabled }))}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${preferences.email_enabled ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${preferences.email_enabled ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                  />
+                </button>
+              </div>
+
+              {preferences.email_enabled && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    接收邮箱
+                  </label>
+                  <input
+                    type="email"
+                    value={preferences.email_address || ''}
+                    onChange={(e) => setPreferences(prev => ({ ...prev, email_address: e.target.value }))}
+                    placeholder="your-email@example.com"
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    系统将通过此邮箱发送通知
+                  </p>
+                </div>
               )}
             </CardContent>
           </Card>

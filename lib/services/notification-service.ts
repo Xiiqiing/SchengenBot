@@ -3,6 +3,7 @@
  * Telegram, Email, Web bildirimleri
  */
 
+import { Resend } from 'resend';
 import { createNotification } from '../supabase/client';
 import { formatDateTR, getCountryByCode } from '../constants/countries';
 import type { AppointmentData } from '../api/schengen-api';
@@ -25,6 +26,14 @@ interface NotificationOptions {
 }
 
 export class NotificationService {
+  private resend: Resend | null = null;
+
+  constructor() {
+    if (process.env.RESEND_API_KEY) {
+      this.resend = new Resend(process.env.RESEND_API_KEY);
+    }
+  }
+
   /**
    * Telegram bildirimi gönder
    */
@@ -58,6 +67,39 @@ export class NotificationService {
       return true;
     } catch (error) {
       console.error('Telegram notification error:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Email bildirimi gönder
+   */
+  async sendEmailNotification(
+    to: string,
+    subject: string,
+    html: string
+  ): Promise<boolean> {
+    if (!this.resend) {
+      console.warn('Resend API key not found');
+      return false;
+    }
+
+    try {
+      const { error } = await this.resend.emails.send({
+        from: 'SchengenBot <onboarding@resend.dev>',
+        to: [to],
+        subject: subject,
+        html: html,
+      });
+
+      if (error) {
+        console.error('Email send error:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Email notification error:', error);
       return false;
     }
   }
@@ -139,10 +181,39 @@ export class NotificationService {
       }
     }
 
-    // Email bildirimi (TODO: Implement)
-    if (options.email?.enabled && options.email.address) {
-      // Email servisi entegrasyonu
-      results.push({ type: 'email', success: false, error: 'Not implemented' });
+    // Email bildirimi
+    if (options.email?.enabled && options.email.address && this.resend) {
+      const subject = `🇪🇺 申根签证预约通知 - 发现 ${appointments.length} 个名额`;
+      const emailHtml = message.replace(/\n/g, '<br>');
+
+      try {
+        const success = await this.sendEmailNotification(
+          options.email.address,
+          subject,
+          emailHtml
+        );
+
+        results.push({ type: 'email', success });
+
+        await createNotification({
+          user_id: options.userId,
+          appointment_id: options.appointmentId,
+          type: 'email',
+          message,
+          success,
+        });
+      } catch (error: any) {
+        results.push({ type: 'email', success: false, error: error.message });
+
+        await createNotification({
+          user_id: options.userId,
+          appointment_id: options.appointmentId,
+          type: 'email',
+          message,
+          success: false,
+          error_message: error.message
+        });
+      }
     }
 
     // Web bildirimi
@@ -183,6 +254,7 @@ export class NotificationService {
       return { success: false, error: error.message };
     }
   }
+
   /**
    * Send a general status message (e.g. "Checked Manchester: No slots")
    */

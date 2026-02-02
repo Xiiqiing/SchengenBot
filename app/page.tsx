@@ -98,7 +98,7 @@ export default function LandingPage() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t py-8">
+      <footer className="">
         <div className="container mx-auto px-4 text-center text-gray-600">
           <p className="text-sm">
             仅供教育学习目的。
