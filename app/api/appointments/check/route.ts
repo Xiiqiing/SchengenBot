@@ -94,7 +94,26 @@ export async function GET(request: NextRequest) {
           if (botToken) {
             if (result.isAvailable) {
               console.log('[ManualCheck] Sending success notification...');
-              const statusMsg = `🎉 <b>手动检查: ${city} -> ${country}</b>\n✅ 发现 ${result.totalSlots} 个可用名额!`;
+
+              let statusMsg = `🎉 <b>手动检查: ${city} -> ${country}</b>\n\n`;
+              statusMsg += `✅ <b>发现 ${result.totalSlots} 个可用名额!</b>\n\n`;
+
+              // Add slot details (first 5 to avoid message length limits)
+              result.slots?.slice(0, 5).forEach((slot: any) => {
+                statusMsg += `📅 <b>Slot时间:</b> ${slot.date}\n`;
+              });
+
+              if (result.slots && result.slots.length > 5) {
+                statusMsg += `... 以及更多\n`;
+              }
+
+              statusMsg += `\n🏢 <b>地点:</b> ${city}\n`;
+              statusMsg += `📋 <b>签证类型:</b> ${visaType}\n`;
+
+              if (result.bookingLink) {
+                statusMsg += `\n🔗 <a href="${result.bookingLink}">直接预约链接</a>\n`;
+              }
+
               // Fire and forget (don't await to block response)
               notificationService.sendCheckStatus(preferences.telegram_chat_id, botToken, statusMsg);
             } else {
