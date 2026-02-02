@@ -197,17 +197,18 @@ export default function SettingsPage() {
             </div>
             <div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                <button
-                  key={country.code}
-                  onClick={() => toggleCountry(country.code)}
-                  className={`relative overflow-hidden p-3 rounded-xl transition-all flex flex-col items-center justify-center gap-2 border ${preferences.countries.includes(country.code)
-                    ? 'border-primary bg-primary-container text-on-primary-container'
-                    : 'border-outline-variant bg-surface hover:bg-surface-variant/50'}`}
-                >
-                  <div className="text-2xl">{country.flag}</div>
-                  <div className="label-medium">{country.nameTr}</div>
-                  <Ripple />
-                </button>
+                {COUNTRIES.map((country) => (
+                  <button
+                    key={country.code}
+                    onClick={() => toggleCountry(country.code)}
+                    className={`relative overflow-hidden p-3 rounded-xl transition-all flex flex-col items-center justify-center gap-2 border ${preferences.countries.includes(country.code)
+                      ? 'border-primary bg-primary-container text-on-primary-container'
+                      : 'border-outline-variant bg-surface hover:bg-surface-variant/50'}`}
+                  >
+                    <div className="text-2xl">{country.flag}</div>
+                    <div className="label-medium">{country.nameTr}</div>
+                    <Ripple />
+                  </button>
                 ))}
               </div>
             </div>
