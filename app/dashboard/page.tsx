@@ -19,7 +19,8 @@ export default function DashboardPage() {
 
   // UK appointment state
   const [checkingUK, setCheckingUK] = useState(false);
-  const [ukResult, setUkResult] = useState<any>(null);
+  const [ukResults, setUkResults] = useState<any[]>([]); // Changed to array for multiple results
+  const [ukCheckCount, setUkCheckCount] = useState(0);
 
   useEffect(() => {
     loadData();
@@ -86,18 +87,40 @@ export default function DashboardPage() {
     }
   };
 
-  // UK (Manchester -> Portugal) check handler
+  // UK check handler - uses selected cities and countries from preferences
   const handleUKCheck = async () => {
+    // Use preferences or default to Manchester/Portugal
+    const cities = preferences?.cities?.length > 0 ? preferences.cities : ['manchester'];
+    const countries = preferences?.countries?.length > 0 ? preferences.countries : ['Portugal'];
+
     setCheckingUK(true);
-    setUkResult(null);
+    setUkResults([]);
 
     try {
-      const response = await fetch('/api/appointments/check?source=UK&city=manchester&country=portugal');
-      const data = await response.json();
+      const results: any[] = [];
 
-      if (data.success) {
-        setUkResult(data.result);
+      // Check all city/country combinations
+      for (const city of cities) {
+        for (const country of countries) {
+          try {
+            const response = await fetch(`/api/appointments/check?source=UK&city=${city}&country=${country}`);
+            const data = await response.json();
+
+            if (data.success) {
+              results.push({
+                ...data.result,
+                city,
+                country
+              });
+            }
+          } catch (err) {
+            console.error(`Error checking ${city}/${country}:`, err);
+          }
+        }
       }
+
+      setUkResults(results);
+      setUkCheckCount(prev => prev + 1);
     } catch (error) {
       console.error('UK Check error:', error);
       alert('UK check failed!');
@@ -148,7 +171,7 @@ export default function DashboardPage() {
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.total_appointments || 0}</div>
+              <div className="text-2xl font-bold">{ukCheckCount + (stats?.total_appointments || 0)}</div>
             </CardContent>
           </Card>
 
@@ -263,14 +286,14 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* UK Appointment Check - Manchester -> Portugal */}
+            {/* UK Appointment Check - Dynamic cities/countries */}
             <Card className="border-2 border-purple-200 bg-purple-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  🇬🇧 UK → 🇵🇹 Portugal Check
+                  🇬🇧 UK Appointment Check
                 </CardTitle>
                 <CardDescription>
-                  Check Portugal visa appointments from Manchester.
+                  检查所选城市和国家的签证预约 (schengenappointments.com)
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -283,64 +306,74 @@ export default function DashboardPage() {
                   {checkingUK ? (
                     <>
                       <Clock className="mr-2 h-4 w-4 animate-spin" />
-                      Checking Manchester...
+                      正在检查...
                     </>
                   ) : (
                     <>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Check Manchester → Portugal
+                      手动检查 UK 预约
                     </>
                   )}
                 </Button>
 
-                {/* UK Result Display */}
-                {ukResult && (
-                  <div className={`p-4 rounded-lg border ${ukResult.isAvailable ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-semibold text-lg">
-                        🇵🇹 Portugal - Manchester
-                      </span>
-                      <Badge variant={ukResult.isAvailable ? "default" : "secondary"}>
-                        {ukResult.isAvailable ? `${ukResult.totalSlots} Slots` : 'No Slots'}
-                      </Badge>
-                    </div>
-
-                    {ukResult.isAvailable ? (
-                      <div className="space-y-3">
-                        <p className="text-sm text-green-700 font-medium">
-                          ✅ {ukResult.totalSlots} appointments available over {ukResult.totalDays} days
-                        </p>
-
-                        {ukResult.slots?.map((slot: any, i: number) => (
-                          <div key={i} className="text-sm bg-white p-3 rounded border">
-                            <p className="font-medium">📅 {slot.date}</p>
-                            <p className="text-gray-600">{slot.slotsAvailable} slots - seen {slot.lastSeen}</p>
+                {/* UK Results Display - multiple city/country combinations */}
+                {ukResults.length > 0 && (
+                  <div className="space-y-3">
+                    {ukResults.map((result, idx) => {
+                      const countryInfo = COUNTRIES.find(c => c.code.toLowerCase() === result.country?.toLowerCase());
+                      return (
+                        <div
+                          key={idx}
+                          className={`p-4 rounded-lg border ${result.isAvailable ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="font-semibold text-lg">
+                              {countryInfo?.flag || '�'} {result.country} - {result.city}
+                            </span>
+                            <Badge variant={result.isAvailable ? "default" : "secondary"}>
+                              {result.isAvailable ? `${result.totalSlots} Slots` : 'No Slots'}
+                            </Badge>
                           </div>
-                        ))}
 
-                        {ukResult.bookingLink && (
-                          <a
-                            href={ukResult.bookingLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block w-full text-center py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                          >
-                            Book at VFS →
-                          </a>
-                        )}
+                          {result.isAvailable ? (
+                            <div className="space-y-3">
+                              <p className="text-sm text-green-700 font-medium">
+                                ✅ {result.totalSlots} appointments available over {result.totalDays} days
+                              </p>
 
-                        {ukResult.lastChecked && (
-                          <p className="text-xs text-gray-400">最后检查: {ukResult.lastChecked}</p>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-sm text-gray-600">
-                        <p>❌ No appointments available</p>
-                        {ukResult.lastChecked && (
-                          <p className="mt-1 text-xs text-gray-400">最后检查: {ukResult.lastChecked}</p>
-                        )}
-                      </div>
-                    )}
+                              {result.slots?.slice(0, 3).map((slot: any, i: number) => (
+                                <div key={i} className="text-sm bg-white p-3 rounded border">
+                                  <p className="font-medium">📅 {slot.date}</p>
+                                  <p className="text-gray-600">{slot.slotsAvailable} slots - seen {slot.lastSeen}</p>
+                                </div>
+                              ))}
+
+                              {result.bookingLink && (
+                                <a
+                                  href={result.bookingLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="block w-full text-center py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                                >
+                                  Book at VFS →
+                                </a>
+                              )}
+
+                              {result.lastChecked && (
+                                <p className="text-xs text-gray-400">最后检查: {result.lastChecked}</p>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="text-sm text-gray-600">
+                              <p>❌ No appointments available</p>
+                              {result.lastChecked && (
+                                <p className="mt-1 text-xs text-gray-400">最后检查: {result.lastChecked}</p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>

@@ -96,13 +96,16 @@ export class UKAppointmentScraper {
     if (noAppointmentMatch) {
       result.isAvailable = false;
 
-      // Try to get last checked time from "checked X ago" text
-      const checkedMatch = html.match(/checked\s+(\d+\s+(?:minutes?|hours?|days?)\s+ago)/i);
+      // Try to get last checked time from "Last checked: X ago" text
+      const checkedMatch = html.match(/Last\s+checked:\s*(\d+\s+(?:minutes?|hours?|days?|seconds?)\s+ago)/i);
       if (checkedMatch) {
-        result.lastChecked = `checked ${checkedMatch[1]}`;
+        result.lastChecked = checkedMatch[1];
       } else {
-        // Fallback: show when we actually checked
-        result.lastChecked = new Date().toLocaleString('zh-CN');
+        // Try alternative format: just "checked X ago"
+        const altMatch = html.match(/checked\s*:?\s*(\d+\s+(?:minutes?|hours?|days?|seconds?)\s+ago)/i);
+        if (altMatch) {
+          result.lastChecked = altMatch[1];
+        }
       }
 
       return result;
@@ -156,12 +159,9 @@ export class UKAppointmentScraper {
       }
     }
 
-    // Get last checked time if we have slots
+    // Get last checked time if we have slots (from source website's "Last Seen" column)
     if (result.slots.length > 0) {
       result.lastChecked = result.slots[0].lastSeen;
-    } else {
-      // Fallback: show current time in Chinese format
-      result.lastChecked = new Date().toLocaleString('zh-CN');
     }
 
     return result;
