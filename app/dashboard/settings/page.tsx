@@ -164,18 +164,18 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-background text-on-surface">
       {/* Header */}
-      <header className="bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline/10">
+      <header className="bg-surface/90 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/dashboard">
-              <Button variant="ghost" className="m3-button-pill bg-surface-variant/50 text-on-surface-variant hover:bg-surface-variant">
-                <ArrowLeft className="w-4 h-4 mr-2" />
+              <button className="m3-button-text">
+                <ArrowLeft className="w-4 h-4" />
                 返回主页
-              </Button>
+              </button>
             </Link>
             <div>
-              <h1 className="text-2xl font-black tracking-tight">偏好设置</h1>
-              <p className="text-sm font-medium text-on-surface-variant">自定您的监控策略与通知方式</p>
+              <h1 className="headline-medium text-on-surface">偏好设置</h1>
+              <p className="body-medium text-on-surface-variant">自定您的监控策略与通知方式</p>
             </div>
           </div>
         </div>
@@ -184,34 +184,33 @@ export default function SettingsPage() {
       <main className="container mx-auto px-4 py-10 max-w-4xl">
         <div className="space-y-8">
           {/* Ülke Seçimi */}
-          <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
-            <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-xl font-black flex items-center gap-2">
-                <Globe className="w-6 h-6 text-primary" />
+          <section className="m3-card p-6">
+            <div className="mb-6">
+              <h2 className="title-large text-on-surface flex items-center gap-2">
+                <Globe className="w-5 h-5 text-primary" />
                 目标国家监控
-              </CardTitle>
-              <CardDescription className="text-sm font-medium text-on-surface-variant">
+              </h2>
+              <p className="body-medium text-on-surface-variant mt-1">
                 选择您希望实时追踪预约名额的国家
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
+              </p>
+            </div>
+            <div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {COUNTRIES.map((country) => (
                   <button
                     key={country.code}
                     onClick={() => toggleCountry(country.code)}
-                    className={`p-4 rounded-[20px] transition-all flex flex-col items-center justify-center gap-2 border-2 ${preferences.countries.includes(country.code)
-                      ? 'border-primary bg-primary-container text-on-primary-container shadow-md'
-                      : 'border-outline/10 bg-surface-variant/10 hover:border-outline/30'
-                      }`}
+                    className={`p-3 rounded-xl transition-all flex flex-col items-center justify-center gap-2 border ${preferences.countries.includes(country.code)
+                      ? 'border-primary bg-primary-container text-on-primary-container'
+                      : 'border-outline-variant bg-surface hover:bg-surface-variant/50'}`}
                   >
-                    <div className="text-3xl">{country.flag}</div>
-                    <div className="text-xs font-black uppercase tracking-tight">{country.nameTr}</div>
+                    <div className="text-2xl">{country.flag}</div>
+                    <div className="label-medium">{country.nameTr}</div>
                   </button>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </section>
 
           {/* UK城市选择 */}
           <Card className="m3-card p-6 bg-surface border border-outline/10 shadow-sm">
@@ -250,20 +249,20 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-5 bg-gradient-to-r from-primary/5 to-primary/10 rounded-3xl border border-primary/20">
-                <div className="space-y-1">
-                  <span className="text-base font-bold text-on-surface">开启 TG 通知</span>
-                  <p className="text-sm text-on-surface-variant">通过 Telegram Bot 接收秒级同步: @visashengenuk_xq_bot</p>
+              <div className="flex items-center justify-between p-4 bg-surface-variant/30 rounded-xl">
+                <div className="space-y-0.5">
+                  <span className="body-large font-medium text-on-surface">开启 TG 通知</span>
+                  <p className="body-medium text-on-surface-variant">通过 Telegram Bot 接收秒级同步</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
-                  className={`relative inline-flex h-9 w-16 items-center rounded-full transition-all duration-300 shadow-inner ${preferences.telegram_enabled
-                    ? 'bg-primary shadow-lg shadow-primary/30'
-                    : 'bg-surface-variant border-2 border-outline/30'}`}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-200 ${preferences.telegram_enabled
+                    ? 'bg-primary'
+                    : 'bg-surface-variant border-2 border-outline'}`}
                 >
-                  <span className={`inline-block h-7 w-7 transform rounded-full shadow-md transition-all duration-300 ${preferences.telegram_enabled
-                    ? 'translate-x-8 bg-white'
-                    : 'translate-x-1 bg-on-surface-variant/30'}`} />
+                  <span className={`block rounded-full shadow-sm transition-all duration-200 ${preferences.telegram_enabled
+                    ? 'h-6 w-6 translate-x-7 bg-on-primary'
+                    : 'h-4 w-4 translate-x-1.5 bg-outline'}`} />
                 </button>
               </div>
 
@@ -313,20 +312,20 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-5 bg-gradient-to-r from-tertiary/5 to-tertiary/10 rounded-3xl border border-tertiary/20">
-                <div className="space-y-1">
-                  <span className="text-base font-bold text-on-surface">开启邮件通知</span>
-                  <p className="text-sm text-on-surface-variant">通过电子邮件接收最新预约通知</p>
+              <div className="flex items-center justify-between p-4 bg-surface-variant/30 rounded-xl">
+                <div className="space-y-0.5">
+                  <span className="body-large font-medium text-on-surface">开启邮件通知</span>
+                  <p className="body-medium text-on-surface-variant">通过电子邮件接收最新预约通知</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, email_enabled: !prev.email_enabled }))}
-                  className={`relative inline-flex h-9 w-16 items-center rounded-full transition-all duration-300 shadow-inner ${preferences.email_enabled
-                    ? 'bg-tertiary shadow-lg shadow-tertiary/30'
-                    : 'bg-surface-variant border-2 border-outline/30'}`}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-200 ${preferences.email_enabled
+                    ? 'bg-tertiary'
+                    : 'bg-surface-variant border-2 border-outline'}`}
                 >
-                  <span className={`inline-block h-7 w-7 transform rounded-full shadow-md transition-all duration-300 ${preferences.email_enabled
-                    ? 'translate-x-8 bg-white'
-                    : 'translate-x-1 bg-on-surface-variant/30'}`} />
+                  <span className={`block rounded-full shadow-sm transition-all duration-200 ${preferences.email_enabled
+                    ? 'h-6 w-6 translate-x-7 bg-on-tertiary'
+                    : 'h-4 w-4 translate-x-1.5 bg-outline'}`} />
                 </button>
               </div>
 
@@ -364,20 +363,20 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-5 bg-gradient-to-r from-green-500/5 to-green-500/10 rounded-3xl border border-green-500/20">
-                <div className="space-y-1">
-                  <span className="text-base font-bold text-on-surface">激活自动模式</span>
-                  <p className="text-sm text-on-surface-variant">后台自动定时爵取数据</p>
+              <div className="flex items-center justify-between p-4 bg-surface-variant/30 rounded-xl">
+                <div className="space-y-0.5">
+                  <span className="body-large font-medium text-on-surface">激活自动模式</span>
+                  <p className="body-medium text-on-surface-variant">后台自动定时爵取数据</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, auto_check_enabled: !prev.auto_check_enabled }))}
-                  className={`relative inline-flex h-9 w-16 items-center rounded-full transition-all duration-300 shadow-inner ${preferences.auto_check_enabled
-                    ? 'bg-green-500 shadow-lg shadow-green-500/30'
-                    : 'bg-surface-variant border-2 border-outline/30'}`}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-200 ${preferences.auto_check_enabled
+                    ? 'bg-primary'
+                    : 'bg-surface-variant border-2 border-outline'}`}
                 >
-                  <span className={`inline-block h-7 w-7 transform rounded-full shadow-md transition-all duration-300 ${preferences.auto_check_enabled
-                    ? 'translate-x-8 bg-white'
-                    : 'translate-x-1 bg-on-surface-variant/30'}`} />
+                  <span className={`block rounded-full shadow-sm transition-all duration-200 ${preferences.auto_check_enabled
+                    ? 'h-6 w-6 translate-x-7 bg-on-primary'
+                    : 'h-4 w-4 translate-x-1.5 bg-outline'}`} />
                 </button>
               </div>
 
@@ -399,13 +398,13 @@ export default function SettingsPage() {
 
           {/* 保存按钮 */}
           <div className="pt-6">
-            <Button
+            <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full m3-button-pill bg-primary text-on-primary h-16 text-xl font-black tracking-widest shadow-xl shadow-primary/20 hover:scale-[1.01] active:scale-[0.98]"
+              className="w-full m3-button-filled h-14 text-base"
             >
-              {saving ? <Clock className="animate-spin h-7 w-7" /> : <><Save className="mr-3 h-6 w-6" /> 保存所有配置</>}
-            </Button>
+              {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="h-5 w-5" /> 保存所有配置</>}
+            </button>
           </div>
         </div>
       </main>
