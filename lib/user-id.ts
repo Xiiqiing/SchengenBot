@@ -16,12 +16,23 @@ function isValidUUID(uuid: string): boolean {
 /**
  * Yeni UUID oluştur
  */
-function generateUUID(): string {
+export function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
+}
+
+/**
+ * Kullanıcı ID'sini ayarla (Login sonrası)
+ */
+export function setUserId(id: string): void {
+  if (typeof window === 'undefined') return;
+
+  if (isValidUUID(id)) {
+    localStorage.setItem(USER_ID_KEY, id);
+  }
 }
 
 /**
@@ -37,7 +48,7 @@ export function getOrCreateUserId(): string {
   try {
     // localStorage'dan al
     const storedId = localStorage.getItem(USER_ID_KEY);
-    
+
     if (storedId && isValidUUID(storedId)) {
       return storedId;
     }
