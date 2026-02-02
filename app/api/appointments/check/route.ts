@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
                 const emailAddress = preferences.email_address || userProfile?.email;
 
                 if (emailAddress) {
-                  const subject = `🇪🇺 申根签证预约通知 - 手动检查结果 (${city} -> ${country})`;
+                  const subject = `申根签证SLOT通知 - 手动检查结果 (${city} -> ${country})`;
                   const emailHtml = statusMsg.replace(/\n/g, '<br>');
                   await notificationService.sendEmailNotification(emailAddress, subject, emailHtml).catch(e => console.error('[ManualCheck] Email error:', e));
                 }

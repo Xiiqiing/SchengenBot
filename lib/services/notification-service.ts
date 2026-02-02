@@ -189,7 +189,7 @@ export class NotificationService {
 
     // Email bildirimi
     if (options.email?.enabled && options.email.address && this.resend) {
-      const subject = `🇪🇺 申根签证预约通知 - 发现 ${appointments.length} 个名额`;
+      const subject = `申根签证SLOT通知 - 发现 ${appointments.length} 个名额`;
       const emailHtml = message.replace(/\n/g, '<br>');
 
       try {
