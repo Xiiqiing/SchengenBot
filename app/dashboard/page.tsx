@@ -328,19 +328,19 @@ export default function DashboardPage() {
                             Book at VFS →
                           </a>
                         )}
+
+                        {ukResult.lastChecked && (
+                          <p className="text-xs text-gray-400">最后检查: {ukResult.lastChecked}</p>
+                        )}
                       </div>
                     ) : (
                       <div className="text-sm text-gray-600">
                         <p>❌ No appointments available</p>
                         {ukResult.lastChecked && (
-                          <p className="mt-1 text-xs">{ukResult.lastChecked}</p>
+                          <p className="mt-1 text-xs text-gray-400">最后检查: {ukResult.lastChecked}</p>
                         )}
                       </div>
                     )}
-
-                    <p className="text-xs text-gray-400 mt-3">
-                      Source: <a href={ukResult.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">schengenappointments.com</a>
-                    </p>
                   </div>
                 )}
               </CardContent>
