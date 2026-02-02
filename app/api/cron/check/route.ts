@@ -14,13 +14,26 @@ export async function GET(request: NextRequest) {
   try {
     // Cron secret kontrolü (güvenlik için)
     const authHeader = request.headers.get('authorization');
-    const cronSecret = process.env.CRON_SECRET;
+    const cronSecret = process.env.CRON_SECRET?.trim();
 
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    // Debug logging (Masked)
+    console.log('Cron Check Auth:', {
+      hasSecret: !!cronSecret,
+      hasHeader: !!authHeader,
+      headerStart: authHeader?.substring(0, 10)
+    });
+
+    if (cronSecret) {
+      // Extract token from "Bearer <token>"
+      const receivedToken = authHeader?.split('Bearer ')[1]?.trim();
+
+      if (receivedToken !== cronSecret) {
+        console.warn('Cron Auth Failed. Received != Expected');
+        return NextResponse.json(
+          { error: 'Unauthorized: Invalid Token' },
+          { status: 401 }
+        );
+      }
     }
 
     if (!supabase) {
