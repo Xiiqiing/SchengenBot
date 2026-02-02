@@ -253,6 +253,9 @@ export default function SettingsPage() {
                     <p className="text-xs text-gray-500 mt-1">
                       请输入从@BotFather获取的token
                     </p>
+                    <p className="text-xs text-amber-600 mt-2 font-medium">
+                      ⚠️ 注意: 此处输入仅供测试。自动检查需要您在 Vercel 环境变量中配置 TELEGRAM_BOT_TOKEN。
+                    </p>
                   </div>
 
                   <div>
