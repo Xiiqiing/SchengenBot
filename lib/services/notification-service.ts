@@ -89,7 +89,7 @@ export class NotificationService {
 
     try {
       const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-      const fromName = 'SchengenBot';
+      const fromName = '喵喵的SchengenBot';
 
       const { error } = await this.resend.emails.send({
         from: `${fromName} <${fromEmail}>`,
