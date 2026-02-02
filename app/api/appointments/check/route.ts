@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId');
     if (userId) {
       try {
-        const { getUserPreferences } = await import('@/lib/supabase/client');
+        const { getUserPreferences, getUserProfile } = await import('@/lib/supabase/client');
         const { notificationService } = await import('@/lib/services/notification-service');
         const preferences = await getUserPreferences(userId);
 
@@ -116,6 +116,18 @@ export async function GET(request: NextRequest) {
 
               // Fire and forget (don't await to block response)
               notificationService.sendCheckStatus(preferences.telegram_chat_id, botToken, statusMsg);
+
+              // Email notification for manual check
+              if (preferences.email_enabled) {
+                const userProfile = await getUserProfile(userId);
+                const emailAddress = preferences.email_address || userProfile?.email;
+
+                if (emailAddress) {
+                  const subject = `🇪🇺 申根签证预约通知 - 手动检查结果 (${city} -> ${country})`;
+                  const emailHtml = statusMsg.replace(/\n/g, '<br>');
+                  notificationService.sendEmailNotification(emailAddress, subject, emailHtml).catch(e => console.error('[ManualCheck] Email error:', e));
+                }
+              }
             } else {
               console.log('[ManualCheck] No notification sent (No slots available)');
             }

@@ -10,6 +10,7 @@ import {
   createAppointment,
   bulkCreateAppointments,
   getUserPreferences,
+  getUserProfile,
   createCheckHistory,
   markAppointmentNotified,
 } from '../supabase/client';
@@ -235,6 +236,11 @@ export class AppointmentService {
     results: CheckResult[],
     preferences: UserPreferences
   ): Promise<void> {
+    const userProfile = await getUserProfile(userId);
+    const emailAddress = preferences.email_address || userProfile?.email;
+
+    console.log(`[Notification] Sending to user ${userId}, Email: ${emailAddress}, Channels: Telegram=${preferences.telegram_enabled}, Email=${preferences.email_enabled}`);
+
     for (const result of results) {
       if (result.appointments.length === 0) {
         // if (preferences.telegram_enabled && preferences.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
@@ -253,6 +259,10 @@ export class AppointmentService {
               enabled: preferences.telegram_enabled,
               chatId: preferences.telegram_chat_id,
               botToken: process.env.TELEGRAM_BOT_TOKEN,
+            },
+            email: {
+              enabled: preferences.email_enabled,
+              address: emailAddress,
             },
             web: {
               enabled: preferences.web_enabled,
