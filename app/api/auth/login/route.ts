@@ -37,51 +37,49 @@ export async function POST(request: NextRequest) {
             throw fetchError;
         }
 
-        // 2. If user exists, return their ID
-        if (existingUser) {
-            return NextResponse.json({
-                success: true,
-                userId: existingUser.id,
-                isNewUser: false
-            });
+        let userId = existingUser?.id;
+        let isNewUser = false;
+
+        // 2. If user doesn't exist, create a new one
+        if (!existingUser) {
+            const newUserId = generateUUID();
+            const { data: newUser, error: createError } = await supabase
+                .from('user_profiles')
+                .insert([
+                    {
+                        id: newUserId,
+                        email: email,
+                        created_at: new Date().toISOString()
+                    }
+                ])
+                .select()
+                .single();
+
+            if (createError) {
+                console.error('Error creating user:', createError);
+                throw createError;
+            }
+
+            userId = newUser.id;
+            isNewUser = true;
         }
 
-        // 3. If user doesn't exist, create a new one
-        // Note: We need to generate a UUID here or let DB do it. 
-        // Since we use random UUIDs elsewhere, we'll generate one here if needed, 
-        // or let Supabase/Postgres generate it if the column is set to default gen_random_uuid()
-
-        // Let's try inserting without ID first, assume DB handles it.
-        // However, our profiles table might not have default gen_random_uuid().
-        // Let's generate one to be safe and consistent with our client-side logic.
-        const newUserId = generateUUID();
-
-        const { data: newUser, error: createError } = await supabase
-            .from('user_profiles')
-            .insert([
-                {
-                    id: newUserId,
-                    email: email,
-                    created_at: new Date().toISOString()
-                }
-            ])
-            .select()
-            .single();
-
-        if (createError) {
-            console.error('Error creating user:', createError);
-            throw createError;
-        }
-
-        // Also Initialize empty preferences for new user?
-        // We can do it lazily when they save settings, but creating empty record here is cleaner.
-        // But currently preferences are created on save. Let's keep it lazy to avoid complexity.
-
-        return NextResponse.json({
+        // 3. Return success with cookie
+        const response = NextResponse.json({
             success: true,
-            userId: newUser.id,
-            isNewUser: true
+            userId,
+            isNewUser
         });
+
+        // Set session cookie
+        response.cookies.set('session_user_id', userId, {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30, // 30 days
+            httpOnly: false,
+            sameSite: 'lax',
+        });
+
+        return response;
 
     } catch (error: any) {
         console.error('Login error:', error);

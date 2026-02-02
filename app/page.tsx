@@ -1,14 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Bell, CheckCircle2, Clock, Globe, Zap, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { COUNTRIES } from '@/lib/constants/countries';
 
 export default function LandingPage() {
+  const [step, setStep] = useState<'code' | 'email'>('code');
+  const [invitationCode, setInvitationCode] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!invitationCode) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch('/api/auth/verify-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: invitationCode }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStep('email');
+      } else {
+        alert(data.error || '无效的邀请码');
+      }
+    } catch (error) {
+      console.error('Verify code error:', error);
+      alert('验证失败，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +58,6 @@ export default function LandingPage() {
       const data = await response.json();
 
       if (data.success && data.userId) {
-        // Import dynamically to avoid SSR issues if any, though not strictly needed here
         const { setUserId } = await import('@/lib/user-id');
         setUserId(data.userId);
         window.location.href = '/dashboard';
@@ -58,40 +88,60 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            自动追踪申根国家签证预约。输入邮箱开始使用，您的设置将自动同步。
+            自动追踪申根国家签证预约。{step === 'code' ? '验证邀请码开始使用。' : '输入邮箱完成登录。'}
           </p>
 
           <div className="max-w-md mx-auto">
-            <form onSubmit={handleLogin} className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="email"
-                placeholder="输入您的邮箱"
-                className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <Button
-                type="submit"
-                size="lg"
-                className="px-8"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Clock className="mr-2 h-5 w-5 animate-spin" />
-                    登录中...
-                  </>
-                ) : (
-                  <>
-                    <Bell className="mr-2 h-5 w-5" />
-                    开始使用
-                  </>
-                )}
-              </Button>
-            </form>
+            {step === 'code' ? (
+              <form onSubmit={handleVerifyCode} className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="text"
+                  placeholder="输入邀请码"
+                  className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  value={invitationCode}
+                  onChange={(e) => setInvitationCode(e.target.value)}
+                  required
+                />
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="px-8"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Clock className="h-5 w-5 animate-spin" />
+                  ) : (
+                    '验证'
+                  )}
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleLogin} className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="email"
+                  placeholder="输入您的邮箱"
+                  className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoFocus
+                />
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="px-8"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Clock className="h-5 w-5 animate-spin" />
+                  ) : (
+                    '进入后台'
+                  )}
+                </Button>
+              </form>
+            )}
             <p className="text-sm text-gray-500 mt-3">
-              * 无需密码，新用户自动注册，老用户自动恢复设置
+              {step === 'code' ? '* 需拥有内测邀请码' : '* 邮箱将用于同步您的设置'}
             </p>
           </div>
         </div>
