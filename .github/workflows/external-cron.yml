@@ -1,0 +1,26 @@
+name: External Cron Trigger
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  trigger-vercel-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Vercel Cron Endpoint
+        env:
+          # You must add this secret in GitHub Repo Settings -> Secrets -> Actions
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          # REPLACE TEHIS WITH YOUR ACTUAL VERCEL DOMAIN
+          VERCEL_URL: "https://schengen-6ntkdfkx5-xiiqiings-projects.vercel.app"
+        run: |
+          echo "Triggering Vercel Cron at $VERCEL_URL/api/cron/check"
+          response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$VERCEL_URL/api/cron/check")
+          echo "Response Code: $response"
+          if [ "$response" -ne 200 ]; then
+            echo "Failed to trigger cron job"
+            exit 1
+          fi
