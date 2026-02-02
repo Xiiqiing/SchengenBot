@@ -270,7 +270,7 @@ export default function DashboardPage() {
                   🇬🇧 UK → 🇵🇹 Portugal Check
                 </CardTitle>
                 <CardDescription>
-                  Check Portugal visa appointments from Manchester (schengenappointments.com)
+                  Check Portugal visa appointments from Manchester.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
