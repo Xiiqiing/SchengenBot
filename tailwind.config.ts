@@ -24,14 +24,64 @@ const config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
+        // M3 Primary colors
         primary: {
           DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--foreground))",
+          foreground: "hsl(var(--on-primary))",
+          container: "hsl(var(--primary-container))",
         },
+        "on-primary": "hsl(var(--on-primary))",
+        "primary-container": "hsl(var(--primary-container))",
+        "on-primary-container": "hsl(var(--on-primary-container))",
+
+        // M3 Secondary colors
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          foreground: "hsl(var(--on-secondary))",
+          container: "hsl(var(--secondary-container))",
         },
+        "on-secondary": "hsl(var(--on-secondary))",
+        "secondary-container": "hsl(var(--secondary-container))",
+        "on-secondary-container": "hsl(var(--on-secondary-container))",
+
+        // M3 Tertiary colors
+        tertiary: {
+          DEFAULT: "hsl(var(--tertiary))",
+          foreground: "hsl(var(--on-tertiary))",
+          container: "hsl(var(--tertiary-container))",
+        },
+        "on-tertiary": "hsl(var(--on-tertiary))",
+        "tertiary-container": "hsl(var(--tertiary-container))",
+        "on-tertiary-container": "hsl(var(--on-tertiary-container))",
+
+        // M3 Error colors
+        error: {
+          DEFAULT: "hsl(var(--error))",
+          foreground: "hsl(var(--on-error))",
+          container: "hsl(var(--error-container))",
+        },
+        "on-error": "hsl(var(--on-error))",
+        "error-container": "hsl(var(--error-container))",
+        "on-error-container": "hsl(var(--on-error-container))",
+
+        // M3 Surface colors
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          variant: "hsl(var(--surface-variant))",
+        },
+        "on-surface": "hsl(var(--on-surface))",
+        "surface-variant": "hsl(var(--surface-variant))",
+        "on-surface-variant": "hsl(var(--on-surface-variant))",
+
+        // M3 Outline colors
+        outline: {
+          DEFAULT: "hsl(var(--outline))",
+          variant: "hsl(var(--outline-variant))",
+        },
+        "outline-variant": "hsl(var(--outline-variant))",
+
+        // Legacy compatibility
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -49,10 +99,6 @@ const config = {
           foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        "surface-container": {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
