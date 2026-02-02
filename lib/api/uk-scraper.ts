@@ -43,7 +43,7 @@ export class UKAppointmentScraper {
     visaType: string = 'tourism'
   ): Promise<UKAppointmentData> {
     const url = this.buildUrl(city, country, visaType);
-    
+
     try {
       const response = await axios.get(url, {
         headers: {
@@ -57,7 +57,7 @@ export class UKAppointmentScraper {
       return this.parseHTML(response.data, city, country, url);
     } catch (error) {
       console.error(`Error fetching ${url}:`, error);
-      
+
       // Return empty result on error
       return {
         city,
@@ -95,13 +95,16 @@ export class UKAppointmentScraper {
     const noAppointmentMatch = html.match(/No appointments available/i);
     if (noAppointmentMatch) {
       result.isAvailable = false;
-      
+
       // Try to get last checked time from "checked X ago" text
       const checkedMatch = html.match(/checked\s+(\d+\s+(?:minutes?|hours?|days?)\s+ago)/i);
       if (checkedMatch) {
         result.lastChecked = `checked ${checkedMatch[1]}`;
+      } else {
+        // Fallback: show when we actually checked
+        result.lastChecked = new Date().toLocaleString('zh-CN');
       }
-      
+
       return result;
     }
 
@@ -122,16 +125,16 @@ export class UKAppointmentScraper {
     // Parse individual appointment slots from table rows
     // Table structure: <tr><td>Date</td><td>Slots</td><td>Last seen</td></tr>
     const tableRowRegex = /<tr[^>]*>[\s\S]*?<td[^>]*>[\s\S]*?<th[^>]*class="[^"]*text-nowrap[^"]*"[^>]*>([\s\S]*?)<\/th>[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>[\s\S]*?<\/tr>/gi;
-    
+
     // Alternative: simpler pattern for slot rows
     const slotRowPattern = /<th[^>]*class="[^"]*text-nowrap[^"]*"[^>]*>([^<]+)<\/th>[\s\S]*?(\d+)\s+slots?\s+available[\s\S]*?<span[^>]*class="[^"]*badge[^"]*"[^>]*>([^<]+)<\/span>/gi;
-    
+
     let match;
     while ((match = slotRowPattern.exec(html)) !== null) {
       const date = match[1].trim();
       const slots = parseInt(match[2], 10);
       const lastSeen = match[3].trim();
-      
+
       result.slots.push({
         date,
         slotsAvailable: slots,
@@ -143,7 +146,7 @@ export class UKAppointmentScraper {
     if (result.slots.length === 0 && result.isAvailable) {
       // Look for date patterns followed by slot counts
       const simpleDatePattern = /(\d{1,2}\s+\w+\s+\(\w+\))[\s\S]*?(\d+)\s+slots?\s+available[\s\S]*?(\d+\s+(?:minutes?|hours?|days?)\s+ago)/gi;
-      
+
       while ((match = simpleDatePattern.exec(html)) !== null) {
         result.slots.push({
           date: match[1].trim(),
@@ -156,6 +159,9 @@ export class UKAppointmentScraper {
     // Get last checked time if we have slots
     if (result.slots.length > 0) {
       result.lastChecked = result.slots[0].lastSeen;
+    } else {
+      // Fallback: show current time in Chinese format
+      result.lastChecked = new Date().toLocaleString('zh-CN');
     }
 
     return result;
@@ -176,7 +182,7 @@ export class UKAppointmentScraper {
         check.visaType || 'tourism'
       );
       results.push(result);
-      
+
       // Small delay between requests to be respectful
       await new Promise(resolve => setTimeout(resolve, 500));
     }
