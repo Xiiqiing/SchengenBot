@@ -114,8 +114,8 @@ export async function GET(request: NextRequest) {
                 statusMsg += `\n🔗 <a href="${result.bookingLink}">直接预约链接</a>\n`;
               }
 
-              // Fire and forget (don't await to block response)
-              notificationService.sendCheckStatus(preferences.telegram_chat_id, botToken, statusMsg);
+              // Await notifications to ensure they are sent sequentially without being dropped
+              await notificationService.sendCheckStatus(preferences.telegram_chat_id, botToken, statusMsg);
 
               // Email notification for manual check
               if (preferences.email_enabled) {
@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
                 if (emailAddress) {
                   const subject = `🇪🇺 申根签证预约通知 - 手动检查结果 (${city} -> ${country})`;
                   const emailHtml = statusMsg.replace(/\n/g, '<br>');
-                  notificationService.sendEmailNotification(emailAddress, subject, emailHtml).catch(e => console.error('[ManualCheck] Email error:', e));
+                  await notificationService.sendEmailNotification(emailAddress, subject, emailHtml).catch(e => console.error('[ManualCheck] Email error:', e));
                 }
               }
             } else {

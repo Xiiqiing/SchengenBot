@@ -195,7 +195,7 @@ export class AppointmentService {
     );
 
     // Bildirim gönder
-    if (preferences.telegram_enabled || preferences.web_enabled) {
+    if (preferences.telegram_enabled || preferences.web_enabled || preferences.email_enabled) {
       await this.sendNotificationsForResults(userId, results, preferences);
     }
 
