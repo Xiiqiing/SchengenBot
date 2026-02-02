@@ -27,6 +27,7 @@ export default function SettingsPage() {
   const [botToken, setBotToken] = useState('');
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [testingEmail, setTestingEmail] = useState(false);
 
   useEffect(() => {
     loadPreferences();
@@ -108,6 +109,37 @@ export default function SettingsPage() {
       alert('测试过程中发生错误!');
     } finally {
       setTesting(false);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    if (!preferences.email_address) {
+      alert('请输入接收邮箱!');
+      return;
+    }
+
+    setTestingEmail(true);
+    try {
+      const response = await fetch('/api/email/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: preferences.email_address,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('✅ 测试邮件已发送! 请检查您的收件箱 (包括垃圾邮件文件夹)。');
+      } else {
+        alert(`❌ 发送失败: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Email test error:', error);
+      alert('测试过程中发生错误!');
+    } finally {
+      setTestingEmail(false);
     }
   };
 
@@ -340,6 +372,25 @@ export default function SettingsPage() {
                   <p className="text-xs text-gray-500 mt-1">
                     系统将通过此邮箱发送通知
                   </p>
+                  <Button
+                    onClick={handleTestEmail}
+                    disabled={testingEmail}
+                    variant="outline"
+                    size="sm"
+                    className="mt-3 w-full"
+                  >
+                    {testingEmail ? (
+                      <>
+                        <Clock className="mr-2 h-4 w-4 animate-spin" />
+                        发送中...
+                      </>
+                    ) : (
+                      <>
+                        <TestTube className="mr-2 h-4 w-4" />
+                        发送测试邮件
+                      </>
+                    )}
+                  </Button>
                 </div>
               )}
             </CardContent>
