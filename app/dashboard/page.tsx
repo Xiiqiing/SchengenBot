@@ -17,6 +17,7 @@ export default function DashboardPage() {
 
   // UK appointment state
   const [checkingUK, setCheckingUK] = useState(false);
+  const [checkProgress, setCheckProgress] = useState('');
   const [ukResults, setUkResults] = useState<any[]>([]);
   const [ukCheckCount, setUkCheckCount] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -73,25 +74,38 @@ export default function DashboardPage() {
 
     setCheckingUK(true);
     setUkResults([]);
+    setCheckProgress('准备开始...');
+
+    // Calculate total steps
+    const totalSteps = cities.length * countries.length;
+    let currentStep = 0;
 
     try {
-      const results: any[] = [];
-
       for (const city of cities) {
         for (const country of countries) {
+          currentStep++;
+          const cityObj = UK_CITIES.find(c => c.code === city);
+          const countryObj = COUNTRIES.find(c => c.code === country);
+          const cityName = cityObj ? cityObj.nameEn : city;
+          const countryName = countryObj ? countryObj.nameTr : country;
+
+          setCheckProgress(`正在检查 (${currentStep}/${totalSteps}): ${cityName} → ${countryName}`);
+
           try {
             const response = await fetch(`/api/appointments/check?source=UK&city=${city}&country=${country}`);
             const data = await response.json();
 
+            let resultItem;
+
             if (data.success) {
-              results.push({
+              resultItem = {
                 ...data.result,
                 city,
                 country,
                 checkedAt: data.checked_at
-              });
+              };
             } else {
-              results.push({
+              resultItem = {
                 city,
                 country,
                 isAvailable: false,
@@ -99,11 +113,15 @@ export default function DashboardPage() {
                 slots: [],
                 lastChecked: data.error || 'Error',
                 error: true
-              });
+              };
             }
+
+            // Incrementally add result
+            setUkResults(prev => [...prev, resultItem]);
+
           } catch (err) {
             console.error(`Error checking ${city}/${country}:`, err);
-            results.push({
+            setUkResults(prev => [...prev, {
               city,
               country,
               isAvailable: false,
@@ -111,18 +129,18 @@ export default function DashboardPage() {
               slots: [],
               lastChecked: 'Network error',
               error: true
-            });
+            }]);
           }
         }
       }
 
-      setUkResults(results);
       setUkCheckCount(prev => prev + 1);
     } catch (error) {
       console.error('UK Check error:', error);
       alert('检查失败!');
     } finally {
       setCheckingUK(false);
+      setCheckProgress('');
     }
   };
 
@@ -283,7 +301,7 @@ export default function DashboardPage() {
                   {checkingUK ? (
                     <>
                       <Clock className="mr-2 h-4 w-4 animate-spin" />
-                      正在检查...
+                      {checkProgress || '正在检查...'}
                     </>
                   ) : (
                     <>
