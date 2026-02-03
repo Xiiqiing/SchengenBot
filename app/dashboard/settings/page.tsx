@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, TestTube, ArrowLeft, Bell, Globe, Clock, Mail } from 'lucide-react';
+import { Save, TestTube, ArrowLeft, Bell, Globe, Clock, Mail, Settings } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/page-header';
@@ -170,6 +170,7 @@ export default function SettingsPage() {
         description="管理您的通知和监控偏好"
         backHref="/dashboard"
         backLabel="返回"
+        icon={<Settings className="w-5 h-5 text-[#f5f5f7]" />}
       />
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">

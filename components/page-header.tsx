@@ -9,35 +9,39 @@ import { ArrowLeft } from 'lucide-react';
 interface PageHeaderProps {
     title: string;
     description?: string;
+    icon?: React.ReactNode;
     backHref?: string;
     backLabel?: string;
 }
 
-export function PageHeader({ title, description, backHref, backLabel = "返回" }: PageHeaderProps) {
-    const { setTitle, setShowTitleInNav } = useScrollTitle();
+export function PageHeader({ title, description, icon, backHref, backLabel = "返回" }: PageHeaderProps) {
+    const { setTitle, setIcon, setBackHref, setShowTitleInNav } = useScrollTitle();
     const headerRef = useRef<HTMLDivElement>(null);
 
-    // Update title in context on mount
+    // Update context on mount
     useEffect(() => {
         setTitle(title);
-        return () => setTitle(''); // Cleanup
-    }, [title, setTitle]);
+        setIcon(icon || null);
+        setBackHref(backHref || null);
+
+        return () => {
+            setTitle('');
+            setIcon(null);
+            setBackHref(null);
+        };
+    }, [title, icon, backHref, setTitle, setIcon, setBackHref]);
 
     // Intersection observer to toggle visibility
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
-                // If header is NOT intersecting (scrolled out of view), show title in nav
-                // We use isIntersecting because when it's NOT intersecting (and we are scrolled down), we show title.
-                // Note: This logic assumes the header is at the top. If we scroll UP, it becomes intersecting again.
-                // We also check boundingClientRect.top to ensure we only trigger when scrolling DOWN past it, not unrelated visibility.
                 const isScrolledPast = !entry.isIntersecting && entry.boundingClientRect.top < 0;
                 setShowTitleInNav(isScrolledPast);
             },
             {
                 root: null,
                 threshold: 0,
-                rootMargin: "-48px 0px 0px 0px" // Offset for the fixed nav bar height
+                rootMargin: "-48px 0px 0px 0px"
             }
         );
 

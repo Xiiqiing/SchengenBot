@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 
 export function AppleGlobalNav() {
     const pathname = usePathname();
-    const { title, showTitleInNav } = useScrollTitle();
+    const { title, icon, backHref, showTitleInNav } = useScrollTitle();
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-[100] bg-[#161617]/80 backdrop-blur-md border-b border-white/5 h-[48px]">
@@ -32,10 +32,26 @@ export function AppleGlobalNav() {
                     </div>
 
                     <div className={cn(
-                        "transition-all duration-500 ease-in-out absolute transform pointer-events-none",
+                        "transition-all duration-500 ease-in-out absolute transform pointer-events-none flex items-center gap-2",
                         showTitleInNav ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                     )}>
-                        <span className="font-semibold tracking-tight text-sm text-[#f5f5f7] translate-y-[1px]">{title}</span>
+                        {/* If backHref exists, show a back button like UI */}
+                        {backHref ? (
+                            <Link href={backHref} className="flex items-center gap-1 text-[#2997ff] hover:opacity-80 transition-opacity pointer-events-auto cursor-pointer">
+                                <svg width="10" height="16" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform rotate-180 w-4 h-4">
+                                    <path d="M2.5 13L7.5 8L2.5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                                <div className="flex items-center gap-2 text-[#f5f5f7]">
+                                    {icon && <span className="text-[#f5f5f7]">{icon}</span>}
+                                    <span className="font-semibold tracking-tight text-sm translate-y-[1px]">{title}</span>
+                                </div>
+                            </Link>
+                        ) : (
+                            <div className="flex items-center gap-2 text-[#f5f5f7]">
+                                {icon && <span>{icon}</span>}
+                                <span className="font-semibold tracking-tight text-sm translate-y-[1px]">{title}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 

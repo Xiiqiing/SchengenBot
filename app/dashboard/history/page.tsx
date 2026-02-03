@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, Bell, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Bell, CheckCircle2, AlertCircle, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/page-header';
 import { COUNTRIES, formatDate } from '@/lib/constants/countries';
