@@ -12,6 +12,16 @@ export default function LandingPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
+  React.useEffect(() => {
+    // Check if user is already logged in
+    import('@/lib/user-id').then(({ getUserId }) => {
+      const userId = getUserId();
+      if (userId) {
+        window.location.href = '/dashboard';
+      }
+    });
+  }, []);
+
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!invitationCode) return;
@@ -75,7 +85,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-32 pb-24 flex flex-col items-center justify-center min-h-[85vh]">
+      <div className="container mx-auto px-4 pt-48 pb-24 flex flex-col items-center min-h-[85vh]">
         <div className="text-center max-w-4xl mx-auto space-y-6">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-[#1d1d1f] mb-4">
             Schengen

@@ -244,7 +244,7 @@ export default function DashboardPage() {
                   <div className="text-center py-12 bg-surface rounded-[24px] border-2 border-dashed border-outline/20">
                     <p className="text-on-surface-variant font-medium mb-6">尚未设置偏好，点击下方按钮开始配置</p>
                     <Link href="/dashboard/settings">
-                      <Button className="m3-button-pill bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90">
+                      <Button className="h-10 px-6 rounded-full bg-[#E9E9EA] text-black hover:bg-[#dcdcdd] font-medium text-[13px] shadow-none">
                         <Settings className="mr-2 h-4 w-4" />
                         立即配置
                       </Button>
@@ -255,7 +255,7 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleUKCheck}
                   disabled={checkingUK}
-                  className={`w-full h-16 rounded-full text-lg font-bold tracking-wider transition-all shadow-lg ${checkingUK ? 'bg-gray-100 text-gray-400' : 'bg-primary text-white hover:scale-[1.02] hover:shadow-xl shadow-blue-500/30'}`}
+                  className={`w-full h-12 rounded-full text-[15px] font-semibold transition-all shadow-sm ${checkingUK ? 'bg-gray-100 text-gray-400' : 'bg-[#0071e3] text-white hover:bg-[#0077ED] active:scale-[0.98]'}`}
                 >
                   {checkingUK ? (
                     <>
@@ -342,21 +342,21 @@ export default function DashboardPage() {
 
           {/* Right Panel - Recent Appointments */}
           <div className="lg:col-span-4 space-y-8">
-            <Card className="m3-card bg-surface border border-outline/10 h-full flex flex-col">
+            <Card className="bg-white rounded-2xl shadow-sm border-none p-2 h-full flex flex-col">
               <CardHeader className="p-6">
-                <CardTitle className="text-xl font-black">最近捕获记录</CardTitle>
-                <CardDescription className="text-sm font-medium tracking-tight">过去数小时内的发现记录</CardDescription>
+                <CardTitle className="text-xl font-bold text-[#1d1d1f]">最近捕获记录</CardTitle>
+                <CardDescription className="text-sm font-medium text-gray-500">过去数小时内的发现记录</CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0 flex-1 overflow-y-auto max-h-[70vh] custom-scrollbar">
                 <div className="space-y-4">
                   {appointments.length > 0 ? (
                     appointments.map((apt: any) => (
-                      <div key={apt.id} className="p-4 rounded-2xl bg-surface-variant/10 hover:bg-surface-variant/20 transition-all group">
+                      <div key={apt.id} className="p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all group">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-black text-sm flex items-center gap-1.5">
+                          <span className="font-bold text-sm text-[#1d1d1f] flex items-center gap-1.5">
                             {COUNTRIES.find(c => c.code === apt.country)?.flag} {apt.country}
                           </span>
-                          <span className="text-[10px] font-black text-on-surface-variant/40 uppercase bg-surface-variant/20 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold text-gray-500 uppercase bg-gray-200/50 px-2 py-0.5 rounded-full">
                             {formatDateTR(apt.appointment_date)}
                           </span>
                         </div>
