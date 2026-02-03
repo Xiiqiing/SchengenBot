@@ -127,7 +127,7 @@ export default function HistoryPage() {
                       <div className="space-y-3">
                         <div className="flex justify-between items-center py-2 border-b border-gray-50 text-[13px]">
                           <span className="text-gray-400 font-medium">预约日期</span>
-                          <span className="font-semibold text-gray-700">{formatDateTR(apt.appointment_date)}</span>
+                          <span className="font-semibold text-gray-700">{formatDate(apt.appointment_date)}</span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-b border-gray-50 text-[13px]">
                           <span className="text-gray-400 font-medium">签证类别</span>
