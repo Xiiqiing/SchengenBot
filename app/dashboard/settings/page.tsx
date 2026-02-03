@@ -164,22 +164,12 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-background text-on-surface">
       {/* Header */}
-      <header className="bg-surface/90 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard">
-              <Button variant="ghost" className="gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                返回主页
-              </Button>
-            </Link>
-            <div>
-              <h1 className="headline-medium text-on-surface">偏好设置</h1>
-              <p className="body-medium text-on-surface-variant">自定您的监控策略与通知方式</p>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="偏好设置"
+        description="管理您的通知和监控偏好"
+        backHref="/dashboard"
+        backLabel="返回"
+      />
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">
         <div className="space-y-8">

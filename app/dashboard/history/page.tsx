@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Calendar, Bell, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/page-header';
 import { COUNTRIES, formatDate } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -45,22 +46,12 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-[#f5f5f7]">
       {/* Header */}
-      <header className="bg-transparent pt-8 pb-6">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="rounded-full hover:bg-white/50 h-9 px-4 text-[#1d1d1f]">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                返回
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-[#1d1d1f]">历史记录</h1>
-              <p className="text-sm text-gray-500 font-medium tracking-tight">预约追踪档案</p>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="历史记录"
+        description="预约追踪档案"
+        backHref="/dashboard"
+        backLabel="返回"
+      />
 
       <main className="container mx-auto px-4 pb-12 max-w-6xl">
         {/* Tabs */}

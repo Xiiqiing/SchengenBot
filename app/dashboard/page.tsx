@@ -5,6 +5,7 @@ import { Bell, CheckCircle2, Clock, TrendingUp, Settings, History, Zap } from 'l
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { PageHeader } from '@/components/page-header';
 import { COUNTRIES, UK_CITIES, formatDate } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
