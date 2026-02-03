@@ -87,7 +87,7 @@ export default function DashboardPage() {
           const cityObj = UK_CITIES.find(c => c.code === city);
           const countryObj = COUNTRIES.find(c => c.code === country);
           const cityName = cityObj ? cityObj.nameEn : city;
-          const countryName = countryObj ? countryObj.nameTr : country;
+          const countryName = countryObj ? countryObj.name : country;
 
           setCheckProgress(`正在检查 (${currentStep}/${totalSteps}): ${cityName} → ${countryName}`);
 
