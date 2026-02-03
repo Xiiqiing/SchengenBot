@@ -252,7 +252,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
                 <div className="space-y-0.5">
                   <span className="body-large font-medium text-on-surface">开启 TG 通知</span>
-                  <p className="body-medium text-on-surface-variant">通过 Telegram Bot 接收秒级同步</p>
+                  <p className="body-medium text-on-surface-variant">通过 Telegram Bot 接收秒级同步：@visashengenuk_xq_bot</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
