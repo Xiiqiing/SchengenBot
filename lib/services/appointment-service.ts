@@ -163,7 +163,7 @@ export class AppointmentService {
       }
     }
 
-    totalFound = results.reduce((sum, r => sum + r.appointments.length, 0);
+    totalFound = results.reduce((sum, r) => sum + r.appointments.length, 0);
 
     // Save check history
     if (userId) {
