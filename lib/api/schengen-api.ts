@@ -1,6 +1,6 @@
 /**
  * Schengen Visa Appointments API Client
- * Harici API: https://api.schengenvisaappointments.com
+ * External API: https://api.schengenvisaappointments.com
  */
 
 export interface AppointmentData {
@@ -24,7 +24,7 @@ export class SchengenAppointmentAPI {
   private baseUrl = 'https://api.schengenvisaappointments.com/api/visa-list/';
 
   /**
-   * Tüm randevuları getir
+   * Get all appointments
    */
   async getAppointments(): Promise<AppointmentData[]> {
     try {
@@ -34,7 +34,7 @@ export class SchengenAppointmentAPI {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        cache: 'no-store', // Her zaman fresh data
+        cache: 'no-store', // Always fresh data
       });
 
       if (!response.ok) {
@@ -55,7 +55,7 @@ export class SchengenAppointmentAPI {
   }
 
   /**
-   * Randevuları filtrele
+   * Filter appointments
    */
   filterAppointments(
     appointments: AppointmentData[],
@@ -68,27 +68,27 @@ export class SchengenAppointmentAPI {
     } = options;
 
     return appointments.filter(apt => {
-      // Kaynak ülke kontrolü
+      // Source country check
       if (sourceCountry && apt.source_country !== sourceCountry) {
         return false;
       }
 
-      // Hedef ülke kontrolü
+      // Mission country check
       if (country && apt.mission_country.toLowerCase() !== country.toLowerCase()) {
         return false;
       }
 
-      // Şehir kontrolü
+      // City check
       if (city && !apt.center_name.toLowerCase().includes(city.toLowerCase())) {
         return false;
       }
 
-      // Randevu tarihi kontrolü (geçmiş tarihler hariç)
+      // Appointment date check (exclude past dates)
       if (apt.appointment_date) {
         const appointmentDate = new Date(apt.appointment_date);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         if (appointmentDate < today) {
           return false;
         }
@@ -99,7 +99,7 @@ export class SchengenAppointmentAPI {
   }
 
   /**
-   * Randevuları tarihe göre sırala
+   * Sort appointments by date
    */
   sortByDate(appointments: AppointmentData[]): AppointmentData[] {
     return [...appointments].sort((a, b) => {
@@ -110,7 +110,7 @@ export class SchengenAppointmentAPI {
   }
 
   /**
-   * Tek bir ülke ve şehir için randevu kontrol et
+   * Check appointments for a single country and city
    */
   async checkAvailability(country: string, city: string): Promise<AppointmentData[]> {
     const appointments = await this.getAppointments();
@@ -119,7 +119,7 @@ export class SchengenAppointmentAPI {
   }
 
   /**
-   * Çoklu ülke ve şehir için randevu kontrol et
+   * Check appointments for multiple countries and cities
    */
   async checkMultiple(
     countries: string[],
@@ -133,7 +133,7 @@ export class SchengenAppointmentAPI {
         const key = `${country}-${city}`;
         const filtered = this.filterAppointments(appointments, { country, city });
         const sorted = this.sortByDate(filtered);
-        
+
         if (sorted.length > 0) {
           results.set(key, sorted);
         }

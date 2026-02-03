@@ -5,7 +5,7 @@ import { Bell, CheckCircle2, Clock, TrendingUp, Settings, History, Zap } from 'l
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { COUNTRIES, UK_CITIES, formatDateTR } from '@/lib/constants/countries';
+import { COUNTRIES, UK_CITIES, formatDate } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
 
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                             return (
                               <div key={code} className="px-3 py-1.5 bg-primary-container text-on-primary-container rounded-full text-xs font-bold flex items-center gap-1.5">
                                 <span>{country?.flag}</span>
-                                {country?.nameTr || code}
+                                {country?.name || code}
                               </div>
                             );
                           })
@@ -357,7 +357,7 @@ export default function DashboardPage() {
                             {COUNTRIES.find(c => c.code === apt.country)?.flag} {apt.country}
                           </span>
                           <span className="text-[10px] font-bold text-gray-500 uppercase bg-gray-200/50 px-2 py-0.5 rounded-full">
-                            {formatDateTR(apt.appointment_date)}
+                            {formatDate(apt.appointment_date)}
                           </span>
                         </div>
                         <p className="text-xs font-medium text-on-surface-variant mb-3">{apt.center_name}</p>

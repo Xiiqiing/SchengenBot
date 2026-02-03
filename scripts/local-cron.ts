@@ -1,17 +1,17 @@
 /**
- * Local Development için Cron Job Simülatörü
+ * Cron Job Simulator for Local Development
  * 
- * Kullanım: npm run cron:local
+ * Usage: npm run cron:local
  * 
- * Bu script, local development'ta otomatik kontrolü simüle eder.
- * Production'da Vercel Cron Job kullanılır.
+ * This script simulates automatic checks in local development.
+ * Vercel Cron Job is used in Production.
  */
 
 import fetch from 'node-fetch';
 
 const API_URL = process.env.API_URL || 'http://localhost:3000';
 const CRON_SECRET = process.env.CRON_SECRET || 'change-this-to-a-random-secret-key';
-const CHECK_INTERVAL = 5 * 60 * 1000; // 5 dakika (milisaniye)
+const CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes (milliseconds)
 
 async function runCronCheck() {
   try {
@@ -24,41 +24,41 @@ async function runCronCheck() {
     });
 
     const data = await response.json() as any;
-    const timestamp = new Date().toLocaleString('tr-TR');
+    const timestamp = new Date().toLocaleString();
 
     if (response.ok) {
-      console.log(`[${timestamp}] ✅ Kontrol başarılı:`);
-      console.log(`   - Kontrol edilen kullanıcı: ${data.checked || 0}`);
-      console.log(`   - Bulunan randevu: ${data.results?.reduce((sum: number, r: any) => sum + (r.found || 0), 0) || 0}`);
+      console.log(`[${timestamp}] ✅ Check successful:`);
+      console.log(`   - Users checked: ${data.checked || 0}`);
+      console.log(`   - Appointments found: ${data.results?.reduce((sum: number, r: any) => sum + (r.found || 0), 0) || 0}`);
     } else {
-      console.error(`[${timestamp}] ❌ Hata:`, data.error || 'Bilinmeyen hata');
+      console.error(`[${timestamp}] ❌ Error:`, data.error || 'Unknown error');
     }
   } catch (error: any) {
-    const timestamp = new Date().toLocaleString('tr-TR');
-    console.error(`[${timestamp}] ❌ Bağlantı hatası:`, error.message);
+    const timestamp = new Date().toLocaleString();
+    console.error(`[${timestamp}] ❌ Connection error:`, error.message);
   }
 }
 
-// İlk kontrolü hemen yap
-console.log('🚀 Local Cron Job başlatıldı');
+// Perform first check immediately
+console.log('🚀 Local Cron Job started');
 console.log(`📡 API URL: ${API_URL}`);
-console.log(`⏰ Kontrol sıklığı: 5 dakika`);
+console.log(`⏰ Check interval: 5 minutes`);
 console.log('---');
 runCronCheck();
 
-// Her 5 dakikada bir kontrol et
+// Check every 5 minutes
 setInterval(() => {
   runCronCheck();
 }, CHECK_INTERVAL);
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-  console.log('\n👋 Cron job durduruluyor...');
+  console.log('\n👋 Stopping Cron job...');
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  console.log('\n👋 Cron job durduruluyor...');
+  console.log('\n👋 Stopping Cron job...');
   process.exit(0);
 });
 

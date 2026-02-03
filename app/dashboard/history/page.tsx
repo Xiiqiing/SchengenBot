@@ -109,7 +109,7 @@ export default function HistoryPage() {
                           <span className="text-4xl filter drop-shadow-sm transition-transform group-hover:scale-110 duration-300">{country?.flag}</span>
                           <div>
                             <h3 className="font-bold text-lg text-[#1d1d1f] leading-tight">
-                              {country?.nameTr || apt.country}
+                              {country?.name || apt.country}
                             </h3>
                             <p className="text-[13px] font-medium text-gray-500 mt-0.5">
                               {apt.center_name}

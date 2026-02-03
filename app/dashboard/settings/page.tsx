@@ -205,7 +205,7 @@ export default function SettingsPage() {
                       : 'border-transparent bg-white shadow-sm hover:shadow-md hover:scale-[1.02]'}`}
                   >
                     <div className="text-3xl filter drop-shadow-sm">{country.flag}</div>
-                    <div className={`text-sm font-semibold ${preferences.countries.includes(country.code) ? 'text-primary' : 'text-gray-900'}`}>{country.nameTr}</div>
+                    <div className={`text-sm font-semibold ${preferences.countries.includes(country.code) ? 'text-primary' : 'text-gray-900'}`}>{country.name}</div>
                   </button>
                 ))}
               </div>

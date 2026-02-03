@@ -1,6 +1,6 @@
 /**
- * Randevu Servisi
- * API kontrolü, filtreleme, bildirim gönderme
+ * Appointment Service
+ * API check, filtering, sending notifications
  */
 
 import { schengenAPI } from '../api/schengen-api';
@@ -27,7 +27,7 @@ export interface CheckResult {
 
 export class AppointmentService {
   /**
-   * Tek bir ülke ve şehir için kontrol
+   * Check for a single country and city
    */
   async checkSingle(
     country: string,
@@ -43,7 +43,7 @@ export class AppointmentService {
       checked_at: new Date(),
     };
 
-    // Kullanıcı varsa veritabanına kaydet
+    // Save if user exists and appointments found
     if (userId && appointments.length > 0) {
       await this.saveAppointments(userId, appointments);
     }
@@ -53,14 +53,14 @@ export class AppointmentService {
 
 
   /**
-   * Çoklu ülke ve şehir için kontrol
+   * Check multiple countries and cities
    */
   async checkMultiple(
     countries: string[],
     cities: string[],
     userId?: string
   ): Promise<CheckResult[]> {
-    // 1. Şehirleri ayır (UK vs Diğerleri)
+    // 1. Separate cities (UK vs Others)
     const ukCityCodes = UK_CITIES.map(c => c.code);
     const ukCitiesToCheck = cities.filter(c => ukCityCodes.includes(c));
     const otherCitiesToCheck = cities.filter(c => !ukCityCodes.includes(c));
@@ -68,7 +68,7 @@ export class AppointmentService {
     const results: CheckResult[] = [];
     let totalFound = 0;
 
-    // 2. Diğer şehirleri kontrol et (Mevcut API)
+    // 2. Check other cities (Existing API)
     if (otherCitiesToCheck.length > 0) {
       try {
         const resultsMap = await schengenAPI.checkMultiple(countries, otherCitiesToCheck);
@@ -84,7 +84,7 @@ export class AppointmentService {
               checked_at: new Date(),
             });
 
-            // Veritabanına kaydet
+            // Save to DB
             if (userId) {
               await this.saveAppointments(userId, appointments);
             }
@@ -95,10 +95,10 @@ export class AppointmentService {
       }
     }
 
-    // 3. UK şehirlerini kontrol et (Scraper)
+    // 3. Check UK cities (Scraper)
     if (ukCitiesToCheck.length > 0) {
       try {
-        // Her şehir-ülke kombinasyonu için kontrol oluştur
+        // Create check for each city-country combination
         const ukChecks = [];
         for (const city of ukCitiesToCheck) {
           for (const country of countries) {
@@ -110,9 +110,9 @@ export class AppointmentService {
 
         for (const res of ukResults) {
           if (res.isAvailable && res.slots.length > 0) {
-            // UKAppointmentData -> AppointmentData dönüşümü
+            // UKAppointmentData -> AppointmentData conversion
             const appointments: AppointmentData[] = res.slots.map((slot, index) => {
-              // Tarihi parse et (örn: "03 Feb (Tue)")
+              // Parse date (e.g., "03 Feb (Tue)")
               const dateParts = slot.date.split(' '); // ["03", "Feb", "(Tue)"]
               const day = parseInt(dateParts[0]);
               const monthStr = dateParts[1];
@@ -125,7 +125,7 @@ export class AppointmentService {
               const month = monthMap[monthStr] || 0;
               let year = now.getFullYear();
 
-              // Eğer ay geçmişse, sonraki yıl demektir
+              // If month is past, it means next year
               if (month < now.getMonth()) {
                 year++;
               }
@@ -134,7 +134,7 @@ export class AppointmentService {
               const dateStr = date.toISOString().split('T')[0];
 
               return {
-                id: Date.now() + index, // Geçici ID
+                id: Date.now() + index, // Temporary ID
                 source_country: 'UK',
                 mission_country: res.country,
                 center_name: res.city,
@@ -152,7 +152,7 @@ export class AppointmentService {
               checked_at: new Date(),
             });
 
-            // Veritabanına kaydet
+            // Save to DB
             if (userId) {
               await this.saveAppointments(userId, appointments);
             }
@@ -163,9 +163,9 @@ export class AppointmentService {
       }
     }
 
-    totalFound = results.reduce((sum, r) => sum + r.appointments.length, 0);
+    totalFound = results.reduce((sum, r => sum + r.appointments.length, 0);
 
-    // Kontrol geçmişini kaydet
+    // Save check history
     if (userId) {
       await createCheckHistory({
         user_id: userId,
@@ -179,7 +179,7 @@ export class AppointmentService {
   }
 
   /**
-   * Kullanıcı tercihlerine göre otomatik kontrol
+   * Automatic check based on user preferences
    */
   async checkForUser(userId: string): Promise<CheckResult[]> {
     const preferences = await getUserPreferences(userId);
@@ -194,7 +194,7 @@ export class AppointmentService {
       userId
     );
 
-    // Bildirim gönder
+    // Send notifications
     if (preferences.telegram_enabled || preferences.web_enabled || preferences.email_enabled) {
       await this.sendNotificationsForResults(userId, results, preferences);
     }
@@ -203,7 +203,7 @@ export class AppointmentService {
   }
 
   /**
-   * Randevuları veritabanına kaydet
+   * Save appointments to database
    */
   private async saveAppointments(
     userId: string,
@@ -229,7 +229,7 @@ export class AppointmentService {
   }
 
   /**
-   * Sonuçlar için bildirim gönder
+   * Send notifications for results
    */
   private async sendNotificationsForResults(
     userId: string,
@@ -244,7 +244,7 @@ export class AppointmentService {
     for (const result of results) {
       if (result.appointments.length === 0) {
         // if (preferences.telegram_enabled && preferences.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
-        //   const statusMsg = `🔍 <b>自动检查 (Cron): ${result.city} -> ${result.country}</b>\n❌ 暂无可用名额。`;
+        //   const statusMsg = `🔍 <b>Automatic Check (Cron): ${result.city} -> ${result.country}</b>\n❌ No slots available.`;
         //   notificationService.sendCheckStatus(preferences.telegram_chat_id, process.env.TELEGRAM_BOT_TOKEN, statusMsg).catch(e => console.warn(e));
         // }
         continue;
@@ -270,9 +270,9 @@ export class AppointmentService {
           }
         );
 
-        // Randevuları bildirildi olarak işaretle
+        // Mark appointments as notified
         for (const apt of result.appointments) {
-          // Appointment ID'yi bul ve işaretle
+          // Find appointment ID and mark
           // TODO: Implement
         }
       } catch (error) {
@@ -282,7 +282,7 @@ export class AppointmentService {
   }
 
   /**
-   * İstatistikler
+   * Statistics
    */
   async getStats(userId: string) {
     // TODO: Implement detailed stats

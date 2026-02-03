@@ -1,6 +1,6 @@
 /**
  * POST /api/appointments/check
- * Manuel randevu kontrolü
+ * Manual appointment check
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { countries, cities, userId } = body;
 
-    // Validasyon
+    // Validation
     if (!countries || !Array.isArray(countries) || countries.length === 0) {
       return NextResponse.json(
         { error: 'Countries array is required' },
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Kontrol yap
+    // Perform check
     const results = await appointmentService.checkMultiple(
       countries,
       cities,

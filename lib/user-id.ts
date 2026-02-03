@@ -1,12 +1,12 @@
 /**
- * Kullanıcı ID Yönetimi
- * localStorage'da UUID saklar ve yönetir
+ * User ID Management
+ * Stores and manages UUID in localStorage
  */
 
 const USER_ID_KEY = 'schengen_bot_user_id';
 
 /**
- * Geçerli UUID formatı kontrolü
+ * Check for valid UUID format
  */
 function isValidUUID(uuid: string): boolean {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -14,7 +14,7 @@ function isValidUUID(uuid: string): boolean {
 }
 
 /**
- * Yeni UUID oluştur
+ * Generate new UUID
  */
 export function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -25,7 +25,7 @@ export function generateUUID(): string {
 }
 
 /**
- * Kullanıcı ID'sini ayarla (Login sonrası)
+ * Set User ID (After Login)
  */
 export function setUserId(id: string): void {
   if (typeof window === 'undefined') return;
@@ -40,36 +40,36 @@ export function setUserId(id: string): void {
 }
 
 /**
- * Kullanıcı ID'sini al veya oluştur
- * localStorage'da saklar
+ * Get or create User ID
+ * Stores in localStorage
  */
 export function getOrCreateUserId(): string {
   if (typeof window === 'undefined') {
-    // Server-side: rastgele UUID döndür (geçici)
+    // Server-side: return random UUID (temporary)
     return generateUUID();
   }
 
   try {
-    // localStorage'dan al
+    // Get from localStorage
     const storedId = localStorage.getItem(USER_ID_KEY);
 
     if (storedId && isValidUUID(storedId)) {
       return storedId;
     }
 
-    // Geçersiz veya yoksa yeni oluştur
+    // Create new if invalid or missing
     const newId = generateUUID();
     localStorage.setItem(USER_ID_KEY, newId);
     return newId;
   } catch (error) {
-    // localStorage hatası: yeni UUID oluştur
+    // localStorage error: generate new UUID
     console.warn('localStorage error, generating new UUID:', error);
     return generateUUID();
   }
 }
 
 /**
- * Kullanıcı ID'sini al (oluşturmaz)
+ * Get User ID (Does not create)
  */
 export function getUserId(): string | null {
   if (typeof window === 'undefined') return null;
@@ -83,7 +83,7 @@ export function getUserId(): string | null {
 }
 
 /**
- * Kullanıcı ID'sini temizle
+ * Clear User ID
  */
 export function clearUserId(): void {
   if (typeof window === 'undefined') return;

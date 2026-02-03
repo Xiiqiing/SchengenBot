@@ -1,11 +1,11 @@
 /**
- * Bildirim Servisi
- * Telegram, Email, Web bildirimleri
+ * Notification Service
+ * Telegram, Email, Web notifications
  */
 
 import { Resend } from 'resend';
 import { createNotification } from '../supabase/client';
-import { formatDateTR, getCountryByCode } from '../constants/countries';
+import { formatDate, getCountryByCode } from '../constants/countries';
 import type { AppointmentData } from '../api/schengen-api';
 
 interface NotificationOptions {
@@ -35,7 +35,7 @@ export class NotificationService {
   }
 
   /**
-   * Telegram bildirimi gönder
+   * Send Telegram notification
    */
   async sendTelegramNotification(
     chatId: string,
@@ -72,10 +72,7 @@ export class NotificationService {
   }
 
   /**
-   * Email bildirimi gönder
-   */
-  /**
-   * Email bildirimi gönder
+   * Send Email notification
    */
   async sendEmailNotification(
     to: string,
@@ -111,7 +108,7 @@ export class NotificationService {
   }
 
   /**
-   * Randevu mesajı formatla
+   * Format appointment message
    */
   formatAppointmentMessage(appointments: AppointmentData[]): string {
     if (appointments.length === 0) return '';
@@ -119,12 +116,12 @@ export class NotificationService {
     const first = appointments[0];
     const country = getCountryByCode(first.mission_country);
 
-    let message = `🎉 <b>发现 ${country?.nameTr || first.mission_country} 可预约名额!</b>\n\n`;
+    let message = `🎉 <b>发现 ${country?.name || first.mission_country} 可预约名额!</b>\n\n`;
 
     appointments.forEach((apt, index) => {
       if (index > 0) message += '\n━━━━━━━━━━━━━━━━━━━━\n\n';
 
-      message += `📅 <b>日期:</b> ${formatDateTR(apt.appointment_date)}\n`;
+      message += `📅 <b>日期:</b> ${formatDate(apt.appointment_date)}\n`;
       message += `🏢 <b>中心:</b> ${apt.center_name}\n`;
       message += `📋 <b>类别:</b> ${apt.visa_category}\n`;
 
@@ -141,7 +138,7 @@ export class NotificationService {
   }
 
   /**
-   * Toplu bildirim gönder
+   * Send bulk notifications
    */
   async sendAppointmentNotifications(
     appointments: AppointmentData[],
@@ -150,7 +147,7 @@ export class NotificationService {
     const message = this.formatAppointmentMessage(appointments);
     const results: Array<{ type: string; success: boolean; error?: string }> = [];
 
-    // Telegram bildirimi
+    // Telegram notification
     if (options.telegram?.enabled && options.telegram.chatId && options.telegram.botToken) {
       try {
         const success = await this.sendTelegramNotification(
@@ -161,7 +158,7 @@ export class NotificationService {
 
         results.push({ type: 'telegram', success });
 
-        // Veritabanına kaydet
+        // Save to DB
         await createNotification({
           user_id: options.userId,
           appointment_id: options.appointmentId,
@@ -187,7 +184,7 @@ export class NotificationService {
       }
     }
 
-    // Email bildirimi
+    // Email notification
     if (options.email?.enabled && options.email.address && this.resend) {
       const subject = `申根签证SLOT通知 - 发现 ${appointments.length} 个名额`;
       const emailHtml = message.replace(/\n/g, '<br>');
@@ -223,7 +220,7 @@ export class NotificationService {
       }
     }
 
-    // Web bildirimi
+    // Web notification
     if (options.web?.enabled) {
       results.push({ type: 'web', success: true });
 
@@ -238,7 +235,7 @@ export class NotificationService {
   }
 
   /**
-   * Test bildirimi gönder
+   * Send test notification
    */
   async sendTestNotification(
     chatId: string,
