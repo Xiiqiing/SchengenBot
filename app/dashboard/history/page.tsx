@@ -51,6 +51,7 @@ export default function HistoryPage() {
         description="预约追踪档案"
         backHref="/dashboard"
         backLabel="返回"
+        icon={<History className="w-5 h-5 text-[#f5f5f7]" />}
       />
 
       <main className="container mx-auto px-4 pb-12 max-w-6xl">
