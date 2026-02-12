@@ -13,12 +13,10 @@
     "Dashboard": {
         "nav": {
             "dashboard": "Dashboard",
-            "dashboard": "Dashboard",
             "settings": "Settings",
             "history": "History",
             "logout": "Logout",
-            "backLabel": "Back""history": "History",
-            "logout": "Logout"
+            "backLabel": "Back"
         },
         "navItems": {
             "dashboard": "Dashboard",
