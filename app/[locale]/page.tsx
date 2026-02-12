@@ -141,9 +141,10 @@ export default function LandingPage() {
                     className="w-full rounded-full h-[36px] bg-[#0071e3] text-white hover:bg-[#0077ED] shadow-sm text-[14px] font-medium transition-all active:scale-[0.98]"
                     disabled={loading}
                   >
-                    'Login...'
+                    {loading ? (
+                      'Login...'
                     ) : (
-                    t('buttonLogin')
+                      t('buttonLogin')
                     )}
                   </Button>
                 </form>
