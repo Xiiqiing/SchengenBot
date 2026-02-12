@@ -59,14 +59,26 @@ export function AppleGlobalNav() {
                 {/* Desktop Nav */}
                 <div className="flex items-center gap-6">
                     {NAV_ITEMS.map((item) => {
-                        const isActive = pathname === item.href;
+                        const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
+                        // Ensure we don't double prefix if href already has locale (though here they are static)
+                        // Actually, since we are in [locale] layout, we should probably get the locale and prefix it.
+                        // But simpler approach for now:
+                        // The items are: /dashboard, /dashboard/history, /dashboard/settings
+                        // We need to inject the current locale from the path.
+                        const segments = pathname?.split('/') || [];
+                        const currentLocale = segments[1] || 'zh'; // Default to zh if missing
+                        const localizedHref = `/${currentLocale}${item.href}`;
+
+                        // Check active against localized path
+                        const isActiveLocalized = pathname === localizedHref;
+
                         return (
                             <Link
                                 key={item.href}
-                                href={item.href}
+                                href={localizedHref}
                                 className={cn(
                                     "text-[12px] font-medium transition-colors hover:text-white",
-                                    isActive ? "text-white" : "text-[#d6d6d6]/80"
+                                    isActiveLocalized ? "text-white" : "text-[#d6d6d6]/80"
                                 )}
                             >
                                 {item.name}
