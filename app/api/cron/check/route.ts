@@ -1,9 +1,9 @@
 /**
  * GET /api/cron/check
- * Otomatik randevu kontrolü (Vercel Cron Job)
+ * Automated appointment check (Vercel Cron Job)
  * 
  * Vercel Cron: https://vercel.com/docs/cron-jobs
- * vercel.json dosyasına cron job ekleyin
+ * Add cron job to vercel.json file
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -12,7 +12,7 @@ import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
-    // Cron secret kontrolü (güvenlik için)
+    // Cron secret check (for security)
     const authHeader = request.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET?.trim();
 
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Otomatik kontrol aktif olan kullanıcıları getir
+    // Get users with auto-check enabled
     const { data: activeUsers, error } = await supabase
       .from('user_preferences')
       .select('user_id, countries, cities, telegram_enabled, web_enabled, check_frequency')
@@ -76,13 +76,13 @@ export async function GET(request: NextRequest) {
 
     const results = [];
 
-    // Her kullanıcı için kontrol yap
+    // Check for each user
     for (const user of activeUsers) {
       try {
-        // Kontrol sıklığına uyuyor mu?
-        const frequency = user.check_frequency || 60; // Varsayılan 60 dk
+        // Does it match check frequency?
+        const frequency = user.check_frequency || 60; // Default 60 min
 
-        // Son kontrol zamanını al
+        // Get last check time
         const { data: lastCheck } = await supabase
           .from('check_history')
           .select('checked_at')
@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
           const now = new Date().getTime();
           const diffMinutes = (now - lastCheckTime) / (1000 * 60);
 
-          // Eğer son kontrol üzerinden geçen süre, belirlenen frekanstan azsa atla
+          // If time elapsed since last check is less than frequency, skip
           if (diffMinutes < frequency) {
             results.push({
               userId: user.user_id,

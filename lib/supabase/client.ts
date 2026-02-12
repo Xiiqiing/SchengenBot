@@ -1,5 +1,5 @@
 /**
- * Supabase Client ve CRUD İşlemleri
+ * Supabase Client and CRUD Operations
  */
 
 import { supabase } from '../supabase';
@@ -13,7 +13,7 @@ import type {
 } from './types';
 
 // ============================================
-// USER PROFILE İŞLEMLERİ
+// USER PROFILE OPERATIONS
 // ============================================
 
 export async function createUserProfile(data: Partial<UserProfile>) {
@@ -70,7 +70,7 @@ export async function updateUserProfile(userId: string, data: Partial<UserProfil
 }
 
 // ============================================
-// USER PREFERENCES İŞLEMLERİ
+// USER PREFERENCES OPERATIONS
 // ============================================
 
 export async function createUserPreferences(data: Partial<UserPreferences>) {
@@ -116,11 +116,11 @@ export async function updateUserPreferences(userId: string, data: Partial<UserPr
 export async function upsertUserPreferences(userId: string, data: Partial<UserPreferences>) {
   if (!supabase) throw new Error('Supabase not initialized');
 
-  // Önce mevcut kaydı kontrol et
+  // Check existing record first
   const existing = await getUserPreferences(userId);
 
   if (existing) {
-    // Varsa güncelle
+    // Update if exists
     const { data: prefs, error } = await supabase
       .from('user_preferences')
       .update({ ...data, user_id: userId })
@@ -131,7 +131,7 @@ export async function upsertUserPreferences(userId: string, data: Partial<UserPr
     if (error) throw error;
     return prefs as UserPreferences;
   } else {
-    // Yoksa oluştur
+    // Create if not exists
     const { data: prefs, error } = await supabase
       .from('user_preferences')
       .insert([{ ...data, user_id: userId }])
@@ -144,7 +144,7 @@ export async function upsertUserPreferences(userId: string, data: Partial<UserPr
 }
 
 // ============================================
-// APPOINTMENT İŞLEMLERİ
+// APPOINTMENT OPERATIONS
 // ============================================
 
 export async function createAppointment(data: Partial<Appointment>) {
@@ -203,7 +203,7 @@ export async function markAppointmentNotified(appointmentId: string) {
 }
 
 // ============================================
-// NOTIFICATION HISTORY İŞLEMLERİ
+// NOTIFICATION HISTORY OPERATIONS
 // ============================================
 
 export async function createNotification(data: Partial<NotificationHistory>) {
@@ -234,7 +234,7 @@ export async function getUserNotifications(userId: string, limit = 100) {
 }
 
 // ============================================
-// CHECK HISTORY İŞLEMLERİ
+// CHECK HISTORY OPERATIONS
 // ============================================
 
 export async function createCheckHistory(data: Partial<CheckHistory>) {
@@ -265,7 +265,7 @@ export async function getUserCheckHistory(userId: string, limit = 50) {
 }
 
 // ============================================
-// STATS İŞLEMLERİ
+// STATS OPERATIONS
 // ============================================
 
 export async function getUserStats(userId: string) {
@@ -282,7 +282,7 @@ export async function getUserStats(userId: string) {
 }
 
 // ============================================
-// BULK İŞLEMLER
+// BULK OPERATIONS
 // ============================================
 
 export async function bulkCreateAppointments(appointments: Partial<Appointment>[]) {

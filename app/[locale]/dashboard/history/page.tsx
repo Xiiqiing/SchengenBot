@@ -8,7 +8,12 @@ import { COUNTRIES, formatDate } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
+import { useTranslations, useFormatter } from 'next-intl';
+
 export default function HistoryPage() {
+  const t = useTranslations('History');
+  const tCountries = useTranslations('Countries');
+  const format = useFormatter();
   const [appointments, setAppointments] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'appointments' | 'notifications'>('appointments');
@@ -47,10 +52,10 @@ export default function HistoryPage() {
     <div className="min-h-screen bg-[#f5f5f7]">
       {/* Header */}
       <PageHeader
-        title="历史记录"
-        description="预约追踪档案"
+        title={t('title')}
+        description={t('description')}
         backHref="/dashboard"
-        backLabel="返回"
+        backLabel={t('backLabel') || 'Back'}
         icon={<History className="w-5 h-5 text-[#f5f5f7]" />}
       />
 
@@ -67,7 +72,7 @@ export default function HistoryPage() {
             )}
           >
             <Calendar className="w-4 h-4 mr-2" />
-            预约 ({appointments.length})
+            {t('tabs.appointments')} ({appointments.length})
           </button>
           <button
             onClick={() => setActiveTab('notifications')}
@@ -79,7 +84,7 @@ export default function HistoryPage() {
             )}
           >
             <Bell className="w-4 h-4 mr-2" />
-            通知 ({notifications.length})
+            {t('tabs.notifications')} ({notifications.length})
           </button>
         </div>
 
@@ -101,7 +106,8 @@ export default function HistoryPage() {
                           <span className="text-4xl filter drop-shadow-sm transition-transform group-hover:scale-110 duration-300">{country?.flag}</span>
                           <div>
                             <h3 className="font-bold text-lg text-[#1d1d1f] leading-tight">
-                              {country?.name || apt.country}
+                              {/* Try to translate country name, fallback to hardcoded name or code */}
+                              {country ? tCountries(country.code) : apt.country}
                             </h3>
                             <p className="text-[13px] font-medium text-gray-500 mt-0.5">
                               {apt.center_name}
@@ -112,28 +118,33 @@ export default function HistoryPage() {
                           "px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider",
                           apt.notified ? "bg-green-100/80 text-green-700" : "bg-gray-100 text-gray-500"
                         )}>
-                          {apt.notified ? '已通知' : '待处理'}
+                          {apt.notified ? t('status.notified') : t('status.pending')}
                         </div>
                       </div>
 
                       <div className="space-y-3">
                         <div className="flex justify-between items-center py-2 border-b border-gray-50 text-[13px]">
-                          <span className="text-gray-400 font-medium">预约日期</span>
-                          <span className="font-semibold text-gray-700">{formatDate(apt.appointment_date)}</span>
+                          <span className="text-gray-400 font-medium">{t('labels.date')}</span>
+                          <span className="font-semibold text-gray-700">
+                            {/* Parse date string and format */}
+                            {format.dateTime(new Date(apt.appointment_date), { year: 'numeric', month: 'long', day: 'numeric' })}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-b border-gray-50 text-[13px]">
-                          <span className="text-gray-400 font-medium">签证类别</span>
+                          <span className="text-gray-400 font-medium">{t('labels.category')}</span>
                           <span className="font-semibold text-gray-700">{apt.visa_category}</span>
                         </div>
                         {apt.visa_subcategory && (
                           <div className="flex justify-between items-center py-2 border-b border-gray-50 text-[13px]">
-                            <span className="text-gray-400 font-medium">子类别</span>
+                            <span className="text-gray-400 font-medium">{t('labels.subcategory')}</span>
                             <span className="font-semibold text-gray-700 truncate max-w-[150px]">{apt.visa_subcategory}</span>
                           </div>
                         )}
                         <div className="flex justify-between items-center pt-1 text-[13px]">
-                          <span className="text-gray-400 font-medium">发现时间</span>
-                          <span className="font-semibold text-gray-700">{new Date(apt.created_at).toLocaleDateString()}</span>
+                          <span className="text-gray-400 font-medium">{t('labels.foundAt')}</span>
+                          <span className="font-semibold text-gray-700">
+                            {format.dateTime(new Date(apt.created_at), { dateStyle: 'medium' })}
+                          </span>
                         </div>
                       </div>
 
@@ -145,7 +156,7 @@ export default function HistoryPage() {
                             rel="noopener noreferrer"
                             className="flex items-center justify-center w-full h-9 bg-[#0071e3] hover:bg-[#0077ED] text-white text-[13px] font-semibold rounded-full transition-all active:scale-95 shadow-sm hover:shadow"
                           >
-                            立即预约
+                            {t('bookNow') || 'Book Now'}
                           </a>
                         </div>
                       )}
@@ -158,9 +169,9 @@ export default function HistoryPage() {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                   <Calendar className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">暂无预约记录</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('emptyAppointments.title')}</h3>
                 <p className="text-gray-500 mt-2 max-w-sm">
-                  机器人正在后台持续监控。一旦发现新的预约名额，它们会立即显示在这里。
+                  {t('emptyAppointments.description')}
                 </p>
               </div>
             )
@@ -181,7 +192,7 @@ export default function HistoryPage() {
                         <div>
                           <span className="block font-bold text-[#1d1d1f] capitalize">{notif.type}</span>
                           <span className="text-xs text-gray-400 font-medium">
-                            {new Date(notif.sent_at).toLocaleString('zh-CN')}
+                            {format.dateTime(new Date(notif.sent_at), { dateStyle: 'short', timeStyle: 'short' })}
                           </span>
                         </div>
                       </div>
@@ -206,9 +217,9 @@ export default function HistoryPage() {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                   <Bell className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">通知列表为空</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('emptyNotifications.title')}</h3>
                 <p className="text-gray-500 mt-2">
-                  还没有发送过任何通知。当预约触发警报时，记录会出现在这里。
+                  {t('emptyNotifications.description')}
                 </p>
               </div>
             )

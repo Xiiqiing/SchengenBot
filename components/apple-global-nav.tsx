@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { LayoutGrid, Settings, History, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useScrollTitle } from './scroll-title-context';
+import LanguageSwitcher from './language-switcher';
 
 const NAV_ITEMS = [
     { name: '控制台', href: '/dashboard', icon: LayoutGrid },
@@ -75,8 +76,10 @@ export function AppleGlobalNav() {
                 </div>
 
                 {/* Spacer to balance layout if needed, or mobile menu trigger later */}
-                <div className="w-[140px] hidden md:block" />
-                <div className="w-5 md:hidden" />
+                <div className="flex items-center gap-4">
+                    <LanguageSwitcher />
+                    <div className="w-5 md:hidden" />
+                </div>
             </div>
         </nav>
     );

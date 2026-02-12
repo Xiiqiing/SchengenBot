@@ -1,12 +1,11 @@
 {
   "name": "schengen-visa-appointment-bot",
   "version": "2.0.0",
-  "description": "Schengen vize randevu bildirim botu - Gerçek zamanlı takip ve bildirim sistemi",
+  "description": "Schengen Visa Appointment Bot - Real-time tracking and notification system",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "terminal": "ts-node terminal/app.ts",
     "lint": "next lint",
     "cron:test": "curl -X GET http://localhost:3000/api/cron/check -H \"Authorization: Bearer $CRON_SECRET\""
   },
@@ -34,7 +33,8 @@
     "schengen-randevu-checker": "^2.0.0",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
-    "resend": "^3.2.0"
+    "resend": "^3.2.0",
+    "next-intl": "^3.26.3"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

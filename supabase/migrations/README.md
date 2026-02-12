@@ -1,51 +1,51 @@
 # 📁 Database Migrations
 
-Bu klasör Supabase veritabanı migration dosyalarını içerir.
+This folder contains Supabase database migration files.
 
-## 📋 Migration Listesi
+## 📋 Migration List
 
 ### 001_initial_schema.sql
-**Tarih:** 2025-11-13  
-**Açıklama:** İlk veritabanı şeması
+**Date:** 2025-11-13  
+**Description:** Initial database schema
 
-**Oluşturulanlar:**
-- ✅ 5 Tablo (user_profiles, user_preferences, appointments, notification_history, check_history)
-- ✅ 10 Index
+**Created:**
+- ✅ 5 Tables (user_profiles, user_preferences, appointments, notification_history, check_history)
+- ✅ 10 Indexes
 - ✅ RLS Policies
-- ✅ 2 Function (update_updated_at_column, cleanup_old_records)
+- ✅ 2 Functions (update_updated_at_column, cleanup_old_records)
 - ✅ 1 View (user_stats)
 
-## 🚀 Nasıl Kullanılır?
+## 🚀 How to Use?
 
-### Yöntem 1: SQL Editor (Kolay)
+### Method 1: SQL Editor (Easy)
 
-1. Supabase Dashboard'a git
-2. SQL Editor'ü aç
-3. Migration dosyasını kopyala-yapıştır
-4. Run butonuna tıkla
+1. Go to Supabase Dashboard
+2. Open SQL Editor
+3. Copy and paste the migration file content
+4. Click Run button
 
-### Yöntem 2: Supabase CLI
+### Method 2: Supabase CLI
 
 ```bash
-# CLI kur
+# Install CLI
 npm install -g supabase
 
 # Login
 supabase login
 
-# Projeye bağlan
+# Link project
 supabase link --project-ref your-project-ref
 
-# Migration'ları çalıştır
+# Run migrations
 supabase db push
 ```
 
 ## 🔄 Rollback
 
-Eğer migration'ı geri almak isterseniz:
+If you want to rollback the migration:
 
 ```sql
--- Tabloları sil
+-- Drop tables
 DROP VIEW IF EXISTS user_stats;
 DROP TABLE IF EXISTS check_history CASCADE;
 DROP TABLE IF EXISTS notification_history CASCADE;
@@ -53,15 +53,15 @@ DROP TABLE IF EXISTS appointments CASCADE;
 DROP TABLE IF EXISTS user_preferences CASCADE;
 DROP TABLE IF EXISTS user_profiles CASCADE;
 
--- Fonksiyonları sil
+-- Drop functions
 DROP FUNCTION IF EXISTS cleanup_old_records();
 DROP FUNCTION IF EXISTS update_updated_at_column();
 ```
 
-## 📊 Tablo Yapısı
+## 📊 Table Structure
 
 ### user_profiles
-Kullanıcı profil bilgileri
+User profile information
 - id (UUID, PK)
 - email (VARCHAR, UNIQUE)
 - telegram_chat_id (VARCHAR)
@@ -69,7 +69,7 @@ Kullanıcı profil bilgileri
 - created_at, updated_at (TIMESTAMP)
 
 ### user_preferences
-Kullanıcı tercihleri
+User preferences
 - id (UUID, PK)
 - user_id (UUID, FK)
 - countries (TEXT[])
@@ -79,7 +79,7 @@ Kullanıcı tercihleri
 - created_at, updated_at (TIMESTAMP)
 
 ### appointments
-Bulunan randevular
+Found appointments
 - id (UUID, PK)
 - user_id (UUID, FK)
 - country, city (VARCHAR)
@@ -90,7 +90,7 @@ Bulunan randevular
 - created_at (TIMESTAMP)
 
 ### notification_history
-Bildirim geçmişi
+Notification history
 - id (UUID, PK)
 - user_id (UUID, FK)
 - appointment_id (UUID, FK)
@@ -101,30 +101,30 @@ Bildirim geçmişi
 - error_message (TEXT)
 
 ### check_history
-Kontrol geçmişi
+Check history
 - id (UUID, PK)
 - user_id (UUID, FK)
 - countries, cities (TEXT[])
 - found_count (INTEGER)
 - checked_at (TIMESTAMP)
 
-## 🔒 Güvenlik
+## 🔒 Security
 
-- ✅ Row Level Security (RLS) aktif
-- ✅ Her kullanıcı sadece kendi verilerine erişebilir
+- ✅ Row Level Security (RLS) active
+- ✅ Each user can only access their own data
 - ✅ Foreign key constraints
 - ✅ Check constraints
 
-## 📝 Notlar
+## 📝 Notes
 
-- Migration dosyaları sıralı çalıştırılmalıdır (001, 002, 003...)
-- Her migration bir kez çalıştırılmalıdır
-- Production'da test kullanıcısı oluşturmayın
-- Düzenli olarak `cleanup_old_records()` fonksiyonunu çalıştırın
+- Migration files must be run in order (001, 002, 003...)
+- Each migration should be run once
+- Do not create test users in production
+- Regularly run `cleanup_old_records()` function
 
-## 🆘 Yardım
+## 🆘 Help
 
-Sorun yaşıyorsanız:
-1. [Supabase Setup Guide](../docs/SUPABASE-SETUP.md) okuyun
-2. [GitHub Issues](https://github.com/ibidi/schengen-visa-appointment-bot/issues) açın
+If you encounter issues:
+1. Read [Supabase Setup Guide](../docs/SUPABASE-SETUP.md)
+2. Open [GitHub Issues](https://github.com/ibidi/schengen-visa-appointment-bot/issues)
 3. Email: info@ihsanbakidogan.com

@@ -10,7 +10,12 @@ import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
 
+import { useTranslations } from 'next-intl';
+
 export default function SettingsPage() {
+  const t = useTranslations('Settings');
+  const tCountries = useTranslations('Countries');
+  const tCities = useTranslations('Cities');
   const [userId] = useState(() => getOrCreateUserId());
   const [preferences, setPreferences] = useState({
     countries: [] as string[],
@@ -66,16 +71,16 @@ export default function SettingsPage() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        alert('设置已保存!');
+        alert(t('alerts.saved'));
       } else {
         // Show actual error from API
-        const errorMsg = data.error || '保存失败!';
+        const errorMsg = data.error || t('alerts.saveFailed');
         console.error('Save failed:', data);
-        alert(`保存失败: ${errorMsg}`);
+        alert(`${t('alerts.saveFailed')}${errorMsg}`);
       }
     } catch (error: any) {
       console.error('Save error:', error);
-      alert(`保存错误: ${error.message || '未知错误'}`);
+      alert(`${t('alerts.saveFailed')}${error.message || 'Unknown error'}`);
     } finally {
       setSaving(false);
     }
@@ -83,7 +88,7 @@ export default function SettingsPage() {
 
   const handleTestTelegram = async () => {
     if (!preferences.telegram_chat_id || !botToken) {
-      alert('请输入Bot Token和Chat ID!');
+      alert(t('alerts.enterTgCreds'));
       return;
     }
 
@@ -101,13 +106,13 @@ export default function SettingsPage() {
       const data = await response.json();
 
       if (data.success) {
-        alert('✅ 测试通知已发送! 请检查Telegram。');
+        alert(t('alerts.testTgSuccess'));
       } else {
-        alert(`❌ 错误: ${data.error}`);
+        alert(`${t('alerts.testTgError')}${data.error}`);
       }
     } catch (error) {
       console.error('Test error:', error);
-      alert('测试过程中发生错误!');
+      alert(t('alerts.testError'));
     } finally {
       setTesting(false);
     }
@@ -115,7 +120,7 @@ export default function SettingsPage() {
 
   const handleTestEmail = async () => {
     if (!preferences.email_address) {
-      alert('请输入接收邮箱!');
+      alert(t('alerts.enterEmail'));
       return;
     }
 
@@ -132,13 +137,13 @@ export default function SettingsPage() {
       const data = await response.json();
 
       if (data.success) {
-        alert('✅ 测试邮件已发送! 请检查您的收件箱 (包括垃圾邮件文件夹)。');
+        alert(t('alerts.testEmailSuccess'));
       } else {
-        alert(`❌ 发送失败: ${data.error}`);
+        alert(`${t('alerts.testEmailError')}${data.error}`);
       }
     } catch (error) {
       console.error('Email test error:', error);
-      alert('测试过程中发生错误!');
+      alert(t('alerts.testError'));
     } finally {
       setTestingEmail(false);
     }
@@ -166,24 +171,24 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-background text-on-surface">
       {/* Header */}
       <PageHeader
-        title="偏好设置"
-        description="管理您的通知和监控偏好"
+        title={t('title')}
+        description={t('description')}
         backHref="/dashboard"
-        backLabel="返回"
+        backLabel={t('backLabel') || 'Back'}
         icon={<Settings className="w-5 h-5 text-[#f5f5f7]" />}
       />
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">
         <div className="space-y-8">
-          {/* Ülke Seçimi */}
+          {/* Country Selection */}
           <section className="m3-card p-6">
             <div className="mb-6">
               <h2 className="title-large text-on-surface flex items-center gap-2">
                 <Globe className="w-5 h-5 text-primary" />
-                目标国家监控
+                {t('sections.countries.title')}
               </h2>
               <p className="body-medium text-on-surface-variant mt-1">
-                选择您希望实时追踪预约名额的国家
+                {t('sections.countries.description')}
               </p>
             </div>
             <div>
@@ -197,21 +202,23 @@ export default function SettingsPage() {
                       : 'border-transparent bg-white shadow-sm hover:shadow-md hover:scale-[1.02]'}`}
                   >
                     <div className="text-3xl filter drop-shadow-sm">{country.flag}</div>
-                    <div className={`text-sm font-semibold ${preferences.countries.includes(country.code) ? 'text-primary' : 'text-gray-900'}`}>{country.name}</div>
+                    <div className={`text-sm font-semibold ${preferences.countries.includes(country.code) ? 'text-primary' : 'text-gray-900'}`}>
+                      {tCountries(country.code)}
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
           </section>
 
-          {/* UK城市选择 */}
+          {/* UK City Selection */}
           <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-xl font-black flex items-center gap-2">
-                🇬🇧 英国城市选择
+                🇬🇧 {t('sections.cities.title')}
               </CardTitle>
               <CardDescription className="text-sm font-medium text-on-surface-variant">
-                选定英国境内的签证中心位置
+                {t('sections.cities.description')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
@@ -225,26 +232,26 @@ export default function SettingsPage() {
                       : 'border-transparent bg-white shadow-sm hover:shadow-md hover:scale-[1.02] text-gray-700'
                       }`}
                   >
-                    {city.nameEn}
+                    {tCities(city.code)}
                   </button>
                 ))}
               </div>
             </CardContent>
           </Card>
 
-          {/* 通知渠道 - Telegram */}
+          {/* Notification Channel - Telegram */}
           <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-xl font-black flex items-center gap-2">
                 <Bell className="w-6 h-6 text-primary" />
-                Telegram 即时推送
+                {t('sections.telegram.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
               <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
                 <div className="space-y-0.5">
-                  <span className="body-large font-medium text-on-surface">开启 TG 通知</span>
-                  <p className="body-medium text-on-surface-variant">通过 Telegram Bot 接收秒级同步：@visashengenuk_xq_bot</p>
+                  <span className="body-large font-medium text-on-surface">{t('sections.telegram.enable')}</span>
+                  <p className="body-medium text-on-surface-variant">{t('sections.telegram.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
@@ -261,7 +268,7 @@ export default function SettingsPage() {
               {preferences.telegram_enabled && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">Bot Token</label>
+                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.telegram.botToken')}</label>
                     <input
                       type="text"
                       value={botToken}
@@ -272,7 +279,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">Chat ID</label>
+                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.telegram.chatId')}</label>
                     <input
                       type="text"
                       value={preferences.telegram_chat_id}
@@ -288,26 +295,26 @@ export default function SettingsPage() {
                     variant="outline"
                     className="w-full m3-button-pill border-2 border-primary text-primary hover:bg-primary/10 h-12 font-bold"
                   >
-                    {testing ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> 发送测试指令</>}
+                    {testing ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> {t('sections.telegram.test')}</>}
                   </Button>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* 通知渠道 - Email */}
+          {/* Notification Channel - Email */}
           <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-xl font-black flex items-center gap-2">
                 <Mail className="w-6 h-6 text-tertiary" />
-                电子邮件提醒
+                {t('sections.email.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
               <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
                 <div className="space-y-0.5">
-                  <span className="body-large font-medium text-on-surface">开启邮件通知</span>
-                  <p className="body-medium text-on-surface-variant">通过电子邮件接收最新预约通知</p>
+                  <span className="body-large font-medium text-on-surface">{t('sections.email.enable')}</span>
+                  <p className="body-medium text-on-surface-variant">{t('sections.email.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, email_enabled: !prev.email_enabled }))}
@@ -324,7 +331,7 @@ export default function SettingsPage() {
               {preferences.email_enabled && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">接收邮箱</label>
+                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.email.address')}</label>
                     <input
                       type="email"
                       value={preferences.email_address || ''}
@@ -339,26 +346,26 @@ export default function SettingsPage() {
                     variant="outline"
                     className="w-full m3-button-pill border-2 border-tertiary text-tertiary hover:bg-tertiary/10 h-12 font-bold"
                   >
-                    {testingEmail ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> 发送测试邮件</>}
+                    {testingEmail ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> {t('sections.email.test')}</>}
                   </Button>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* 自动检查配置 */}
+          {/* Auto Check Configuration */}
           <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-xl font-black flex items-center gap-2">
                 <Clock className="w-6 h-6 text-primary" />
-                后台自动爬取
+                {t('sections.autoCheck.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
               <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
                 <div className="space-y-0.5">
-                  <span className="body-large font-medium text-on-surface">激活自动模式</span>
-                  <p className="body-medium text-on-surface-variant">后台自动定时爵取数据</p>
+                  <span className="body-large font-medium text-on-surface">{t('sections.autoCheck.enable')}</span>
+                  <p className="body-medium text-on-surface-variant">{t('sections.autoCheck.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, auto_check_enabled: !prev.auto_check_enabled }))}
@@ -374,7 +381,7 @@ export default function SettingsPage() {
 
               {preferences.auto_check_enabled && (
                 <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">频率 (分钟)</label>
+                  <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.autoCheck.frequency')}</label>
                   <input
                     type="number"
                     min="5"
@@ -388,14 +395,14 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          {/* 保存按钮 */}
+          {/* Save Button */}
           <div className="pt-6">
             <Button
               onClick={handleSave}
               disabled={saving}
               className="w-full h-14 text-base"
             >
-              {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="h-5 w-5 mr-2" /> 保存所有配置</>}
+              {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="h-5 w-5 mr-2" /> {t('actions.save')}</>}
             </Button>
           </div>
         </div>

@@ -1,6 +1,6 @@
 /**
  * GET /api/stats
- * Kullanıcı istatistikleri
+ * User statistics
  */
 
 import { NextRequest, NextResponse } from 'next/server';

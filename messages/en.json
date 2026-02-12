@@ -1,0 +1,166 @@
+{
+    "Landing": {
+        "title": "Schengen<br>Bot.",
+        "subtitle": "Your Schengen Visa,<br>Smart Automated Tracking.",
+        "preview": "Preview",
+        "syncSettings": "Settings sync to cloud automatically",
+        "placeholderCode": "Invitation Code",
+        "placeholderEmail": "name@example.com",
+        "buttonVerify": "Verify Now",
+        "buttonLogin": "Enter Dashboard",
+        "footer": "schengen bot • 2026"
+    },
+    "Dashboard": {
+        "nav": {
+            "dashboard": "Dashboard",
+            "settings": "Settings",
+            "history": "History",
+            "logout": "Logout"
+        },
+        "stats": {
+            "activeTasks": "Active Tasks",
+            "notifications": "Notifications",
+            "uptime": "Uptime"
+        }
+    },
+    "DashboardHome": {
+        "alertSelect": "Please select country and city in settings first!",
+        "preparing": "Preparing to start...",
+        "checking": "Checking",
+        "checkComplete": "Check completed!",
+        "checkFailed": "Check failed!",
+        "title": "Control Center",
+        "overview": "Overview",
+        "stats": {
+            "totalChecks": "Total Checks",
+            "slotsFound": "Slots Found",
+            "notificationsSent": "Notifications Sent",
+            "autoMonitor": "Auto Monitor",
+            "active": "Active",
+            "inactive": "Inactive"
+        },
+        "ukCheck": {
+            "title": "🇬🇧 UK Center Real-time Check",
+            "description": "Instantly check latest slots for selected cities and countries",
+            "monitoredCountries": "Monitored Countries",
+            "targetCities": "Target Cities",
+            "noPrefs": "Preferences not set, click below to configure",
+            "configureNow": "Configure Now",
+            "startCheck": "Start Check",
+            "checking": "Checking...",
+            "slotsFound": "Found {count} slots (within {days} days)",
+            "slotsAvailable": "{count} available",
+            "bookExternal": "Go to external booking system →",
+            "noSlots": "No slots available at this time",
+            "lastScan": "LAST SCAN"
+        },
+        "recent": {
+            "title": "Recent Captures",
+            "description": "Findings in the last few hours",
+            "bookNow": "Book Now",
+            "empty": "Empty"
+        }
+    },
+    "History": {
+        "title": "History",
+        "description": "Appointment Tracking Archive",
+        "tabs": {
+            "appointments": "Appointments",
+            "notifications": "Notifications"
+        },
+        "status": {
+            "notified": "Notified",
+            "pending": "Pending"
+        },
+        "labels": {
+            "date": "Appointment Date",
+            "category": "Visa Category",
+            "subcategory": "Subcategory",
+            "foundAt": "Found At"
+        },
+        "emptyAppointments": {
+            "title": "No appointment records",
+            "description": "The bot is continuously monitoring in the background. Once new slots are found, they will appear here."
+        },
+        "emptyNotifications": {
+            "title": "Notification list is empty",
+            "description": "No notifications sent yet. When appointments trigger alerts, records will appear here."
+        }
+    },
+    "Settings": {
+        "title": "Preferences",
+        "description": "Manage your notification and monitoring preferences",
+        "sections": {
+            "countries": {
+                "title": "Target Country Monitoring",
+                "description": "Select countries you want to track for slots"
+            },
+            "cities": {
+                "title": "🇬🇧 UK City Selection",
+                "description": "Select visa centers within the UK"
+            },
+            "telegram": {
+                "title": "Telegram Instant Push",
+                "enable": "Enable TG Notifications",
+                "description": "Receive second-level sync via Telegram Bot: @visashengenuk_xq_bot",
+                "botToken": "Bot Token",
+                "chatId": "Chat ID",
+                "test": "Send Test Command"
+            },
+            "email": {
+                "title": "Email Alerts",
+                "enable": "Enable Email Notifications",
+                "description": "Receive latest appointment notifications via email",
+                "address": "Email Address",
+                "test": "Send Test Email"
+            },
+            "autoCheck": {
+                "title": "Background Auto-Crawl",
+                "enable": "Activate Auto Mode",
+                "description": "Background automatic data fetching",
+                "frequency": "Frequency (Minutes)"
+            }
+        },
+        "actions": {
+            "save": "Save All Configurations",
+            "saving": "Saving..."
+        },
+        "alerts": {
+            "saved": "Settings saved!",
+            "saveFailed": "Save failed: ",
+            "enterTgCreds": "Please enter Bot Token and Chat ID!",
+            "testTgSuccess": "✅ Test notification sent! Please check Telegram.",
+            "testTgError": "❌ Error: ",
+            "testError": "Error occurred during test!",
+            "enterEmail": "Please enter email address!",
+            "testEmailSuccess": "✅ Test email sent! Please check your inbox (including spam folder).",
+            "testEmailError": "❌ Send failed: "
+        }
+    },
+    "Countries": {
+        "France": "France",
+        "Netherlands": "Netherlands",
+        "Ireland": "Ireland",
+        "Malta": "Malta",
+        "Sweden": "Sweden",
+        "Czechia": "Czechia",
+        "Croatia": "Croatia",
+        "Bulgaria": "Bulgaria",
+        "Finland": "Finland",
+        "Slovenia": "Slovenia",
+        "Denmark": "Denmark",
+        "Norway": "Norway",
+        "Estonia": "Estonia",
+        "Lithuania": "Lithuania",
+        "Luxembourg": "Luxembourg",
+        "Ukraine": "Ukraine",
+        "Latvia": "Latvia",
+        "Portugal": "Portugal"
+    },
+    "Cities": {
+        "manchester": "Manchester",
+        "london": "London",
+        "edinburgh": "Edinburgh",
+        "cardiff": "Cardiff"
+    }
+}

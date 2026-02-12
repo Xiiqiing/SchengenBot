@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import React, { useState } from 'react';
 import { Bell, CheckCircle2, Clock, Globe, Zap, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { COUNTRIES } from '@/lib/constants/countries';
 
 export default function LandingPage() {
+  const t = useTranslations('Landing');
   const [step, setStep] = useState<'code' | 'email'>('code');
   const [invitationCode, setInvitationCode] = useState('');
   const [email, setEmail] = useState('');
@@ -88,14 +91,11 @@ export default function LandingPage() {
       <div className="container mx-auto px-4 pt-48 pb-24 flex flex-col items-center min-h-[85vh]">
         <div className="text-center max-w-4xl mx-auto space-y-6">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-[#1d1d1f] mb-4">
-            Schengen
-            <span className="bg-gradient-to-r from-[#0071e3] to-[#2c3b67] bg-clip-text text-transparent ml-4">
-              Bot.
-            </span>
+            <span dangerouslySetInnerHTML={{ __html: t.raw('title') }} />
           </h1>
 
           <p className="text-2xl md:text-3xl text-[#86868b] font-medium max-w-2xl mx-auto leading-relaxed tracking-tight">
-            你的申根签证，<br className="md:hidden" />智能自动化追踪。
+            <span dangerouslySetInnerHTML={{ __html: t.raw('subtitle') }} />
           </p>
 
           <div className="max-w-[380px] mx-auto w-full pt-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-forwards">
@@ -105,7 +105,7 @@ export default function LandingPage() {
                   <div className="relative group">
                     <input
                       type="text"
-                      placeholder="邀请码"
+                      placeholder={t('placeholderCode')}
                       className="w-full px-4 py-2.5 rounded-[10px] border-none bg-[#F5F5F7] focus:bg-white focus:ring-2 focus:ring-[#0071e3] outline-none transition-all text-[14px] placeholder:text-gray-400 text-[#1d1d1f] font-medium"
                       value={invitationCode}
                       onChange={(e) => setInvitationCode(e.target.value)}
@@ -119,9 +119,9 @@ export default function LandingPage() {
                     disabled={loading}
                   >
                     {loading ? (
-                      <Clock className="h-4 w-4 animate-spin" />
+                      'Verify...'
                     ) : (
-                      '立即验证'
+                      t('buttonVerify')
                     )}
                   </Button>
                 </form>
@@ -129,7 +129,7 @@ export default function LandingPage() {
                 <form onSubmit={handleLogin} className="space-y-4">
                   <input
                     type="email"
-                    placeholder="name@example.com"
+                    placeholder={t('placeholderEmail')}
                     className="w-full px-4 py-2.5 rounded-[10px] border-none bg-[#F5F5F7] focus:bg-white focus:ring-2 focus:ring-[#0071e3] outline-none transition-all text-[14px] placeholder:text-gray-400 text-[#1d1d1f] font-medium"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -141,17 +141,16 @@ export default function LandingPage() {
                     className="w-full rounded-full h-[36px] bg-[#0071e3] text-white hover:bg-[#0077ED] shadow-sm text-[14px] font-medium transition-all active:scale-[0.98]"
                     disabled={loading}
                   >
-                    {loading ? (
-                      <Clock className="h-4 w-4 animate-spin" />
+                    'Login...'
                     ) : (
-                      '进入控制中心'
+                    t('buttonLogin')
                     )}
                   </Button>
                 </form>
               )}
               <div className="flex items-center justify-center gap-2 mt-5 text-gray-400 text-[11px] font-medium">
                 <Shield className="w-4 h-4" />
-                {step === 'code' ? '预览版' : '设置将自动云端同步'}
+                {step === 'code' ? t('preview') : t('syncSettings')}
               </div>
             </Card>
           </div>
@@ -163,7 +162,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 text-center">
           <div className="h-px w-full max-w-[120px] bg-gray-200 mx-auto mb-8" />
           <p className="text-[11px] font-medium text-gray-400 tracking-widest lowercase font-mono">
-            schengen bot • 2026
+            {t('footer')}
           </p>
         </div>
       </footer>

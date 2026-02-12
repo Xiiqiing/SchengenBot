@@ -3,7 +3,7 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Kullanıcı profilleri
+-- User profiles
 CREATE TABLE IF NOT EXISTS user_profiles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email VARCHAR(255) UNIQUE NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Kullanıcı tercihleri
+-- User preferences
 CREATE TABLE IF NOT EXISTS user_preferences (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   UNIQUE(user_id)
 );
 
--- Randevu kayıtları
+-- Appointment records
 CREATE TABLE IF NOT EXISTS appointments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS appointments (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Bildirim geçmişi
+-- Notification history
 CREATE TABLE IF NOT EXISTS notification_history (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS notification_history (
   error_message TEXT
 );
 
--- Kontrol geçmişi (monitoring için)
+-- Check history (for monitoring)
 CREATE TABLE IF NOT EXISTS check_history (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS check_history (
   checked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- İndeksler
+-- Indexes
 CREATE INDEX IF NOT EXISTS idx_user_profiles_email ON user_profiles(email);
 CREATE INDEX IF NOT EXISTS idx_user_profiles_telegram ON user_profiles(telegram_chat_id);
 CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON user_preferences(user_id);
@@ -86,7 +86,7 @@ ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notification_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE check_history ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies - Herkes kendi verilerine erişebilir
+-- RLS Policies - Users can access their own data
 CREATE POLICY "Users can view own profile" ON user_profiles
   FOR SELECT USING (true);
 
@@ -123,7 +123,7 @@ CREATE POLICY "Users can view own check history" ON check_history
 CREATE POLICY "Users can insert own check history" ON check_history
   FOR INSERT WITH CHECK (true);
 
--- Trigger: updated_at otomatik güncelleme
+-- Trigger: automatic updated_at update
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -142,7 +142,7 @@ CREATE TRIGGER update_user_preferences_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- View: Kullanıcı istatistikleri
+-- View: User statistics
 CREATE OR REPLACE VIEW user_stats AS
 SELECT 
   up.id,
@@ -157,24 +157,24 @@ LEFT JOIN notification_history nh ON up.id = nh.user_id
 LEFT JOIN check_history ch ON up.id = ch.user_id
 GROUP BY up.id, up.email;
 
--- Function: Eski kayıtları temizle (30 günden eski)
+-- Function: Cleanup old records (older than 30 days)
 CREATE OR REPLACE FUNCTION cleanup_old_records()
 RETURNS void AS $$
 BEGIN
-  -- Eski randevuları sil
+  -- Delete old appointments
   DELETE FROM appointments 
   WHERE created_at < NOW() - INTERVAL '30 days';
   
-  -- Eski bildirimleri sil
+  -- Delete old notifications
   DELETE FROM notification_history 
   WHERE sent_at < NOW() - INTERVAL '30 days';
   
-  -- Eski kontrol geçmişini sil
+  -- Delete old check history
   DELETE FROM check_history 
   WHERE checked_at < NOW() - INTERVAL '30 days';
 END;
 $$ LANGUAGE plpgsql;
 
--- Örnek veri (test için - production'da kaldırın)
+-- Sample data (for testing - remove in production)
 -- INSERT INTO user_profiles (email, telegram_chat_id) 
 -- VALUES ('test@example.com', '123456789');

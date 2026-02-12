@@ -1,0 +1,167 @@
+{
+    "Landing": {
+        "title": "Schengen<br>Bot.",
+        "subtitle": "你的申根签证，<br>智能自动化追踪。",
+        "preview": "预览版",
+        "syncSettings": "设置将自动云端同步",
+        "placeholderCode": "邀请码",
+        "placeholderEmail": "name@example.com",
+        "buttonVerify": "立即验证",
+        "buttonLogin": "进入控制中心",
+        "footer": "schengen bot • 2026"
+    },
+    "Dashboard": {
+        "nav": {
+            "dashboard": "仪表盘",
+            "settings": "设置",
+            "history": "历史记录",
+            "logout": "退出"
+        },
+        "stats": {
+            "activeTasks": "监控任务",
+            "notifications": "通知发送",
+            "uptime": "运行时间"
+        }
+    },
+    "DashboardHome": {
+        "alertSelect": "请先在设置中选择国家和城市!",
+        "preparing": "准备开始...",
+        "checking": "正在检查",
+        "checkComplete": "检查完成!",
+        "checkFailed": "检查失败!",
+        "title": "控制中心",
+        "overview": "概览",
+        "stats": {
+            "totalChecks": "累计检查",
+            "slotsFound": "已发现名额",
+            "notificationsSent": "已推送通知",
+            "autoMonitor": "自动监控",
+            "active": "已激活",
+            "inactive": "待开启"
+        },
+        "ukCheck": {
+            "title": "🇬🇧 英国中心实时检查",
+            "description": "即时检索选定城市与国家的最新预约槽位",
+            "monitoredCountries": "监控国家",
+            "targetCities": "目标城市",
+            "noPrefs": "尚未设置偏好，点击下方按钮开始配置",
+            "configureNow": "立即配置",
+            "startCheck": "开始检查",
+            "checking": "检索中...",
+            "slotsFound": "发现 {count} 个名额 ({days} 天内)",
+            "slotsAvailable": "{count} 个可用",
+            "bookExternal": "前往外部预约系统 →",
+            "noSlots": "当前时段暂无可用号源",
+            "lastScan": "上次扫描"
+        },
+        "recent": {
+            "title": "最近捕获记录",
+            "description": "过去数小时内的发现记录",
+            "bookNow": "立即预约",
+            "empty": "空空如也"
+        }
+    },
+    "History": {
+        "title": "历史记录",
+        "description": "预约追踪档案",
+        "tabs": {
+            "appointments": "预约",
+            "notifications": "通知"
+        },
+        "status": {
+            "notified": "已通知",
+            "pending": "待处理"
+        },
+        "labels": {
+            "date": "预约日期",
+            "category": "签证类别",
+            "subcategory": "子类别",
+            "foundAt": "发现时间"
+        },
+        "emptyAppointments": {
+            "title": "暂无预约记录",
+            "description": "机器人正在后台持续监控。一旦发现新的预约名额，它们会立即显示在这里。"
+        },
+        "emptyNotifications": {
+            "title": "通知列表为空",
+            "description": "还没有发送过任何通知。当预约触发警报时，记录会出现在这里。"
+        }
+    },
+    "Settings": {
+        "title": "偏好设置",
+        "description": "管理您的通知和监控偏好",
+        "sections": {
+            "countries": {
+                "title": "目标国家监控",
+                "description": "选择您希望实时追踪预约名额的国家"
+            },
+            "cities": {
+                "title": "🇬🇧 英国城市选择",
+                "description": "选定英国境内的签证中心位置"
+            },
+            "telegram": {
+                "title": "Telegram 即时推送",
+                "enable": "开启 TG 通知",
+                "description": "通过 Telegram Bot 接收秒级同步：@visashengenuk_xq_bot",
+                "botToken": "Bot Token",
+                "chatId": "Chat ID",
+                "test": "发送测试指令"
+            },
+            "email": {
+                "title": "电子邮件提醒",
+                "enable": "开启邮件通知",
+                "description": "通过电子邮件接收最新预约通知",
+                "address": "接收邮箱",
+                "test": "发送测试邮件"
+            },
+            "autoCheck": {
+                "title": "后台自动爬取",
+                "enable": "激活自动模式",
+                "description": "后台自动定时爵取数据",
+                "frequency": "频率 (分钟)"
+            }
+        },
+        "actions": {
+            "save": "保存所有配置",
+            "saving": "保存中..."
+        },
+        "alerts": {
+            "saved": "设置已保存!",
+            "saveFailed": "保存失败: ",
+            "enterTgCreds": "请输入Bot Token和Chat ID!",
+            "testTgSuccess": "✅ 测试通知已发送! 请检查Telegram。",
+            "testTgError": "❌ 错误: ",
+            "testError": "测试过程中发生错误!",
+            "enterEmail": "请输入接收邮箱!",
+            "testEmailSuccess": "✅ 测试邮件已发送! 请检查您的收件箱 (包括垃圾邮件文件夹)。",
+            "testEmailError": "❌ 发送失败: "
+        }
+    },
+    "Countries": {
+        "France": "法国",
+        "Netherlands": "荷兰",
+        "Ireland": "爱尔兰",
+        "Malta": "马耳他",
+        "Sweden": "瑞典",
+        "Czechia": "捷克",
+        "Croatia": "克罗地亚",
+        "Bulgaria": "保加利亚",
+        "Finland": "芬兰",
+        "Slovenia": "斯洛文尼亚",
+        "Denmark": "丹麦",
+        "Norway": "挪威",
+        "Estonia": "爱沙尼亚",
+        "Lithuania": "立陶宛",
+        "Luxembourg": "卢森堡",
+        "Ukraine": "乌克兰",
+        "Latvia": "拉脱维亚",
+        "Portugal": "葡萄牙"
+    },
+    "Cities": {
+        "manchester": "曼彻斯特",
+        "london": "伦敦",
+        "edinburgh": "爱丁堡",
+        "cardiff": "加的夫"
+    }
+}
+```

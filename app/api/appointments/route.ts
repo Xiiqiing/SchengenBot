@@ -1,6 +1,6 @@
 /**
  * GET /api/appointments
- * Kullanıcının randevularını getir
+ * Get user appointments
  */
 
 import { NextRequest, NextResponse } from 'next/server';

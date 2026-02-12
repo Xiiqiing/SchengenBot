@@ -1,6 +1,6 @@
 /**
  * GET/POST /api/preferences
- * Kullanıcı tercihlerini yönet
+ * Manage user preferences
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -11,7 +11,7 @@ import {
   createUserProfile,
 } from '@/lib/supabase/client';
 
-// GET - Tercihleri getir
+// GET - Get preferences
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Tercihleri güncelle
+// POST - Update preferences
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // UUID formatı kontrolü
+    // UUID format check
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(userId)) {
       return NextResponse.json(
@@ -68,24 +68,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Kullanıcı profili yoksa oluştur
+    // Create user profile if not exists
     let userProfile = await getUserProfile(userId);
     if (!userProfile) {
-      // Yeni kullanıcı profili oluştur (email zorunlu, geçici email kullan)
+      // Create new user profile (email required, use temporary email)
       try {
         userProfile = await createUserProfile({
           id: userId,
-          email: `user-${userId}@temp.local`, // Geçici email
+          email: `user-${userId}@temp.local`, // Temporary email
         });
       } catch (error: any) {
-        // Email zaten varsa veya başka hata varsa devam et
+        // Continue if email already exists or other error occurs
         console.warn('User profile creation warning:', error.message);
       }
     }
 
     const preferences = await upsertUserPreferences(userId, preferencesData);
 
-    // Telegram bilgisini user_profiles tablosuna da kaydet (Yedekleme ve UI gösterimi için)
+    // Save Telegram info to user_profiles table as well (For backup and UI display)
     if (preferencesData.telegram_chat_id) {
       const { updateUserProfile } = await import('@/lib/supabase/client');
       try {

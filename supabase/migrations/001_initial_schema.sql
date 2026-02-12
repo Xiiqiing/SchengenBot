@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-COMMENT ON TABLE user_profiles IS 'Kullanıcı profil bilgileri';
-COMMENT ON COLUMN user_profiles.email IS 'Kullanıcı email adresi';
-COMMENT ON COLUMN user_profiles.telegram_chat_id IS 'Telegram chat ID (bildirimler için)';
+COMMENT ON TABLE user_profiles IS 'User profile information';
+COMMENT ON COLUMN user_profiles.email IS 'User email address';
+COMMENT ON COLUMN user_profiles.telegram_chat_id IS 'Telegram chat ID (for notifications)';
 
 -- ============================================
 -- USER PREFERENCES TABLE
@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   UNIQUE(user_id)
 );
 
-COMMENT ON TABLE user_preferences IS 'Kullanıcı tercihleri ve ayarları';
-COMMENT ON COLUMN user_preferences.countries IS 'Takip edilen ülkeler (array)';
-COMMENT ON COLUMN user_preferences.cities IS 'Takip edilen şehirler (array)';
-COMMENT ON COLUMN user_preferences.check_frequency IS 'Kontrol sıklığı (dakika)';
+COMMENT ON TABLE user_preferences IS 'User preferences and settings';
+COMMENT ON COLUMN user_preferences.countries IS 'Monitored countries (array)';
+COMMENT ON COLUMN user_preferences.cities IS 'Monitored cities (array)';
+COMMENT ON COLUMN user_preferences.check_frequency IS 'Check frequency (minutes)';
 
 -- ============================================
 -- APPOINTMENTS TABLE
@@ -63,8 +63,8 @@ CREATE TABLE IF NOT EXISTS appointments (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-COMMENT ON TABLE appointments IS 'Bulunan randevular';
-COMMENT ON COLUMN appointments.notified IS 'Bildirim gönderildi mi?';
+COMMENT ON TABLE appointments IS 'Found appointments';
+COMMENT ON COLUMN appointments.notified IS 'Notification sent?';
 
 -- ============================================
 -- NOTIFICATION HISTORY TABLE
@@ -80,8 +80,8 @@ CREATE TABLE IF NOT EXISTS notification_history (
   error_message TEXT
 );
 
-COMMENT ON TABLE notification_history IS 'Bildirim geçmişi';
-COMMENT ON COLUMN notification_history.type IS 'Bildirim tipi: telegram, email, web, sound';
+COMMENT ON TABLE notification_history IS 'Notification history';
+COMMENT ON COLUMN notification_history.type IS 'Notification type: telegram, email, web, sound';
 
 -- ============================================
 -- CHECK HISTORY TABLE
@@ -95,8 +95,8 @@ CREATE TABLE IF NOT EXISTS check_history (
   checked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-COMMENT ON TABLE check_history IS 'Kontrol geçmişi (monitoring için)';
-COMMENT ON COLUMN check_history.found_count IS 'Bulunan randevu sayısı';
+COMMENT ON TABLE check_history IS 'Check history (for monitoring)';
+COMMENT ON COLUMN check_history.found_count IS 'Number of appointments found';
 
 -- ============================================
 -- INDEXES
@@ -121,7 +121,7 @@ ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notification_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE check_history ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies - Herkes kendi verilerine erişebilir
+-- RLS Policies - Users can access their own data
 CREATE POLICY "Users can view own profile" ON user_profiles
   FOR SELECT USING (true);
 
@@ -162,7 +162,7 @@ CREATE POLICY "Users can insert own check history" ON check_history
 -- FUNCTIONS
 -- ============================================
 
--- Trigger: updated_at otomatik güncelleme
+-- Trigger: automatic updated_at update
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -181,7 +181,7 @@ CREATE TRIGGER update_user_preferences_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- Function: Eski kayıtları temizle (30 günden eski)
+-- Function: Cleanup old records (older than 30 days)
 CREATE OR REPLACE FUNCTION cleanup_old_records()
 RETURNS void AS $$
 BEGIN
@@ -195,7 +195,7 @@ $$ LANGUAGE plpgsql;
 -- VIEWS
 -- ============================================
 
--- View: Kullanıcı istatistikleri
+-- View: User statistics
 CREATE OR REPLACE VIEW user_stats AS
 SELECT 
   up.id,
@@ -210,13 +210,13 @@ LEFT JOIN notification_history nh ON up.id = nh.user_id
 LEFT JOIN check_history ch ON up.id = ch.user_id
 GROUP BY up.id, up.email;
 
-COMMENT ON VIEW user_stats IS 'Kullanıcı istatistikleri özet görünümü';
+COMMENT ON VIEW user_stats IS 'User statistics summary view';
 
 -- ============================================
 -- INITIAL DATA (Optional - for testing)
 -- ============================================
 
--- Test kullanıcısı (production'da kaldırın)
+-- Test user (remove in production)
 -- INSERT INTO user_profiles (email, telegram_chat_id) 
 -- VALUES ('test@example.com', '123456789');
 
@@ -224,7 +224,7 @@ COMMENT ON VIEW user_stats IS 'Kullanıcı istatistikleri özet görünümü';
 -- MIGRATION COMPLETE
 -- ============================================
 
--- Başarı mesajı
+-- Success message
 DO $$
 BEGIN
   RAISE NOTICE 'Migration 001_initial_schema completed successfully!';

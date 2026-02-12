@@ -10,7 +10,14 @@ import { COUNTRIES, UK_CITIES, formatDate } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
 
+import { useTranslations, useFormatter } from 'next-intl';
+
 export default function DashboardPage() {
+  const t = useTranslations('DashboardHome');
+  const tDash = useTranslations('Dashboard');
+  const tCountries = useTranslations('Countries');
+  const tCities = useTranslations('Cities');
+  const format = useFormatter();
   const [userId] = useState(() => getOrCreateUserId());
   const [preferences, setPreferences] = useState<any>(null);
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -69,13 +76,13 @@ export default function DashboardPage() {
     const countries = preferences?.countries?.length > 0 ? preferences.countries : ['Portugal'];
 
     if (cities.length === 0 || countries.length === 0) {
-      alert('请先在设置中选择国家和城市!');
+      alert(t('alertSelect'));
       return;
     }
 
     setCheckingUK(true);
     setUkResults([]);
-    setCheckProgress('准备开始...');
+    setCheckProgress(t('preparing'));
 
     // Calculate total steps
     const totalSteps = cities.length * countries.length;
@@ -87,10 +94,10 @@ export default function DashboardPage() {
           currentStep++;
           const cityObj = UK_CITIES.find(c => c.code === city);
           const countryObj = COUNTRIES.find(c => c.code === country);
-          const cityName = cityObj ? cityObj.nameEn : city;
-          const countryName = countryObj ? countryObj.name : country;
+          const cityName = cityObj ? tCities(cityObj.code) : city;
+          const countryName = countryObj ? tCountries(countryObj.code) : country;
 
-          setCheckProgress(`正在检查 (${currentStep}/${totalSteps}): ${cityName} → ${countryName}`);
+          setCheckProgress(`${t('checking')} (${currentStep}/${totalSteps}): ${cityName} → ${countryName}`);
 
 
           // Always wait a bit (1-3s) to make sure user sees the progress
@@ -141,10 +148,10 @@ export default function DashboardPage() {
       }
 
       setUkCheckCount(prev => prev + 1);
-      setCheckProgress('检查完成!');
+      setCheckProgress(t('checkComplete'));
     } catch (error) {
       console.error('UK Check error:', error);
-      alert('检查失败!');
+      alert(t('checkFailed'));
     } finally {
       setCheckingUK(false);
       setTimeout(() => setCheckProgress(''), 3000);
@@ -162,8 +169,8 @@ export default function DashboardPage() {
                 <Bell className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight text-black">控制中心</h1>
-                <p className="text-sm font-medium text-gray-500">Overview</p>
+                <h1 className="text-2xl font-bold tracking-tight text-black">{t('title')}</h1>
+                <p className="text-sm font-medium text-gray-500">{t('overview')}</p>
               </div>
             </div>
           </div>
@@ -174,10 +181,10 @@ export default function DashboardPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {[
-            { label: '累计检查', value: ukCheckCount + (stats?.total_appointments || 0), icon: TrendingUp, color: 'text-primary' },
-            { label: '已发现名额', value: appointments.length, icon: CheckCircle2, color: 'text-tertiary' },
-            { label: '已推送通知', value: stats?.total_notifications || 0, icon: Bell, color: 'text-secondary' },
-            { label: '自动监控', value: preferences?.auto_check_enabled ? '已激活' : '待开启', icon: Clock, color: preferences?.auto_check_enabled ? 'text-green-600' : 'text-on-surface-variant/50' }
+            { label: t('stats.totalChecks'), value: ukCheckCount + (stats?.total_appointments || 0), icon: TrendingUp, color: 'text-primary' },
+            { label: t('stats.slotsFound'), value: appointments.length, icon: CheckCircle2, color: 'text-tertiary' },
+            { label: t('stats.notificationsSent'), value: stats?.total_notifications || 0, icon: Bell, color: 'text-secondary' },
+            { label: t('stats.autoMonitor'), value: preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive'), icon: Clock, color: preferences?.auto_check_enabled ? 'text-green-600' : 'text-on-surface-variant/50' }
           ].map((stat, i) => (
             <Card key={i} className="bg-white rounded-2xl shadow-sm p-6 border-none hover:shadow-md transition-shadow duration-300">
               <div className="flex flex-row items-center justify-between mb-4">
@@ -195,17 +202,17 @@ export default function DashboardPage() {
             <Card className="bg-white rounded-2xl shadow-sm border-none p-2 block overflow-hidden">
               <CardHeader className="p-8 pb-4">
                 <CardTitle className="text-2xl font-bold flex items-center gap-3 text-black">
-                  🇬🇧 英国中心实时检查
+                  {t('ukCheck.title')}
                 </CardTitle>
                 <CardDescription className="text-base text-gray-500">
-                  即时检索选定城市与国家的最新预约槽位
+                  {t('ukCheck.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-2 space-y-6">
                 {preferences ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-[#F5F5F7] rounded-xl border-none">
                     <div>
-                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">监控国家</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">{t('ukCheck.monitoredCountries')}</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.countries?.length > 0 ? (
                           preferences.countries.map((code: string) => {
@@ -213,41 +220,41 @@ export default function DashboardPage() {
                             return (
                               <div key={code} className="px-3 py-1.5 bg-primary-container text-on-primary-container rounded-full text-xs font-bold flex items-center gap-1.5">
                                 <span>{country?.flag}</span>
-                                {country?.name || code}
+                                {country ? tCountries(country.code) : code}
                               </div>
                             );
                           })
                         ) : (
-                          <div className="px-3 py-1.5 bg-surface-variant/50 text-on-surface-variant rounded-full text-xs font-bold">PT Portugal</div>
+                          <div className="px-3 py-1.5 bg-surface-variant/50 text-on-surface-variant rounded-full text-xs font-bold">PT {tCountries('Portugal')}</div>
                         )}
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">目标城市</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">{t('ukCheck.targetCities')}</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.cities?.length > 0 ? (
                           preferences.cities.map((code: string) => {
                             const city = UK_CITIES.find(c => c.code === code);
                             return (
                               <div key={code} className="px-3 py-1.5 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">
-                                {city?.nameEn || code}
+                                {city ? tCities(city.code) : code}
                               </div>
                             );
                           })
                         ) : (
-                          <div className="px-3 py-1.5 bg-surface-variant/50 text-on-surface-variant rounded-full text-xs font-bold">Manchester</div>
+                          <div className="px-3 py-1.5 bg-surface-variant/50 text-on-surface-variant rounded-full text-xs font-bold">{tCities('manchester')}</div>
                         )}
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="text-center py-12 bg-surface rounded-[24px] border-2 border-dashed border-outline/20">
-                    <p className="text-on-surface-variant font-medium mb-6">尚未设置偏好，点击下方按钮开始配置</p>
+                    <p className="text-on-surface-variant font-medium mb-6">{t('ukCheck.noPrefs')}</p>
                     <Link href="/dashboard/settings">
                       <Button className="h-10 px-6 rounded-full bg-[#E9E9EA] text-black hover:bg-[#dcdcdd] font-medium text-[13px] shadow-none">
                         <Settings className="mr-2 h-4 w-4" />
-                        立即配置
+                        {t('ukCheck.configureNow')}
                       </Button>
                     </Link>
                   </div>
@@ -261,12 +268,12 @@ export default function DashboardPage() {
                   {checkingUK ? (
                     <>
                       <Clock className="mr-3 h-6 w-6 animate-spin" />
-                      {checkProgress || '检索中...'}
+                      {checkProgress || t('ukCheck.checking')}
                     </>
                   ) : (
                     <>
                       <CheckCircle2 className="mr-3 h-6 w-6" />
-                      开始检查
+                      {t('ukCheck.startCheck')}
                     </>
                   )}
                 </Button>
@@ -283,9 +290,9 @@ export default function DashboardPage() {
                         >
                           <div className="flex items-center justify-between mb-4">
                             <h3 className="font-black text-xl flex items-center gap-2">
-                              {countryInfo?.flag || '🏳️'} {result.country}
+                              {countryInfo?.flag || '🏳️'} {countryInfo ? tCountries(countryInfo.code) : result.country}
                               <span className="text-on-surface-variant/30 px-2">|</span>
-                              {result.city}
+                              {tCities(result.city) || result.city}
                             </h3>
                             <div className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter ${result.isAvailable ? 'bg-green-600 text-white' : 'bg-surface-variant/50 text-on-surface-variant'}`}>
                               {result.isAvailable ? `${result.totalSlots} SLOTS` : 'NO DATA'}
@@ -296,14 +303,14 @@ export default function DashboardPage() {
                             <div className="space-y-4">
                               <p className="text-sm text-green-700 font-black flex items-center gap-2">
                                 <Zap className="w-4 h-4" />
-                                发现 {result.totalSlots} 个名额 ({result.totalDays} 天内)
+                                {t('ukCheck.slotsFound', { count: result.totalSlots, days: result.totalDays })}
                               </p>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {result.slots?.slice(0, 3).map((slot: any, i: number) => (
                                   <div key={i} className="bg-white p-4 rounded-2xl shadow-sm border border-green-100">
                                     <p className="font-black text-on-surface">📅 {slot.date}</p>
-                                    <p className="text-xs text-on-surface-variant font-bold mt-1 uppercase">{slot.slotsAvailable} 个可用</p>
+                                    <p className="text-xs text-on-surface-variant font-bold mt-1 uppercase">{t('ukCheck.slotsAvailable', { count: slot.slotsAvailable })}</p>
                                   </div>
                                 ))}
                               </div>
@@ -315,7 +322,7 @@ export default function DashboardPage() {
                                   rel="noopener noreferrer"
                                   className="m3-button-pill inline-flex items-center justify-center w-full h-12 bg-green-600 text-white hover:bg-green-700 font-black uppercase tracking-widest text-sm"
                                 >
-                                  前往外部预约系统 →
+                                  {t('ukCheck.bookExternal')}
                                 </a>
                               )}
                             </div>
@@ -323,11 +330,11 @@ export default function DashboardPage() {
                             <div className="text-on-surface-variant font-medium">
                               <p className="flex items-center gap-2 text-sm">
                                 <Clock className="w-4 h-4 opacity-50" />
-                                当前时段暂无可用号源
+                                {t('ukCheck.noSlots')}
                               </p>
                               {result.lastChecked && (
                                 <p className={`mt-3 text-[10px] font-black uppercase tracking-widest opacity-40`}>
-                                  LAST SCAN: {result.lastChecked}
+                                  {t('ukCheck.lastScan')}: {result.lastChecked}
                                 </p>
                               )}
                             </div>
@@ -345,8 +352,8 @@ export default function DashboardPage() {
           <div className="lg:col-span-4 space-y-8">
             <Card className="bg-white rounded-2xl shadow-sm border-none p-2 h-full flex flex-col">
               <CardHeader className="p-6">
-                <CardTitle className="text-xl font-bold text-[#1d1d1f]">最近捕获记录</CardTitle>
-                <CardDescription className="text-sm font-medium text-gray-500">过去数小时内的发现记录</CardDescription>
+                <CardTitle className="text-xl font-bold text-[#1d1d1f]">{t('recent.title')}</CardTitle>
+                <CardDescription className="text-sm font-medium text-gray-500">{t('recent.description')}</CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0 flex-1 overflow-y-auto max-h-[70vh] custom-scrollbar">
                 <div className="space-y-4">
@@ -355,10 +362,10 @@ export default function DashboardPage() {
                       <div key={apt.id} className="p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all group">
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-bold text-sm text-[#1d1d1f] flex items-center gap-1.5">
-                            {COUNTRIES.find(c => c.code === apt.country)?.flag} {apt.country}
+                            {COUNTRIES.find(c => c.code === apt.country)?.flag} {tCountries(apt.country) || apt.country}
                           </span>
                           <span className="text-[10px] font-bold text-gray-500 uppercase bg-gray-200/50 px-2 py-0.5 rounded-full">
-                            {formatDate(apt.appointment_date)}
+                            {format.dateTime(new Date(apt.appointment_date), { dateStyle: 'medium' })}
                           </span>
                         </div>
                         <p className="text-xs font-medium text-on-surface-variant mb-3">{apt.center_name}</p>
@@ -369,7 +376,7 @@ export default function DashboardPage() {
                             rel="noopener noreferrer"
                             className="text-xs font-black text-primary hover:underline flex items-center gap-1"
                           >
-                            立即预约 <Zap className="w-3 h-3" />
+                            {t('recent.bookNow')} <Zap className="w-3 h-3" />
                           </a>
                         )}
                       </div>
@@ -377,7 +384,7 @@ export default function DashboardPage() {
                   ) : (
                     <div className="text-center py-20 opacity-30 select-none">
                       <History className="w-16 h-16 mx-auto mb-4" />
-                      <p className="font-black uppercase tracking-widest text-sm">空空如也</p>
+                      <p className="font-black uppercase tracking-widest text-sm">{t('recent.empty')}</p>
                     </div>
                   )}
                 </div>
