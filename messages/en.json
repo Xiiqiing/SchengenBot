@@ -13,9 +13,17 @@
     "Dashboard": {
         "nav": {
             "dashboard": "Dashboard",
+            "dashboard": "Dashboard",
             "settings": "Settings",
             "history": "History",
+            "logout": "Logout",
+            "backLabel": "Back""history": "History",
             "logout": "Logout"
+        },
+        "navItems": {
+            "dashboard": "Dashboard",
+            "history": "History",
+            "settings": "Settings"
         },
         "stats": {
             "activeTasks": "Active Tasks",

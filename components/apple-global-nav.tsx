@@ -4,18 +4,20 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutGrid, Settings, History, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 import { useScrollTitle } from './scroll-title-context';
 import LanguageSwitcher from './language-switcher';
-
-const NAV_ITEMS = [
-    { name: '控制台', href: '/dashboard', icon: LayoutGrid },
-    { name: '历史记录', href: '/dashboard/history', icon: History },
-    { name: '偏好设置', href: '/dashboard/settings', icon: Settings },
-];
 
 export function AppleGlobalNav() {
     const pathname = usePathname();
     const { title, icon, backHref, showTitleInNav } = useScrollTitle();
+    const t = useTranslations('Dashboard.navItems');
+
+    const navItems = [
+        { name: t('dashboard'), href: '/dashboard', icon: LayoutGrid },
+        { name: t('history'), href: '/dashboard/history', icon: History },
+        { name: t('settings'), href: '/dashboard/settings', icon: Settings },
+    ];
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-[100] bg-[#161617]/80 backdrop-blur-md border-b border-white/5 h-[48px]">
@@ -58,19 +60,16 @@ export function AppleGlobalNav() {
 
                 {/* Desktop Nav */}
                 <div className="flex items-center gap-6">
-                    {NAV_ITEMS.map((item) => {
-                        const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
-                        // Ensure we don't double prefix if href already has locale (though here they are static)
-                        // Actually, since we are in [locale] layout, we should probably get the locale and prefix it.
-                        // But simpler approach for now:
-                        // The items are: /dashboard, /dashboard/history, /dashboard/settings
-                        // We need to inject the current locale from the path.
+                    {navItems.map((item) => {
+                        // Logic to check active state and inject locale
                         const segments = pathname?.split('/') || [];
                         const currentLocale = segments[1] || 'zh'; // Default to zh if missing
+
+                        // Construct localized href
                         const localizedHref = `/${currentLocale}${item.href}`;
 
-                        // Check active against localized path
-                        const isActiveLocalized = pathname === localizedHref;
+                        // Check active: exact match or starts with (for sub-routes)
+                        const isActiveLocalized = pathname === localizedHref || pathname?.startsWith(`${localizedHref}/`);
 
                         return (
                             <Link
