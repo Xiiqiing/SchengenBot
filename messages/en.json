@@ -70,6 +70,7 @@
     "History": {
         "title": "History",
         "description": "Appointment Tracking Archive",
+        "backLabel": "Back",
         "tabs": {
             "appointments": "Appointments",
             "notifications": "Notifications"
@@ -96,6 +97,7 @@
     "Settings": {
         "title": "Preferences",
         "description": "Manage your notification and monitoring preferences",
+        "backLabel": "Back",
         "sections": {
             "countries": {
                 "title": "Target Country Monitoring",

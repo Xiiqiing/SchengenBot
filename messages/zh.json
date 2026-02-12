@@ -70,6 +70,7 @@
     "History": {
         "title": "历史记录",
         "description": "预约追踪档案",
+        "backLabel": "返回",
         "tabs": {
             "appointments": "预约",
             "notifications": "通知"
@@ -96,6 +97,7 @@
     "Settings": {
         "title": "偏好设置",
         "description": "管理您的通知和监控偏好",
+        "backLabel": "返回",
         "sections": {
             "countries": {
                 "title": "目标国家监控",
