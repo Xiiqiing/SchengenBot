@@ -17,9 +17,11 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     // Check if user is already logged in
-    import('@/lib/user-id').then(({ getUserId }) => {
+    import('@/lib/user-id').then(({ getUserId, setUserId }) => {
       const userId = getUserId();
       if (userId) {
+        // Ensure cookie is set (sync localStorage to cookie) for Middleware protection
+        setUserId(userId);
         window.location.href = '/dashboard';
       }
     });

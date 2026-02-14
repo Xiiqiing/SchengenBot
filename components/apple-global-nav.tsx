@@ -13,6 +13,11 @@ export function AppleGlobalNav() {
     const { title, icon, backHref, showTitleInNav } = useScrollTitle();
     const t = useTranslations('Dashboard.navItems');
 
+    // Hide nav on landing page
+    if (pathname === '/en' || pathname === '/zh' || pathname === '/') {
+        return null;
+    }
+
     const navItems = [
         { name: t('dashboard'), href: '/dashboard', icon: LayoutGrid },
         { name: t('history'), href: '/dashboard/history', icon: History },
