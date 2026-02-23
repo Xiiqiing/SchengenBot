@@ -85,17 +85,8 @@ export async function POST(request: NextRequest) {
 
     const preferences = await upsertUserPreferences(userId, preferencesData);
 
-    // Save Telegram info to user_profiles table as well (For backup and UI display)
-    if (preferencesData.telegram_chat_id) {
-      const { updateUserProfile } = await import('@/lib/supabase/client');
-      try {
-        await updateUserProfile(userId, {
-          telegram_chat_id: preferencesData.telegram_chat_id,
-        });
-      } catch (err) {
-        console.warn('Failed to sync telegram to profile:', err);
-      }
-    }
+    // The telegram_chat_id is now fully managed within `user_preferences`.
+
 
     return NextResponse.json({
       success: true,

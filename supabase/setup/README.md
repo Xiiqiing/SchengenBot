@@ -1,12 +1,12 @@
-# 📁 Database Migrations
+# 📁 Database Setup
 
-This folder contains Supabase database migration files.
+This folder contains the Supabase database setup schema.
 
-## 📋 Migration List
+## 📋 Schema Details
 
-### 001_initial_schema.sql
-**Date:** 2025-11-13  
-**Description:** Initial database schema
+### schema.sql
+**Date:** 2025-11-13 (Updated: 2026-02-23)  
+**Description:** Consolidated database schema
 
 **Created:**
 - ✅ 5 Tables (user_profiles, user_preferences, appointments, notification_history, check_history)
@@ -21,7 +21,7 @@ This folder contains Supabase database migration files.
 
 1. Go to Supabase Dashboard
 2. Open SQL Editor
-3. Copy and paste the migration file content
+3. Copy and paste the schema file content
 4. Click Run button
 
 ### Method 2: Supabase CLI
@@ -36,13 +36,13 @@ supabase login
 # Link project
 supabase link --project-ref your-project-ref
 
-# Run migrations
+# Run setup
 supabase db push
 ```
 
 ## 🔄 Rollback
 
-If you want to rollback the migration:
+If you want to rollback the setup:
 
 ```sql
 -- Drop tables
@@ -64,7 +64,6 @@ DROP FUNCTION IF EXISTS update_updated_at_column();
 User profile information
 - id (UUID, PK)
 - email (VARCHAR, UNIQUE)
-- telegram_chat_id (VARCHAR)
 - telegram_username (VARCHAR)
 - created_at, updated_at (TIMESTAMP)
 
@@ -76,6 +75,7 @@ User preferences
 - cities (TEXT[])
 - check_frequency (INTEGER)
 - telegram_enabled, email_enabled, web_enabled, sound_enabled, auto_check_enabled (BOOLEAN)
+- telegram_chat_id (VARCHAR)
 - created_at, updated_at (TIMESTAMP)
 
 ### appointments
@@ -117,14 +117,9 @@ Check history
 
 ## 📝 Notes
 
-- Migration files must be run in order (001, 002, 003...)
-- Each migration should be run once
-- Do not create test users in production
-- Regularly run `cleanup_old_records()` function
-
-## 🆘 Help
-
-If you encounter issues:
-1. Read [Supabase Setup Guide](../docs/SUPABASE-SETUP.md)
-2. Open [GitHub Issues](https://github.com/ibidi/schengen-visa-appointment-bot/issues)
-3. Email: info@ihsanbakidogan.com
+- Everything is consolidated into a single configuration file (`schema.sql`).
+- This script is safe to apply as a differential update if you only run the newly added components (e.g., adding `telegram_chat_id` manually).
+- Do not create test users in production.
+- Regularly run `cleanup_old_records()` function (currently automated via Cron).
+- Original Author: info@ihsanbakidogan.com
+- Modified by: Xiqing

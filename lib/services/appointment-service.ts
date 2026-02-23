@@ -6,6 +6,7 @@
 import { schengenAPI } from '../api/schengen-api';
 import { ukScraper, type UKAppointmentData } from '../api/uk-scraper';
 import { notificationService } from './notification-service';
+import { supabase } from '../supabase';
 import {
   createAppointment,
   bulkCreateAppointments,
@@ -243,12 +244,31 @@ export class AppointmentService {
 
     for (const result of results) {
       if (result.appointments.length === 0) {
-        // if (preferences.telegram_enabled && preferences.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
-        //   const statusMsg = `🔍 <b>Automatic Check (Cron): ${result.city} -> ${result.country}</b>\n❌ No slots available.`;
-        //   notificationService.sendCheckStatus(preferences.telegram_chat_id, process.env.TELEGRAM_BOT_TOKEN, statusMsg).catch(e => console.warn(e));
-        // }
         continue;
       }
+
+      // -- Debounce Logic (Rate Limiting) --
+      // Check if user was already notified for this city & country within the last 6 hours
+      const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
+      const { data: recentNotifications, error: debounceError } = await supabase
+        .from('appointments')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('city', result.city)
+        .eq('country', result.country)
+        .eq('notified', true)
+        .gte('created_at', sixHoursAgo)
+        .limit(1);
+
+      if (debounceError) {
+        console.error('Error checking debounce logic:', debounceError);
+      }
+
+      if (recentNotifications && recentNotifications.length > 0) {
+        console.log(`[Notification] Debounce activated for User ${userId}, ${result.city} -> ${result.country}. Already notified within 6 hours. Skipping.`);
+        continue;
+      }
+      // -- End Debounce Logic --
 
       try {
         await notificationService.sendAppointmentNotifications(

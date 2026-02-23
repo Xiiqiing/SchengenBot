@@ -20,12 +20,14 @@ This project is built using the latest frontend and backend technologies:
 - **UI Library**: [React 19](https://react.dev/), [shadcn/ui](https://ui.shadcn.com/), [Tailwind CSS](https://tailwindcss.com/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Backend Service**: [Supabase](https://supabase.com/) (PostgreSQL Auth & Database)
+- **Optimization**: Memory-level Request Batching (Deduplication) & API Rate Limiting (Debounce)
+- **Monitoring & Resilience**: Sentry Error Tracking, User-Agent Randomization, Daily Admin Health Checks
 - **Notification Service**: Telegram Bot API and resend.com API
 - **Deployment**: Vercel
 
 ## ⚠️ Disclaimer
 
-This project is modified from [ibidi/schengen-visa-bot](https://github.com/ibidi/schengen-visa-bot).
-The core functionality has been adapted and extended to support British main cities.
+This project is inspired by and a rewrite based on [ibidi/schengen-visa-bot](https://github.com/ibidi/schengen-visa-appointment-bot).
+The core functionality has been adapted and extended to support main British cities.
 
-This derivative project is shared purely for **educational and research purposes**, with no intention of commercial gain. Please do not use this project for illegal purposes or commercial gain. Please comply with relevant laws and regulations and the terms of use of the official appointment platforms.
+This project is shared purely for **educational and research purposes**, with no intention of commercial gain. Please do not use this project for illegal purposes or commercial gain. Please comply with relevant laws and regulations and the terms of use of the official appointment platforms.

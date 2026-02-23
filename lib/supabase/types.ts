@@ -5,7 +5,6 @@
 export interface UserProfile {
   id: string;
   email: string;
-  telegram_chat_id?: string;
   telegram_username?: string;
   created_at: string;
   updated_at: string;

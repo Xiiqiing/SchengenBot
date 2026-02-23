@@ -1,7 +1,9 @@
 -- Migration: 001_initial_schema
 -- Description: Initial database schema for Schengen Visa Appointment Bot
 -- Created: 2025-11-13
+-- Last Modified: 2026-02-23 (Added telegram_chat_id, indexes, and optimized cleanup)
 -- Author: İhsan Baki Doğan
+-- Modified by: Xiqing
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -12,7 +14,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS user_profiles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email VARCHAR(255) UNIQUE NOT NULL,
-  telegram_chat_id VARCHAR(100),
   telegram_username VARCHAR(100),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -20,7 +21,6 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 
 COMMENT ON TABLE user_profiles IS 'User profile information';
 COMMENT ON COLUMN user_profiles.email IS 'User email address';
-COMMENT ON COLUMN user_profiles.telegram_chat_id IS 'Telegram chat ID (for notifications)';
 
 -- ============================================
 -- USER PREFERENCES TABLE
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   cities TEXT[] DEFAULT '{}',
   check_frequency INTEGER DEFAULT 5,
   telegram_enabled BOOLEAN DEFAULT false,
+  telegram_chat_id VARCHAR(100),
   email_enabled BOOLEAN DEFAULT false,
   web_enabled BOOLEAN DEFAULT true,
   sound_enabled BOOLEAN DEFAULT true,
@@ -45,6 +46,7 @@ COMMENT ON TABLE user_preferences IS 'User preferences and settings';
 COMMENT ON COLUMN user_preferences.countries IS 'Monitored countries (array)';
 COMMENT ON COLUMN user_preferences.cities IS 'Monitored cities (array)';
 COMMENT ON COLUMN user_preferences.check_frequency IS 'Check frequency (minutes)';
+COMMENT ON COLUMN user_preferences.telegram_chat_id IS 'Telegram chat ID for notifications';
 
 -- ============================================
 -- APPOINTMENTS TABLE
@@ -102,11 +104,18 @@ COMMENT ON COLUMN check_history.found_count IS 'Number of appointments found';
 -- INDEXES
 -- ============================================
 CREATE INDEX IF NOT EXISTS idx_user_profiles_email ON user_profiles(email);
-CREATE INDEX IF NOT EXISTS idx_user_profiles_telegram ON user_profiles(telegram_chat_id);
 CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON user_preferences(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_preferences_telegram ON user_preferences(telegram_chat_id);
+-- Partial index to instantly find users expecting Cron checks
+CREATE INDEX IF NOT EXISTS idx_active_users ON user_preferences(auto_check_enabled) WHERE auto_check_enabled = true;
+
 CREATE INDEX IF NOT EXISTS idx_appointments_user_id ON appointments(user_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date);
 CREATE INDEX IF NOT EXISTS idx_appointments_country_city ON appointments(country, city);
+CREATE INDEX IF NOT EXISTS idx_appointments_created_at ON appointments(created_at);
+-- Composite index to rapidly filter recent notifications for the 6-hour debounce logic
+CREATE INDEX IF NOT EXISTS idx_debounce_check ON appointments(user_id, country, city, notified, created_at DESC);
+
 CREATE INDEX IF NOT EXISTS idx_notification_history_user_id ON notification_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_notification_history_sent_at ON notification_history(sent_at DESC);
 CREATE INDEX IF NOT EXISTS idx_check_history_user_id ON check_history(user_id);
@@ -181,13 +190,13 @@ CREATE TRIGGER update_user_preferences_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- Function: Cleanup old records (older than 30 days)
+-- Function: Cleanup old records (older than 7 days)
 CREATE OR REPLACE FUNCTION cleanup_old_records()
 RETURNS void AS $$
 BEGIN
-  DELETE FROM appointments WHERE created_at < NOW() - INTERVAL '30 days';
-  DELETE FROM notification_history WHERE sent_at < NOW() - INTERVAL '30 days';
-  DELETE FROM check_history WHERE checked_at < NOW() - INTERVAL '30 days';
+  DELETE FROM appointments WHERE created_at < NOW() - INTERVAL '7 days';
+  DELETE FROM notification_history WHERE sent_at < NOW() - INTERVAL '7 days';
+  DELETE FROM check_history WHERE checked_at < NOW() - INTERVAL '7 days';
 END;
 $$ LANGUAGE plpgsql;
 
@@ -212,13 +221,7 @@ GROUP BY up.id, up.email;
 
 COMMENT ON VIEW user_stats IS 'User statistics summary view';
 
--- ============================================
--- INITIAL DATA (Optional - for testing)
--- ============================================
 
--- Test user (remove in production)
--- INSERT INTO user_profiles (email, telegram_chat_id) 
--- VALUES ('test@example.com', '123456789');
 
 -- ============================================
 -- MIGRATION COMPLETE
@@ -229,7 +232,7 @@ DO $$
 BEGIN
   RAISE NOTICE 'Migration 001_initial_schema completed successfully!';
   RAISE NOTICE 'Tables created: user_profiles, user_preferences, appointments, notification_history, check_history';
-  RAISE NOTICE 'Indexes created: 10 indexes';
+  RAISE NOTICE 'Indexes created: 12 indexes';
   RAISE NOTICE 'RLS enabled on all tables';
   RAISE NOTICE 'Functions created: update_updated_at_column, cleanup_old_records';
   RAISE NOTICE 'Views created: user_stats';

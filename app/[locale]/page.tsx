@@ -90,18 +90,18 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-48 pb-24 flex flex-col items-center min-h-[85vh]">
-        <div className="text-center max-w-4xl mx-auto space-y-6">
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-[#1d1d1f] mb-4">
+      <div className="container mx-auto px-4 pt-24 md:pt-48 pb-12 md:pb-24 flex flex-col items-center min-h-[85vh]">
+        <div className="text-center max-w-4xl mx-auto space-y-4 md:space-y-6">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-[#1d1d1f] mb-2 md:mb-4">
             <span dangerouslySetInnerHTML={{ __html: t.raw('title') }} />
           </h1>
 
-          <p className="text-2xl md:text-3xl text-[#86868b] font-medium max-w-2xl mx-auto leading-relaxed tracking-tight">
+          <p className="text-xl sm:text-2xl md:text-3xl text-[#86868b] font-medium max-w-2xl mx-auto leading-relaxed tracking-tight px-2">
             <span dangerouslySetInnerHTML={{ __html: t.raw('subtitle') }} />
           </p>
 
-          <div className="max-w-[380px] mx-auto w-full pt-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-forwards">
-            <Card className="p-10 bg-white rounded-[28px] shadow-[0_20px_40px_rgba(0,0,0,0.08)] border-none ring-1 ring-black/5">
+          <div className="max-w-[380px] w-full mx-auto pt-10 md:pt-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-forwards px-4 sm:px-0">
+            <Card className="p-6 md:p-10 bg-white rounded-[24px] md:rounded-[28px] shadow-[0_20px_40px_rgba(0,0,0,0.08)] border-none ring-1 ring-black/5">
               {step === 'code' ? (
                 <form onSubmit={handleVerifyCode} className="space-y-4">
                   <div className="relative group">

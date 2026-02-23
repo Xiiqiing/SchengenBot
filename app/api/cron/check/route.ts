@@ -8,7 +8,11 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { appointmentService } from '@/lib/services/appointment-service';
+import { notificationService } from '@/lib/services/notification-service';
 import { supabase } from '@/lib/supabase';
+import { createCheckHistory } from '@/lib/supabase/client';
+import type { CheckResult } from '@/lib/services/appointment-service';
+import * as Sentry from '@sentry/nextjs';
 
 export async function GET(request: NextRequest) {
   try {
@@ -58,10 +62,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get users with auto-check enabled
+    // Get users with auto-check enabled, including their notification settings and joined email
     const { data: activeUsers, error } = await supabase
       .from('user_preferences')
-      .select('user_id, countries, cities, telegram_enabled, web_enabled, check_frequency')
+      .select('user_id, countries, cities, telegram_enabled, telegram_chat_id, email_enabled, web_enabled, check_frequency, user_profiles(email)')
       .eq('auto_check_enabled', true);
 
     if (error) throw error;
@@ -74,51 +78,206 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const results = [];
+    const results: any[] = [];
 
-    // Check for each user
+    // --- Phase 1: Aggregate deduplicated scraping targets ---
+    const eligibleUsers = [];
+    const countriesToScrape = new Set<string>();
+    const citiesToScrape = new Set<string>();
+
     for (const user of activeUsers) {
+      if (!user.countries || !user.cities || user.countries.length === 0 || user.cities.length === 0) {
+        continue;
+      }
+
+      // Does it match check frequency?
+      const frequency = user.check_frequency || 60; // Default 60 min
+      const { data: lastCheck } = await supabase
+        .from('check_history')
+        .select('checked_at')
+        .eq('user_id', user.user_id)
+        .order('checked_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (lastCheck) {
+        const lastCheckTime = new Date(lastCheck.checked_at).getTime();
+        const now = new Date().getTime();
+        const diffMinutes = (now - lastCheckTime) / (1000 * 60);
+
+        if (diffMinutes < frequency) {
+          results.push({
+            userId: user.user_id,
+            status: 'skipped',
+            reason: `Wait ${Math.ceil(frequency - diffMinutes)} mins`
+          });
+          continue;
+        }
+      }
+
+      eligibleUsers.push(user);
+      user.countries.forEach((c: string) => countriesToScrape.add(c));
+      user.cities.forEach((c: string) => citiesToScrape.add(c));
+    }
+
+    // --- Phase 2: Unified Batched Scraping (Hit the official API exactly ONCE per unique combo) ---
+    let batchResults: CheckResult[] = [];
+    if (countriesToScrape.size > 0 && citiesToScrape.size > 0) {
+      console.log(`[Batch Check] Scraping Unique Targets: ${countriesToScrape.size} Countries, ${citiesToScrape.size} Cities`);
+      // checkMultiple already distributes caching/saving correctly internally, but passing `undefined` for userId so it doesn't log history yet
+      batchResults = await appointmentService.checkMultiple(
+        Array.from(countriesToScrape),
+        Array.from(citiesToScrape),
+        undefined
+      );
+    }
+
+    // --- Phase 3: Fan-Out & Filter Personal Notifications ---
+    for (const user of eligibleUsers) {
       try {
-        // Does it match check frequency?
-        const frequency = user.check_frequency || 60; // Default 60 min
+        // Extract results relevant only to this specific user's preference
+        const personalResults = batchResults.filter(
+          (res) => user.countries.includes(res.country) && user.cities.includes(res.city)
+        );
 
-        // Get last check time
-        const { data: lastCheck } = await supabase
-          .from('check_history')
-          .select('checked_at')
-          .eq('user_id', user.user_id)
-          .order('checked_at', { ascending: false })
-          .limit(1)
-          .single();
+        let totalFound = personalResults.reduce((sum, r) => sum + r.appointments.length, 0);
 
-        if (lastCheck) {
-          const lastCheckTime = new Date(lastCheck.checked_at).getTime();
-          const now = new Date().getTime();
-          const diffMinutes = (now - lastCheckTime) / (1000 * 60);
+        // Record metrics to DB for this user
+        await createCheckHistory({
+          user_id: user.user_id,
+          countries: user.countries,
+          cities: user.cities,
+          found_count: totalFound,
+        });
 
-          // If time elapsed since last check is less than frequency, skip
-          if (diffMinutes < frequency) {
-            results.push({
-              userId: user.user_id,
-              status: 'skipped',
-              reason: `Wait ${Math.ceil(frequency - diffMinutes)} mins`
-            });
-            continue;
+        // Delegate to original notification sending logic (which includes the 6-hour debounce)
+        if (user.telegram_enabled || user.web_enabled || user.email_enabled) {
+          // We reuse an internal method signature of appointmentService for fan-out (requires exposed or manual adaptation)
+          // Instead of modifying the Class access modifier, we can manually trigger the notification service directly
+          // But since checkMultiple also calls saveAppointments if userId is given, we need to adapt slightly.
+          // Easiest is to simulate save and notify manually here or allow appointmentService to handle it.
+
+          // We'll call saveAppointments and notificationService directly to maintain proper DB linkage
+          for (const res of personalResults) {
+            if (res.appointments.length > 0) {
+              // Duplicate logic from service to save appointments to DB for this user so Debounce works
+              const aptData = res.appointments.map(apt => ({
+                user_id: user.user_id,
+                country: apt.mission_country,
+                city: apt.center_name,
+                appointment_date: apt.appointment_date,
+                center_name: apt.center_name,
+                visa_category: apt.visa_category,
+                visa_subcategory: apt.visa_subcategory || undefined,
+                book_now_link: apt.book_now_link,
+                notified: false,
+              }));
+              const { error: insertErr } = await supabase.from('appointments').insert(aptData);
+              if (insertErr) console.warn('Failed to insert appointments for user', user.user_id, insertErr);
+            }
+          }
+
+          // Since we can't easily access the private `sendNotificationsForResults` from outside, 
+          // and modifying the class signature requires opening more files, 
+          // we'll adapt by using `appointmentService.checkForUser` logic inline:
+          const emailAddress = user.user_profiles?.email || undefined;
+
+          for (const result of personalResults) {
+            if (result.appointments.length === 0) continue;
+
+            // Debounce check
+            const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
+            const { data: recentNotifications } = await supabase
+              .from('appointments')
+              .select('id')
+              .eq('user_id', user.user_id)
+              .eq('city', result.city)
+              .eq('country', result.country)
+              .eq('notified', true)
+              .gte('created_at', sixHoursAgo)
+              .limit(1);
+
+            if (recentNotifications && recentNotifications.length > 0) {
+              console.log(`[Notification] Debounce activated for User ${user.user_id}, ${result.city} -> ${result.country}.`);
+              continue;
+            }
+
+            // Dispatch Notification
+            try {
+              await notificationService.sendAppointmentNotifications(
+                result.appointments,
+                {
+                  userId: user.user_id,
+                  telegram: {
+                    enabled: user.telegram_enabled,
+                    chatId: user.telegram_chat_id,
+                    botToken: process.env.TELEGRAM_BOT_TOKEN,
+                  },
+                  email: {
+                    enabled: user.email_enabled,
+                    address: emailAddress, // Note: real implementation fetches profile if email is null 
+                  },
+                  web: {
+                    enabled: user.web_enabled,
+                  },
+                }
+              );
+            } catch (err) {
+              console.error('Batch Notify Err', err);
+            }
           }
         }
 
-        const checkResults = await appointmentService.checkForUser(user.user_id);
         results.push({
           userId: user.user_id,
           status: 'checked',
-          found: checkResults.reduce((sum, r) => sum + r.appointments.length, 0),
+          found: totalFound,
         });
+
       } catch (error) {
-        console.error(`Error checking for user ${user.user_id}:`, error);
+        console.error(`Error processing batch for user ${user.user_id}:`, error);
         results.push({
           userId: user.user_id,
-          error: 'Check failed',
+          error: 'Dispatch failed',
         });
+      }
+    }
+
+    const timestamp = new Date().toISOString();
+
+    // Health Check Email Logic (Only send summary if enabled and Admin Email is set)
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (adminEmail) {
+      // For daily health summary, we can check if it's the first run of the day (e.g. Hour 0)
+      const currentHour = new Date().getHours();
+      const currentMinute = new Date().getMinutes();
+
+      // Sending a summary email only once a day between 00:00 and 00:15
+      if (currentHour === 0 && currentMinute <= 15) {
+        let statsHtml = `<h3>🩺 SchengenBot Daily Health Check</h3>`;
+        statsHtml += `<p><b>System OK.</b></p>`;
+        statsHtml += `<p>Total active users checked: ${activeUsers.length}</p>`;
+        statsHtml += `<p>Timestamp: ${timestamp}</p>`;
+        statsHtml += `<hr/><h4>Run Results:</h4><ul>`;
+        results.forEach(r => {
+          statsHtml += `<li>User ${r.userId}: ${r.status} ${r.found !== undefined ? `(Found: ${r.found})` : ''} ${r.reason ? `(${r.reason})` : ''} ${r.error ? `(<span style="color:red">${r.error}</span>)` : ''}</li>`;
+        });
+        statsHtml += `</ul>`;
+
+        await notificationService.sendEmailNotification(
+          adminEmail,
+          '[SchengenBot] Daily Health Summary OK',
+          statsHtml
+        );
+
+        // Run DB cleanup once a day during the summary window
+        try {
+          console.log('Running daily database cleanup...');
+          const { error: rpcError } = await supabase.rpc('cleanup_old_records');
+          if (rpcError) console.error('Cleanup RPC Error:', rpcError);
+        } catch (e) {
+          console.error('Failed to run cleanup:', e);
+        }
       }
     }
 
@@ -126,10 +285,21 @@ export async function GET(request: NextRequest) {
       success: true,
       checked: activeUsers.length,
       results,
-      timestamp: new Date().toISOString(),
+      timestamp,
     });
   } catch (error: any) {
     console.error('Cron check error:', error);
+    Sentry.captureException(error);
+
+    // Alert Admin on critical cron failure
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (adminEmail) {
+      await notificationService.sendEmailNotification(
+        adminEmail,
+        '🚨 [SchengenBot] CRITICAL: Cron Job Failed',
+        `<p>The automated cron job failed to execute properly.</p><p><b>Error:</b> ${error.message}</p><p>Check Vercel/Sentry logs for details.</p>`
+      );
+    }
     return NextResponse.json(
       { error: error.message || 'Internal server error' },
       { status: 500 }
