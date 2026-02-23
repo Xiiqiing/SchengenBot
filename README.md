@@ -20,11 +20,13 @@ This project is built using the latest frontend and backend technologies:
 - **UI Library**: [React 19](https://react.dev/), [shadcn/ui](https://ui.shadcn.com/), [Tailwind CSS](https://tailwindcss.com/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Backend Service**: [Supabase](https://supabase.com/) (PostgreSQL Auth & Database)
-- **Notification Service**: Telegram Bot API resend.com API
+- **Notification Service**: Telegram Bot API and resend.com API
 - **Deployment**: Vercel
 
-## ⚠️ Disclaimer
+## ⚠️ Disclaimer & Acknowledgements
 
-This project is inspired by [ibidi](https://github.com/ibidi). 
+This project is built upon and modified from the original codebase by [ibidi/schengen-visa-bot](https://github.com/ibidi/schengen-visa-bot). The core functionality has been adapted and extended to support British main cities.
 
-This project is for educational and research purposes only. Please do not use it for illegal purposes or commercial gain. Please comply with relevant laws and regulations and the terms of use of the official appointment platform.
+**Copyright Notice:** The original code belongs to its author(s) at `ibidi`. As the original repository currently does not specify an open-source license, this derivative project is shared purely for **educational and research purposes**, with no intention of commercial gain. If the original author has any concerns regarding the usage of this code, please contact me.
+
+Please do not use this project for illegal purposes or commercial gain. Please comply with relevant laws and regulations and the terms of use of the official appointment platforms.

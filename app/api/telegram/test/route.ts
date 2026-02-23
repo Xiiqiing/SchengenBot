@@ -1,6 +1,6 @@
 /**
  * POST /api/telegram/test
- * Telegram bot test bildirimi
+ * Telegram bot test notification
  */
 
 import { NextRequest, NextResponse } from 'next/server';

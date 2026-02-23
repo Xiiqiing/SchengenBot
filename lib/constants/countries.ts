@@ -8,10 +8,7 @@ export interface Country {
   flag: string;
 }
 
-export interface City {
-  code: string;
-  name: string;
-}
+
 
 export const COUNTRIES: Country[] = [
   { code: 'France', name: 'France', flag: '🇫🇷' },
@@ -34,15 +31,7 @@ export const COUNTRIES: Country[] = [
   { code: 'Portugal', name: 'Portugal', flag: '🇵🇹' },
 ];
 
-export const CITIES: City[] = [
-  { code: 'Ankara', name: 'Ankara' },
-  { code: 'Istanbul', name: 'Istanbul' },
-  { code: 'Izmir', name: 'Izmir' },
-  { code: 'Gaziantep', name: 'Gaziantep' },
-  { code: 'Edirne', name: 'Edirne' },
-  { code: 'Antalya', name: 'Antalya' },
-  { code: 'Bursa', name: 'Bursa' },
-];
+
 
 export const MONTHS: Record<string, string> = {
   '01': 'January',
@@ -82,9 +71,6 @@ export function getCountryByCode(code: string): Country | undefined {
   return COUNTRIES.find(c => c.code === code);
 }
 
-export function getCityByCode(code: string): City | undefined {
-  return CITIES.find(c => c.code === code);
-}
 
 export function formatDate(dateStr: string): string {
   try {
