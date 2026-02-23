@@ -63,9 +63,9 @@ export function AppleGlobalNav() {
                     )}
                 </div>
 
-                {/* Desktop Nav - Only show on non-landing pages */}
+                {/* Navigation Items - Only show on non-landing pages */}
                 {!isLandingPage && (
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4 md:gap-6">
                         {navItems.map((item) => {
                             // Logic to check active state and inject locale
                             const segments = pathname?.split('/') || [];
@@ -82,11 +82,17 @@ export function AppleGlobalNav() {
                                     key={item.href}
                                     href={localizedHref}
                                     className={cn(
-                                        "text-[12px] font-medium transition-colors hover:text-white",
+                                        "text-[12px] font-medium transition-colors hover:text-white flex items-center justify-center",
                                         isActiveLocalized ? "text-white" : "text-[#d6d6d6]/80"
                                     )}
+                                    title={item.name}
                                 >
-                                    {item.name}
+                                    <span className="md:hidden">
+                                        <item.icon className="w-[18px] h-[18px]" />
+                                    </span>
+                                    <span className="hidden md:block">
+                                        {item.name}
+                                    </span>
                                 </Link>
                             );
                         })}

@@ -23,10 +23,9 @@ This project is built using the latest frontend and backend technologies:
 - **Notification Service**: Telegram Bot API and resend.com API
 - **Deployment**: Vercel
 
-## ⚠️ Disclaimer & Acknowledgements
+## ⚠️ Disclaimer
 
-This project is built upon and modified from the original codebase by [ibidi/schengen-visa-bot](https://github.com/ibidi/schengen-visa-bot). The core functionality has been adapted and extended to support British main cities.
+This project is modified from [ibidi/schengen-visa-bot](https://github.com/ibidi/schengen-visa-bot).
+The core functionality has been adapted and extended to support British main cities.
 
-**Copyright Notice:** The original code belongs to its author(s) at `ibidi`. As the original repository currently does not specify an open-source license, this derivative project is shared purely for **educational and research purposes**, with no intention of commercial gain. If the original author has any concerns regarding the usage of this code, please contact me.
-
-Please do not use this project for illegal purposes or commercial gain. Please comply with relevant laws and regulations and the terms of use of the official appointment platforms.
+This derivative project is shared purely for **educational and research purposes**, with no intention of commercial gain. Please do not use this project for illegal purposes or commercial gain. Please comply with relevant laws and regulations and the terms of use of the official appointment platforms.
