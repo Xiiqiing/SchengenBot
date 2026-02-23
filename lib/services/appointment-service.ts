@@ -247,6 +247,11 @@ export class AppointmentService {
         continue;
       }
 
+      if (!supabase) {
+        console.warn("Supabase client is null, skipping notifications.");
+        return;
+      }
+
       // -- Debounce Logic (Rate Limiting) --
       // Check if user was already notified for this city & country within the last 6 hours
       const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();

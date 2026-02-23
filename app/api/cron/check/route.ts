@@ -172,6 +172,7 @@ export async function GET(request: NextRequest) {
                 book_now_link: apt.book_now_link,
                 notified: false,
               }));
+              if (!supabase) throw new Error('Supabase client missing');
               const { error: insertErr } = await supabase.from('appointments').insert(aptData);
               if (insertErr) console.warn('Failed to insert appointments for user', user.user_id, insertErr);
             }
@@ -187,6 +188,7 @@ export async function GET(request: NextRequest) {
 
             // Debounce check
             const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
+            if (!supabase) throw new Error('Supabase client missing');
             const { data: recentNotifications } = await supabase
               .from('appointments')
               .select('id')
@@ -273,8 +275,10 @@ export async function GET(request: NextRequest) {
         // Run DB cleanup once a day during the summary window
         try {
           console.log('Running daily database cleanup...');
-          const { error: rpcError } = await supabase.rpc('cleanup_old_records');
-          if (rpcError) console.error('Cleanup RPC Error:', rpcError);
+          if (supabase) {
+            const { error: rpcError } = await supabase.rpc('cleanup_old_records');
+            if (rpcError) console.error('Cleanup RPC Error:', rpcError);
+          }
         } catch (e) {
           console.error('Failed to run cleanup:', e);
         }
