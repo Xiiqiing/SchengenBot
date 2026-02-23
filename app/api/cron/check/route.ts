@@ -180,7 +180,7 @@ export async function GET(request: NextRequest) {
           // Since we can't easily access the private `sendNotificationsForResults` from outside, 
           // and modifying the class signature requires opening more files, 
           // we'll adapt by using `appointmentService.checkForUser` logic inline:
-          const emailAddress = user.user_profiles?.email || undefined;
+          const emailAddress = (user.user_profiles && Array.isArray(user.user_profiles) ? user.user_profiles[0]?.email : (user.user_profiles as any)?.email) || undefined;
 
           for (const result of personalResults) {
             if (result.appointments.length === 0) continue;
