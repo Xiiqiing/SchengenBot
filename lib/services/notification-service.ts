@@ -6,7 +6,18 @@
 import { Resend } from 'resend';
 import { createNotification } from '../supabase/client';
 import { formatDate, getCountryByCode } from '../constants/countries';
-import type { AppointmentData } from '../api/schengen-api';
+
+// Appointment data shape (previously from schengen-api, now defined locally)
+export interface AppointmentData {
+  id: number;
+  source_country: string;
+  mission_country: string;
+  center_name: string;
+  appointment_date: string;
+  visa_category: string;
+  visa_subcategory: string | null;
+  book_now_link: string;
+}
 
 interface NotificationOptions {
   userId: string;

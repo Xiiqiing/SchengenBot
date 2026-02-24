@@ -3,9 +3,8 @@
  * API check, filtering, sending notifications
  */
 
-import { schengenAPI } from '../api/schengen-api';
 import { ukScraper, type UKAppointmentData } from '../api/uk-scraper';
-import { notificationService } from './notification-service';
+import { notificationService, type AppointmentData } from './notification-service';
 import { supabase } from '../supabase';
 import {
   createAppointment,
@@ -15,7 +14,6 @@ import {
   createCheckHistory,
   markAppointmentNotified,
 } from '../supabase/client';
-import type { AppointmentData } from '../api/schengen-api';
 import type { UserPreferences } from '../supabase/types';
 import { UK_CITIES } from '../constants/countries';
 
@@ -35,21 +33,14 @@ export class AppointmentService {
     city: string,
     userId?: string
   ): Promise<CheckResult> {
-    const appointments = await schengenAPI.checkAvailability(country, city);
-
-    const result: CheckResult = {
+    // Note: Previously used schengenAPI, now only supporting UK Scraper cities.
+    // Logic for other cities can be re-added when a new API source is available.
+    return {
       country,
       city,
-      appointments,
+      appointments: [],
       checked_at: new Date(),
     };
-
-    // Save if user exists and appointments found
-    if (userId && appointments.length > 0) {
-      await this.saveAppointments(userId, appointments);
-    }
-
-    return result;
   }
 
 
@@ -61,42 +52,14 @@ export class AppointmentService {
     cities: string[],
     userId?: string
   ): Promise<CheckResult[]> {
-    // 1. Separate cities (UK vs Others)
+    // Filter to UK-supported cities only
     const ukCityCodes = UK_CITIES.map(c => c.code);
     const ukCitiesToCheck = cities.filter(c => ukCityCodes.includes(c));
-    const otherCitiesToCheck = cities.filter(c => !ukCityCodes.includes(c));
 
     const results: CheckResult[] = [];
     let totalFound = 0;
 
-    // 2. Check other cities (Existing API)
-    if (otherCitiesToCheck.length > 0) {
-      try {
-        const resultsMap = await schengenAPI.checkMultiple(countries, otherCitiesToCheck);
-
-        for (const [key, appointments] of resultsMap.entries()) {
-          const [country, city] = key.split('-');
-
-          if (appointments.length > 0) {
-            results.push({
-              country,
-              city,
-              appointments,
-              checked_at: new Date(),
-            });
-
-            // Save to DB
-            if (userId) {
-              await this.saveAppointments(userId, appointments);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('SchengenAPI check error:', error);
-      }
-    }
-
-    // 3. Check UK cities (Scraper)
+    // 2. Check UK cities (Scraper) - Primary data source
     if (ukCitiesToCheck.length > 0) {
       try {
         // Create check for each city-country combination
@@ -111,7 +74,6 @@ export class AppointmentService {
 
         for (const res of ukResults) {
           if (res.isAvailable && res.slots.length > 0) {
-            // UKAppointmentData -> AppointmentData conversion
             const appointments: AppointmentData[] = res.slots.map((slot, index) => {
               // Parse date (e.g., "03 Feb (Tue)")
               const dateParts = slot.date.split(' '); // ["03", "Feb", "(Tue)"]
