@@ -6,7 +6,7 @@ const intlMiddleware = createMiddleware({
     locales: ['en', 'zh'],
 
     // Used when no locale matches
-    defaultLocale: 'zh',
+    defaultLocale: 'en',
 
     // Always require a locale prefix in the URL
     localePrefix: 'always'
