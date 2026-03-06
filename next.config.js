@@ -17,5 +17,7 @@ module.exports = withSentryConfig(
     widenClientFileUpload: true,
     hideSourceMaps: true,
     disableLogger: true,
+    // Fix: Disable Edge Middleware auto-instrumentation to stay under Vercel's 1MB limit
+    autoInstrumentMiddleware: false,
   }
 );
