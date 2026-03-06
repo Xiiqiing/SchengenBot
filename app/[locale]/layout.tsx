@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Analytics } from '@vercel/analytics/react'
 import { Inter } from 'next/font/google'
 import { AppleGlobalNav } from '@/components/apple-global-nav'
 import { ScrollTitleProvider } from '@/components/scroll-title-context'
@@ -42,7 +41,6 @@ export default async function RootLayout({
             </div>
           </ScrollTitleProvider>
         </NextIntlClientProvider>
-        <Analytics />
       </body>
     </html>
   )
