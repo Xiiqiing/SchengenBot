@@ -22,4 +22,18 @@ const nextConfig = {
   },
 }
 
-module.exports = withNextIntl(nextConfig);
+const { withSentryConfig } = require('@sentry/nextjs');
+
+module.exports = withSentryConfig(
+  withNextIntl(nextConfig),
+  {
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+    silent: true,
+    widenClientFileUpload: true,
+    hideSourceMaps: true,
+    disableLogger: true,
+    // Fix: Disable Edge Middleware auto-instrumentation to stay under Vercel's 1MB limit
+    autoInstrumentMiddleware: false,
+  }
+);

@@ -34,7 +34,8 @@
     "tailwindcss-animate": "^1.0.7",
     "resend": "^3.2.0",
     "next-intl": "^3.26.3",
-    "@sentry/nextjs": "8.47.0"
+    "@sentry/nextjs": "8.47.0",
+    "@vercel/analytics": "^1.4.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
