@@ -271,14 +271,28 @@ export async function getUserCheckHistory(userId: string, limit = 50) {
 export async function getUserStats(userId: string) {
   if (!supabase) return null;
 
-  const { data, error } = await supabase
-    .from('user_stats')
-    .select('*')
-    .eq('id', userId)
-    .single();
+  try {
+    // Aggregate stats from real tables instead of non-existent user_stats view
+    const [appointmentsRes, notificationsRes] = await Promise.all([
+      supabase
+        .from('appointments')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId),
+      supabase
+        .from('notification_history')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId),
+    ]);
 
-  if (error) return null;
-  return data as UserStats;
+    return {
+      id: userId,
+      total_appointments: appointmentsRes.count || 0,
+      total_notifications: notificationsRes.count || 0,
+    } as UserStats;
+  } catch (error) {
+    console.error('Error getting user stats:', error);
+    return null;
+  }
 }
 
 // ============================================

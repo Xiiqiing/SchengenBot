@@ -41,15 +41,7 @@ export async function GET(request: NextRequest) {
       if (receivedToken !== cronSecret) {
         console.warn('Cron Auth Failed. Received != Expected');
         return NextResponse.json(
-          {
-            error: 'Unauthorized: Invalid Token',
-            debug: {
-              hasSecret: !!cronSecret,
-              receivedTokenLen: receivedToken?.length || 0,
-              expectedSecretLen: cronSecret?.length || 0,
-              receivedStart: receivedToken?.substring(0, 3) + '...'
-            }
-          },
+          { error: 'Unauthorized: Invalid Token' },
           { status: 401 }
         );
       }
@@ -217,13 +209,37 @@ export async function GET(request: NextRequest) {
                   },
                   email: {
                     enabled: user.email_enabled,
-                    address: emailAddress, // Note: real implementation fetches profile if email is null 
+                    address: emailAddress,
                   },
                   web: {
                     enabled: user.web_enabled,
                   },
                 }
               );
+
+              // Mark appointments as notified so debounce works
+              for (const apt of result.appointments) {
+                try {
+                  const { data: matchedApts } = await supabase
+                    .from('appointments')
+                    .select('id')
+                    .eq('user_id', user.user_id)
+                    .eq('country', apt.mission_country)
+                    .eq('city', apt.center_name)
+                    .eq('appointment_date', apt.appointment_date)
+                    .eq('notified', false)
+                    .limit(1);
+
+                  if (matchedApts && matchedApts.length > 0) {
+                    await supabase
+                      .from('appointments')
+                      .update({ notified: true })
+                      .eq('id', matchedApts[0].id);
+                  }
+                } catch (markErr) {
+                  console.error('Error marking appointment notified:', markErr);
+                }
+              }
             } catch (err) {
               console.error('Batch Notify Err', err);
             }
@@ -251,11 +267,12 @@ export async function GET(request: NextRequest) {
     const adminEmail = process.env.ADMIN_EMAIL;
     if (adminEmail) {
       // For daily health summary, we can check if it's the first run of the day (e.g. Hour 0)
-      const currentHour = new Date().getHours();
-      const currentMinute = new Date().getMinutes();
+      // Health check: Vercel runs in UTC, send daily summary between UTC 00:00-00:15
+      const now = new Date();
+      const currentHourUTC = now.getUTCHours();
+      const currentMinuteUTC = now.getUTCMinutes();
 
-      // Sending a summary email only once a day between 00:00 and 00:15
-      if (currentHour === 0 && currentMinute <= 15) {
+      if (currentHourUTC === 0 && currentMinuteUTC <= 15) {
         let statsHtml = `<h3>🩺 SchengenBot Daily Health Check</h3>`;
         statsHtml += `<p><b>System OK.</b></p>`;
         statsHtml += `<p>Total active users checked: ${activeUsers.length}</p>`;

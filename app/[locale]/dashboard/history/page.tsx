@@ -38,9 +38,12 @@ export default function HistoryPage() {
         setAppointments(data.appointments || []);
       }
 
-      // Load Notifications (Mock logic or endpoint if exists)
-      // For now we assume endpoint might not be ready, so we keep array empty or mock
-      // const notifsRes = await fetch(`/api/notifications?userId=${userId}`);
+      // Load Notifications
+      const notifsRes = await fetch(`/api/notifications?userId=${userId}`);
+      if (notifsRes.ok) {
+        const data = await notifsRes.json();
+        setNotifications(data.notifications || []);
+      }
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {

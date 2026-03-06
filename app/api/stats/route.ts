@@ -21,10 +21,14 @@ export async function GET(request: NextRequest) {
     const stats = await getUserStats(userId);
 
     if (!stats) {
-      return NextResponse.json(
-        { error: 'Stats not found' },
-        { status: 404 }
-      );
+      // Return default stats for new users
+      return NextResponse.json({
+        success: true,
+        stats: {
+          total_appointments: 0,
+          total_notifications: 0,
+        },
+      });
     }
 
     return NextResponse.json({

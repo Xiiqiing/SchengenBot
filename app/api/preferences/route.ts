@@ -27,10 +27,21 @@ export async function GET(request: NextRequest) {
     const preferences = await getUserPreferences(userId);
 
     if (!preferences) {
-      return NextResponse.json(
-        { error: 'Preferences not found' },
-        { status: 404 }
-      );
+      // Return default preferences for new users instead of 404
+      return NextResponse.json({
+        success: true,
+        preferences: {
+          countries: [],
+          cities: [],
+          check_frequency: 15,
+          telegram_enabled: false,
+          telegram_chat_id: '',
+          email_enabled: false,
+          email_address: '',
+          web_enabled: true,
+          auto_check_enabled: false,
+        },
+      });
     }
 
     return NextResponse.json({

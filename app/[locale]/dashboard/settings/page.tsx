@@ -45,10 +45,10 @@ export default function SettingsPage() {
       if (response.ok) {
         const data = await response.json();
         if (data.preferences) {
-          setPreferences({
-            ...preferences,
+          setPreferences(prev => ({
+            ...prev,
             ...data.preferences,
-          });
+          }));
         }
       }
     } catch (error) {

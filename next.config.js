@@ -13,6 +13,16 @@ const nextConfig = {
         destination: '/zh',
         permanent: false,
       },
+      {
+        source: '/dashboard',
+        destination: '/zh/dashboard',
+        permanent: false,
+      },
+      {
+        source: '/dashboard/:path*',
+        destination: '/zh/dashboard/:path*',
+        permanent: false,
+      },
     ];
   },
 }

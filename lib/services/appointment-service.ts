@@ -257,10 +257,28 @@ export class AppointmentService {
           }
         );
 
-        // Mark appointments as notified
-        for (const apt of result.appointments) {
-          // Find appointment ID and mark
-          // TODO: Implement
+        // Mark appointments as notified in DB
+        if (supabase) {
+          for (const apt of result.appointments) {
+            try {
+              // Find matching unnotified appointment and mark it
+              const { data: matchedApts } = await supabase
+                .from('appointments')
+                .select('id')
+                .eq('user_id', userId)
+                .eq('country', apt.mission_country)
+                .eq('city', apt.center_name)
+                .eq('appointment_date', apt.appointment_date)
+                .eq('notified', false)
+                .limit(1);
+
+              if (matchedApts && matchedApts.length > 0) {
+                await markAppointmentNotified(matchedApts[0].id);
+              }
+            } catch (err) {
+              console.error('Error marking appointment notified:', err);
+            }
+          }
         }
       } catch (error) {
         console.error('Error sending notifications:', error);
