@@ -6,7 +6,10 @@ const intlMiddleware = createMiddleware({
     locales: ['en', 'zh'],
 
     // Used when no locale matches
-    defaultLocale: 'zh'
+    defaultLocale: 'zh',
+
+    // Always require a locale prefix in the URL
+    localePrefix: 'always'
 });
 
 export default function middleware(req: NextRequest) {
