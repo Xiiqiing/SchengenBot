@@ -6,25 +6,6 @@ const withNextIntl = createNextIntlPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/zh',
-        permanent: false,
-      },
-      {
-        source: '/dashboard',
-        destination: '/zh/dashboard',
-        permanent: false,
-      },
-      {
-        source: '/dashboard/:path*',
-        destination: '/zh/dashboard/:path*',
-        permanent: false,
-      },
-    ];
-  },
 }
 
 module.exports = withSentryConfig(
