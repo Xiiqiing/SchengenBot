@@ -21,8 +21,8 @@ export default function middleware(req: NextRequest) {
         const token = req.cookies.get('session_user_id')?.value;
         if (!token) {
             // Determine locale to redirect to (defaulting to zh if not found)
-            const locale = req.nextUrl.pathname.split('/')[1] || 'zh';
-            const targetLocale = ['en', 'zh'].includes(locale) ? locale : 'zh';
+            const locale = req.nextUrl.pathname.split('/')[1] || 'en';
+            const targetLocale = ['en', 'zh'].includes(locale) ? locale : 'en';
 
             // Redirect to the landing page of the corresponding locale
             return NextResponse.redirect(new URL(`/${targetLocale}`, req.url));
