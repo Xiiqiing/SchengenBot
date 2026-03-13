@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     // Get users with auto-check enabled, including their notification settings and joined email
     const { data: activeUsers, error } = await supabase
       .from('user_preferences')
-      .select('user_id, countries, cities, telegram_enabled, telegram_chat_id, email_enabled, web_enabled, check_frequency, user_profiles(email)')
+      .select('user_id, countries, cities, telegram_enabled, telegram_chat_id, email_enabled, email_address, web_enabled, check_frequency, user_profiles(email)')
       .eq('auto_check_enabled', true);
 
     if (error) throw error;
@@ -173,7 +173,7 @@ export async function GET(request: NextRequest) {
           // Since we can't easily access the private `sendNotificationsForResults` from outside, 
           // and modifying the class signature requires opening more files, 
           // we'll adapt by using `appointmentService.checkForUser` logic inline:
-          const emailAddress = (user.user_profiles && Array.isArray(user.user_profiles) ? user.user_profiles[0]?.email : (user.user_profiles as any)?.email) || undefined;
+          const emailAddress = user.email_address || (user.user_profiles && Array.isArray(user.user_profiles) ? user.user_profiles[0]?.email : (user.user_profiles as any)?.email) || undefined;
 
           for (const result of personalResults) {
             if (result.appointments.length === 0) continue;

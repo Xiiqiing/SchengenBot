@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   telegram_enabled BOOLEAN DEFAULT false,
   telegram_chat_id VARCHAR(100),
   email_enabled BOOLEAN DEFAULT false,
+  email_address VARCHAR(255),
   web_enabled BOOLEAN DEFAULT true,
   sound_enabled BOOLEAN DEFAULT true,
   auto_check_enabled BOOLEAN DEFAULT false,
