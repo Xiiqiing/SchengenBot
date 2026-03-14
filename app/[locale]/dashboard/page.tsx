@@ -219,12 +219,6 @@ export default function DashboardPage() {
 
           <div className="rounded-[32px] border border-black/[0.04] bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
             <div className="grid gap-3">
-              <div className="rounded-[24px] bg-[#f5f5f7] px-4 py-4">
-                <p className="text-[12px] font-medium text-[#86868b]">{t('stats.autoMonitor')}</p>
-                <p className="mt-1 text-lg font-semibold tracking-[-0.03em] text-[#1d1d1f]">
-                  {preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}
-                </p>
-              </div>
               <Link href={`/${locale}/dashboard/settings`}>
                 <Button className="h-12 w-full justify-between rounded-full bg-[#0071e3] px-5 text-white shadow-none hover:bg-[#0077ed]">
                   <span className="font-semibold">{t('ukCheck.openSettings')}</span>
