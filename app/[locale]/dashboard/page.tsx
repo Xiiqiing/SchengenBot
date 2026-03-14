@@ -175,20 +175,21 @@ export default function DashboardPage() {
             <p className="text-sm font-medium text-[#6e6e73]">
               {t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })} · {t('ukCheck.citiesCount', { count: preferences?.cities?.length || 0 })} · {t('ukCheck.cooldownHours', { count: preferences?.same_slot_cooldown_hours || 24 })}
             </p>
-            <div className="flex flex-wrap gap-3 text-sm font-semibold text-[#1d1d1f]">
-              <Link href={`/${locale}/dashboard/settings`} className="inline-flex items-center gap-1.5 hover:text-[#0071e3]">
-                {t('ukCheck.openSettings')}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href={`/${locale}/dashboard/history`} className="inline-flex items-center gap-1.5 text-[#6e6e73] hover:text-[#1d1d1f]">
-                {t('ukCheck.viewHistory')}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+          </div>
+          <div className="flex flex-wrap gap-3 text-sm font-semibold text-[#1d1d1f]">
+            <Link href={`/${locale}/dashboard/settings`}>
+              <Button className="h-10 rounded-full bg-[#0071e3] px-4 text-white shadow-none hover:bg-[#0077ed]">
+                <span className="font-semibold">{t('ukCheck.openSettings')}</span>
+              </Button>
+            </Link>
+            <Link href={`/${locale}/dashboard/history`} className="inline-flex items-center gap-1.5 text-[#6e6e73] hover:text-[#1d1d1f]">
+              {t('ukCheck.viewHistory')}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
 
-        <div className="mb-10 grid grid-cols-1 gap-4 lg:grid-cols-[1.7fr_0.85fr]">
+        <div className="mb-10">
           <Card className="overflow-hidden rounded-[36px] border border-black/[0.04] bg-white text-[#1d1d1f] shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
             <CardContent className="p-6 md:p-8">
               <div className="max-w-3xl">
@@ -200,7 +201,7 @@ export default function DashboardPage() {
                 </p>
               </div>
 
-              <div className="mt-8 grid grid-cols-3 gap-5 border-t border-black/[0.06] pt-6 md:max-w-[640px]">
+              <div className="mt-8 grid grid-cols-3 gap-5 border-t border-black/[0.06] pt-6 md:max-w-[760px]">
                 <div>
                   <p className="text-[12px] font-medium text-[#86868b]">{t('stats.notificationsSent')}</p>
                   <p className="mt-1.5 text-[30px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[34px]">{stats?.total_notifications || 0}</p>
@@ -216,23 +217,6 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-
-          <div className="rounded-[32px] border border-black/[0.04] bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
-            <div className="grid gap-3">
-              <Link href={`/${locale}/dashboard/settings`}>
-                <Button className="h-12 w-full justify-between rounded-full bg-[#0071e3] px-5 text-white shadow-none hover:bg-[#0077ed]">
-                  <span className="font-semibold">{t('ukCheck.openSettings')}</span>
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href={`/${locale}/dashboard/history`}>
-                <Button variant="outline" className="h-12 w-full justify-between rounded-full border-black/10 bg-[#f5f5f7] px-5 hover:bg-[#ececf0]">
-                  <span className="font-semibold">{t('ukCheck.viewHistory')}</span>
-                  <History className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
