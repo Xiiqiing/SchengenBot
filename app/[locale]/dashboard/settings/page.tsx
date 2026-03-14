@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Save, TestTube, ArrowLeft, Bell, Globe, Clock, Mail, Settings } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,14 +9,17 @@ import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import Link from 'next/link';
-import { getOrCreateUserId } from '@/lib/user-id';
+import { clearUserId, getOrCreateUserId } from '@/lib/user-id';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function SettingsPage() {
   const t = useTranslations('Settings');
+  const tNav = useTranslations('Dashboard.nav');
   const tCountries = useTranslations('Countries');
   const tCities = useTranslations('Cities');
+  const locale = useLocale();
+  const router = useRouter();
   const [userId] = useState(() => getOrCreateUserId());
   const [preferences, setPreferences] = useState({
     countries: [] as string[],
@@ -35,6 +39,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testingEmail, setTestingEmail] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     loadPreferences();
@@ -166,6 +171,23 @@ export default function SettingsPage() {
         ? prev.cities.filter((c: string) => c !== code)
         : [...prev.cities, code],
     }));
+  };
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      clearUserId();
+      router.replace(`/${locale}`);
+      router.refresh();
+      setLoggingOut(false);
+    }
   };
 
   return (
@@ -421,6 +443,17 @@ export default function SettingsPage() {
               className="w-full h-14 text-base"
             >
               {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="h-5 w-5 mr-2" /> {t('actions.save')}</>}
+            </Button>
+          </div>
+
+          <div className="pt-2">
+            <Button
+              onClick={handleLogout}
+              disabled={loggingOut}
+              variant="outline"
+              className="w-full h-12"
+            >
+              {loggingOut ? <Clock className="animate-spin h-5 w-5" /> : tNav('logout')}
             </Button>
           </div>
         </div>
