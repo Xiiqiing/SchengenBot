@@ -11,6 +11,12 @@ export const metadata: Metadata = {
   title: 'Schengen Visa Appointment Bot',
   description: 'Real-time Schengen visa appointment notification system',
   keywords: ['schengen', 'visa', 'appointment', 'bot'],
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
+  },
 }
 
 import { NextIntlClientProvider } from 'next-intl';

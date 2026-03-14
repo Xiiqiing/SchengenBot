@@ -451,7 +451,7 @@ export default function SettingsPage() {
               onClick={handleLogout}
               disabled={loggingOut}
               variant="outline"
-              className="w-full h-12"
+              className="w-full h-12 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
             >
               {loggingOut ? <Clock className="animate-spin h-5 w-5" /> : tNav('logout')}
             </Button>
