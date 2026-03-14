@@ -36,7 +36,7 @@
         "checkComplete": "Check completed!",
         "checkFailed": "Check failed!",
         "title": "Control Center",
-        "overview": "Overview",
+        "overview": "Track appointments, alerts, and checks in one place.",
         "stats": {
             "totalChecks": "Total Checks",
             "slotsFound": "Slots Found",
@@ -104,7 +104,7 @@
     },
     "Settings": {
         "title": "Preferences",
-        "description": "Manage your notification and monitoring preferences",
+        "description": "Monitoring, notifications, and delivery.",
         "backLabel": "Back",
         "summary": {
             "title": "Current Setup Snapshot",

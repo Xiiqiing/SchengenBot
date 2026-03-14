@@ -356,19 +356,16 @@ export default function SettingsPage() {
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">
         <div className="space-y-8">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-            Overview
-          </div>
-          <Card className="overflow-hidden rounded-[36px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(248,250,252,0.92)_100%)] text-[#1d1d1f] shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+          <Card className="overflow-hidden rounded-[36px] border border-black/5 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-[#1d1d1f] shadow-[0_18px_60px_rgba(15,23,42,0.06)]">
             <CardContent className="p-6 md:p-8">
-              <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+              <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
                 <div className="max-w-xl">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6e6e73]">
-                    {t('summary.title')}
-                  </p>
                   <h2 className="mt-3 text-[34px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[48px] md:leading-[0.98]">
                     {t('title')}
                   </h2>
+                  <p className="mt-4 max-w-2xl text-base leading-7 text-[#6e6e73]">
+                    {t('description')}
+                  </p>
                 </div>
 
                 <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 md:max-w-[360px]">
@@ -407,10 +404,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <div className="pt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-            Monitor Scope
-          </div>
-          <section className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+          <section className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
             <div className="mb-6">
               <h2 className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Globe className="h-5 w-5 text-[#86868b]" />
@@ -440,8 +434,7 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          {/* UK City Selection */}
-          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 🇬🇧 {t('sections.cities.title')}
@@ -468,10 +461,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <div className="pt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-            Notification Channels
-          </div>
-          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Bell className="h-5 w-5 text-[#86868b]" />
@@ -533,8 +523,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          {/* Notification Channel - Email */}
-          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Mail className="h-5 w-5 text-[#86868b]" />
@@ -584,10 +573,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <div className="pt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-            Automation
-          </div>
-          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Clock className="h-5 w-5 text-[#86868b]" />
@@ -645,7 +631,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Bell className="h-5 w-5 text-[#86868b]" />
@@ -724,10 +710,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <div className="pt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-            Account
-          </div>
-          <Card className="rounded-[32px] border border-white/70 bg-white/88 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+          <Card className="rounded-[32px] border border-black/5 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
             <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">

@@ -62,11 +62,8 @@ export default function HistoryPage() {
       />
 
       <main className="container mx-auto max-w-6xl px-4 pb-12">
-        <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-          Activity
-        </div>
         {/* Tabs */}
-        <div className="mb-10 inline-flex w-fit gap-2 rounded-full border border-white/80 bg-white/72 p-1.5 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+        <div className="mb-10 inline-flex w-fit gap-2 rounded-full border border-black/5 bg-white p-1.5 shadow-[0_12px_30px_rgba(15,23,42,0.05)]">
           <button
             onClick={() => setActiveTab('appointments')}
             className={cn(
@@ -104,7 +101,7 @@ export default function HistoryPage() {
                   return (
                     <div
                       key={apt.id}
-                      className="group relative rounded-[32px] border border-white/80 bg-white/88 p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
+                      className="group relative rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
                     >
                       <div className="flex items-start justify-between mb-5">
                         <div className="flex items-center gap-4">
@@ -185,7 +182,7 @@ export default function HistoryPage() {
                 {notifications.map((notif) => (
                   <div
                     key={notif.id}
-                    className="rounded-[32px] border border-white/80 bg-white/88 p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
+                    className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">

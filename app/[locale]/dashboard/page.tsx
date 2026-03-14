@@ -161,65 +161,54 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7f8fb_44%,#eef2f7_100%)] text-on-surface">
       <main className="container mx-auto px-4 py-10 max-w-7xl">
-        <section className="pb-10 pt-6 md:pb-14 md:pt-10">
-          <div className="max-w-4xl">
+        <section className="pb-12 pt-8 md:pb-16 md:pt-14">
+          <div className="max-w-5xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
               {t('ukCheck.summaryTitle')}
             </p>
             <h1 className="mt-3 text-[42px] font-semibold tracking-[-0.06em] text-[#1d1d1f] md:text-[72px] md:leading-[0.95]">
               {t('title')}
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-[#6e6e73] md:text-lg">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-[#6e6e73] md:text-[21px] md:leading-8">
               {t('overview')}
             </p>
           </div>
         </section>
 
-        <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-          {t('ukCheck.summaryTitle')}
-        </div>
-        <div className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <Card className="overflow-hidden rounded-[40px] border border-white/70 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-[#1d1d1f] shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl">
-            <CardContent className="p-7 md:p-8">
-              <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-                <div className="max-w-xl">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-                    {t('stats.autoMonitor')}
-                  </p>
-                  <h2 className="mt-3 text-[34px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[56px] md:leading-[0.95]">
-                    {t('ukCheck.summaryDescription')}
-                  </h2>
-                  <p className="mt-4 max-w-2xl text-base leading-7 text-[#6e6e73]">
-                    {t('overview')}
-                  </p>
-                  <div className="mt-6 flex flex-wrap gap-2.5">
-                    <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
-                      {t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })}
-                    </Badge>
-                    <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
-                      {t('ukCheck.citiesCount', { count: preferences?.cities?.length || 0 })}
-                    </Badge>
-                    <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
-                      {t('ukCheck.cooldownHours', { count: preferences?.same_slot_cooldown_hours || 24 })}
-                    </Badge>
-                  </div>
+        <div className="mb-12 grid grid-cols-1 gap-6 lg:grid-cols-[1.45fr_0.85fr]">
+          <Card className="overflow-hidden rounded-[40px] border border-white/70 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-[#1d1d1f] shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
+            <CardContent className="p-8 md:p-10">
+              <div className="max-w-3xl">
+                <h2 className="text-[34px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[56px] md:leading-[0.95]">
+                  {t('ukCheck.summaryDescription')}
+                </h2>
+                <div className="mt-7 flex flex-wrap gap-2.5">
+                  <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
+                    {t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })}
+                  </Badge>
+                  <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
+                    {t('ukCheck.citiesCount', { count: preferences?.cities?.length || 0 })}
+                  </Badge>
+                  <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
+                    {t('ukCheck.cooldownHours', { count: preferences?.same_slot_cooldown_hours || 24 })}
+                  </Badge>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-2 gap-3 md:min-w-[280px]">
-                  <div className="rounded-[30px] border border-[#dbe7f7] bg-[#f7fbff] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.notificationsSent')}</p>
-                    <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
-                  </div>
-                  <div className="rounded-[30px] border border-black/5 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.autoMonitor')}</p>
-                    <p className="mt-2 text-lg font-semibold text-[#1d1d1f]">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
-                  </div>
+              <div className="mt-10 grid grid-cols-2 gap-4 md:max-w-[420px]">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.notificationsSent')}</p>
+                  <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.autoMonitor')}</p>
+                  <p className="mt-2 text-xl font-semibold text-[#1d1d1f]">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-[34px] border border-white/70 bg-white/72 p-2 shadow-[0_16px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+          <Card className="rounded-[32px] border border-black/5 bg-white p-2 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
             <CardHeader className="p-6 pb-3">
               <CardTitle className="text-lg font-semibold tracking-[-0.02em] text-[#1d1d1f]">{t('ukCheck.quickActions')}</CardTitle>
             </CardHeader>
@@ -244,9 +233,6 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-          Snapshot
-        </div>
         <div className="mb-14 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
             { label: t('stats.totalChecks'), value: ukCheckCount + (stats?.total_appointments || 0), icon: TrendingUp },
@@ -264,13 +250,10 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-          Monitor
-        </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-8 space-y-8">
-            <Card className="overflow-hidden rounded-[36px] border border-white/70 bg-white/88 p-2 shadow-[0_18px_50px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+            <Card className="overflow-hidden rounded-[36px] border border-black/5 bg-white p-2 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
               <CardHeader className="p-8 pb-4">
                 <CardTitle className="flex items-center gap-3 text-[28px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                   {t('ukCheck.title')}
@@ -281,7 +264,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="p-6 pt-2 space-y-6">
                 {preferences ? (
-                  <div className="grid grid-cols-1 gap-6 rounded-[28px] border border-black/5 bg-[#f5f5f7] p-6 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-6 rounded-[28px] bg-[#f5f5f7] p-6 md:grid-cols-2">
                     <div>
                       <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('ukCheck.monitoredCountries')}</p>
                       <div className="flex flex-wrap gap-2">
@@ -421,7 +404,7 @@ export default function DashboardPage() {
 
           {/* Right Panel - Recent Appointments */}
           <div className="lg:col-span-4 space-y-8">
-            <Card className="flex h-full flex-col rounded-[32px] border border-white/70 bg-white/72 p-2 shadow-[0_16px_36px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+            <Card className="flex h-full flex-col rounded-[32px] border border-black/5 bg-white p-2 shadow-[0_16px_36px_rgba(15,23,42,0.05)]">
               <CardHeader className="p-6">
                 <CardTitle className="text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">{t('recent.title')}</CardTitle>
                 <CardDescription className="text-sm leading-6 text-[#6e6e73]">{t('recent.description')}</CardDescription>

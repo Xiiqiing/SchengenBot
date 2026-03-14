@@ -36,7 +36,7 @@
         "checkComplete": "检查完成!",
         "checkFailed": "检查失败!",
         "title": "控制中心",
-        "overview": "概览",
+        "overview": "在一个地方查看预约、通知与检查状态。",
         "stats": {
             "totalChecks": "累计检查",
             "slotsFound": "已发现名额",
@@ -104,7 +104,7 @@
     },
     "Settings": {
         "title": "偏好设置",
-        "description": "管理您的通知和监控偏好",
+        "description": "管理监控、通知与推送方式。",
         "backLabel": "返回",
         "summary": {
             "title": "当前配置速览",
