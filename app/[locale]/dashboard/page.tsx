@@ -159,18 +159,18 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7f8fb_44%,#eef2f7_100%)] text-on-surface">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md sticky top-[48px] z-40 border-b border-black/5">
+      <header className="sticky top-[48px] z-40 border-b border-black/5 bg-white/72 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <Bell className="w-6 h-6 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-[linear-gradient(180deg,#0a84ff_0%,#0066cc_100%)] shadow-[0_10px_30px_rgba(0,102,204,0.22)]">
+                <Bell className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight text-black">{t('title')}</h1>
-                <p className="text-sm font-medium text-gray-500">{t('overview')}</p>
+                <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">{t('title')}</h1>
+                <p className="text-sm font-medium text-[#6e6e73]">{t('overview')}</p>
               </div>
             </div>
           </div>
@@ -179,63 +179,66 @@ export default function DashboardPage() {
 
       <main className="container mx-auto px-4 py-10 max-w-7xl">
         <div className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <Card className="overflow-hidden rounded-[32px] border-none bg-[linear-gradient(135deg,#111827_0%,#1d4ed8_45%,#60a5fa_100%)] text-white shadow-[0_20px_80px_rgba(29,78,216,0.28)]">
+          <Card className="overflow-hidden rounded-[36px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(248,250,252,0.92)_100%)] text-[#1d1d1f] shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
             <CardContent className="p-7 md:p-8">
               <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
                 <div className="max-w-xl">
-                  <p className="text-xs font-black uppercase tracking-[0.24em] text-white/55">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6e6e73]">
                     {t('ukCheck.summaryTitle')}
                   </p>
-                  <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">
+                  <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d1d1f] md:text-5xl">
                     {t('ukCheck.summaryDescription')}
                   </h2>
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    <Badge className="rounded-full bg-white text-[#0f172a] px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em]">
+                  <p className="mt-4 max-w-2xl text-sm leading-6 text-[#6e6e73]">
+                    {t('overview')}
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-2.5">
+                    <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
                       {t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })}
                     </Badge>
-                    <Badge className="rounded-full bg-white/15 text-white px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em]">
+                    <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
                       {t('ukCheck.citiesCount', { count: preferences?.cities?.length || 0 })}
                     </Badge>
-                    <Badge className="rounded-full bg-white/15 text-white px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em]">
+                    <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
                       {t('ukCheck.cooldownHours', { count: preferences?.same_slot_cooldown_hours || 24 })}
                     </Badge>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 md:min-w-[250px]">
-                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
-                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('stats.notificationsSent')}</p>
-                    <p className="mt-2 text-3xl font-black">{stats?.total_notifications || 0}</p>
+                <div className="grid grid-cols-2 gap-3 md:min-w-[260px]">
+                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.notificationsSent')}</p>
+                    <p className="mt-2 text-3xl font-semibold tracking-[-0.03em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
                   </div>
-                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
-                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('stats.autoMonitor')}</p>
-                    <p className="mt-2 text-lg font-black">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
+                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.autoMonitor')}</p>
+                    <p className="mt-2 text-lg font-semibold text-[#1d1d1f]">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-[32px] border-none bg-white p-2 shadow-sm">
+          <Card className="rounded-[36px] border border-white/70 bg-white/86 p-2 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
             <CardHeader className="p-6 pb-3">
-              <CardTitle className="text-lg font-black text-[#1d1d1f]">{t('ukCheck.quickActions')}</CardTitle>
+              <CardTitle className="text-lg font-semibold tracking-[-0.02em] text-[#1d1d1f]">{t('ukCheck.quickActions')}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3 p-6 pt-0">
               <Link href={`/${locale}/dashboard/settings`}>
-                <Button className="w-full h-12 justify-between rounded-2xl bg-[#111827] px-5 text-white hover:bg-[#0b1220]">
-                  <span className="font-bold">{t('ukCheck.openSettings')}</span>
+                <Button className="h-12 w-full justify-between rounded-full bg-[#0071e3] px-5 text-white shadow-[0_10px_25px_rgba(0,113,227,0.24)] hover:bg-[#0077ed]">
+                  <span className="font-semibold">{t('ukCheck.openSettings')}</span>
                   <Settings className="h-4 w-4" />
                 </Button>
               </Link>
               <Link href={`/${locale}/dashboard/history`}>
-                <Button variant="outline" className="w-full h-12 justify-between rounded-2xl px-5">
-                  <span className="font-bold">{t('ukCheck.viewHistory')}</span>
+                <Button variant="outline" className="h-12 w-full justify-between rounded-full border-black/10 bg-white px-5 hover:bg-black/[0.03]">
+                  <span className="font-semibold">{t('ukCheck.viewHistory')}</span>
                   <History className="h-4 w-4" />
                 </Button>
               </Link>
-              <div className="rounded-2xl bg-[#f5f7fb] px-4 py-3">
-                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#64748b]">{t('stats.slotsFound')}</p>
-                <p className="mt-1 text-lg font-black text-[#111827]">{appointments.length}</p>
+              <div className="rounded-[28px] border border-black/5 bg-[#f5f5f7] px-4 py-4">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.slotsFound')}</p>
+                <p className="mt-1 text-lg font-semibold text-[#1d1d1f]">{appointments.length}</p>
               </div>
             </CardContent>
           </Card>
@@ -249,12 +252,12 @@ export default function DashboardPage() {
             { label: t('stats.notificationsSent'), value: stats?.total_notifications || 0, icon: Bell, color: 'text-secondary' },
             { label: t('stats.autoMonitor'), value: preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive'), icon: Clock, color: preferences?.auto_check_enabled ? 'text-green-600' : 'text-on-surface-variant/50' }
           ].map((stat, i) => (
-            <Card key={i} className="bg-white rounded-2xl shadow-sm p-6 border-none hover:shadow-md transition-shadow duration-300">
+            <Card key={i} className="rounded-[30px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
               <div className="flex flex-row items-center justify-between mb-4">
-                <span className="text-sm font-bold uppercase tracking-widest text-gray-400">{stat.label}</span>
+                <span className="text-sm font-semibold tracking-[-0.01em] text-[#6e6e73]">{stat.label}</span>
                 <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </div>
-              <div className="text-3xl font-bold text-black">{stat.value}</div>
+              <div className="text-3xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">{stat.value}</div>
             </Card>
           ))}
         </div>
@@ -262,26 +265,26 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-8 space-y-8">
-            <Card className="bg-white rounded-2xl shadow-sm border-none p-2 block overflow-hidden">
+            <Card className="overflow-hidden rounded-[36px] border border-white/70 bg-white/88 p-2 shadow-[0_18px_50px_rgba(15,23,42,0.06)] backdrop-blur-xl">
               <CardHeader className="p-8 pb-4">
-                <CardTitle className="text-2xl font-bold flex items-center gap-3 text-black">
+                <CardTitle className="flex items-center gap-3 text-[28px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                   {t('ukCheck.title')}
                 </CardTitle>
-                <CardDescription className="text-base text-gray-500">
+                <CardDescription className="text-base leading-7 text-[#6e6e73]">
                   {t('ukCheck.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-2 space-y-6">
                 {preferences ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-[#F5F5F7] rounded-xl border-none">
+                  <div className="grid grid-cols-1 gap-6 rounded-[28px] border border-black/5 bg-[#f5f5f7] p-6 md:grid-cols-2">
                     <div>
-                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">{t('ukCheck.monitoredCountries')}</p>
+                      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('ukCheck.monitoredCountries')}</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.countries?.length > 0 ? (
                           preferences.countries.map((code: string) => {
                             const country = COUNTRIES.find(c => c.code === code);
                             return (
-                              <div key={code} className="px-3 py-1.5 bg-primary-container text-on-primary-container rounded-full text-xs font-bold flex items-center gap-1.5">
+                              <div key={code} className="flex items-center gap-1.5 rounded-full border border-black/5 bg-white px-3 py-1.5 text-xs font-semibold text-[#1d1d1f] shadow-sm">
                                 <span>{country?.flag}</span>
                                 {country ? tCountries(country.code) : code}
                               </div>
@@ -294,13 +297,13 @@ export default function DashboardPage() {
                     </div>
 
                     <div>
-                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60 mb-3">{t('ukCheck.targetCities')}</p>
+                      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('ukCheck.targetCities')}</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.cities?.length > 0 ? (
                           preferences.cities.map((code: string) => {
                             const city = UK_CITIES.find(c => c.code === code);
                             return (
-                              <div key={code} className="px-3 py-1.5 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">
+                              <div key={code} className="rounded-full border border-black/5 bg-white px-3 py-1.5 text-xs font-semibold text-[#1d1d1f] shadow-sm">
                                 {city ? tCities(city.code) : code}
                               </div>
                             );
@@ -312,10 +315,10 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-12 bg-surface rounded-[24px] border-2 border-dashed border-outline/20">
-                    <p className="text-on-surface-variant font-medium mb-6">{t('ukCheck.noPrefs')}</p>
+                  <div className="rounded-[28px] border border-dashed border-black/10 bg-[#fbfbfd] py-12 text-center">
+                    <p className="mb-6 font-medium text-[#6e6e73]">{t('ukCheck.noPrefs')}</p>
                     <Link href={`/${locale}/dashboard/settings`}>
-                      <Button className="h-10 px-6 rounded-full bg-[#E9E9EA] text-black hover:bg-[#dcdcdd] font-medium text-[13px] shadow-none">
+                      <Button variant="outline" className="h-11 rounded-full border-black/10 bg-white px-6 text-[13px] font-semibold text-[#1d1d1f] hover:bg-black/[0.03]">
                         <Settings className="mr-2 h-4 w-4" />
                         {t('ukCheck.configureNow')}
                       </Button>
@@ -326,7 +329,7 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleUKCheck}
                   disabled={checkingUK}
-                  className={`w-full h-12 rounded-full text-[15px] font-semibold transition-all shadow-sm ${checkingUK ? 'bg-gray-100 text-gray-400' : 'bg-[#0071e3] text-white hover:bg-[#0077ED] active:scale-[0.98]'}`}
+                  className={`h-12 w-full rounded-full text-[15px] font-semibold transition-all ${checkingUK ? 'bg-[#e8e8ed] text-[#86868b]' : 'bg-[#0071e3] text-white shadow-[0_10px_25px_rgba(0,113,227,0.24)] hover:bg-[#0077ed] active:scale-[0.98]'}`}
                 >
                   {checkingUK ? (
                     <>
@@ -349,31 +352,31 @@ export default function DashboardPage() {
                       return (
                         <div
                           key={idx}
-                          className={`p-6 rounded-[24px] transition-all border-l-8 ${result.isAvailable ? 'bg-green-50 border-green-600' : result.error ? 'bg-red-50 border-red-600' : 'bg-surface border-outline/20 shadow-sm'}`}
+                          className={`rounded-[28px] border p-6 transition-all ${result.isAvailable ? 'border-green-200 bg-[#f4fff7]' : result.error ? 'border-red-200 bg-[#fff5f5]' : 'border-black/5 bg-[#fbfbfd] shadow-sm'}`}
                         >
                           <div className="flex items-center justify-between mb-4">
-                            <h3 className="font-black text-xl flex items-center gap-2">
+                            <h3 className="flex items-center gap-2 text-xl font-semibold tracking-[-0.02em] text-[#1d1d1f]">
                               {countryInfo?.flag || '🏳️'} {countryInfo ? tCountries(countryInfo.code) : result.country}
-                              <span className="text-on-surface-variant/30 px-2">|</span>
+                              <span className="px-2 text-black/20">|</span>
                               {tCities(result.city) || result.city}
                             </h3>
-                            <div className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter ${result.isAvailable ? 'bg-green-600 text-white' : 'bg-surface-variant/50 text-on-surface-variant'}`}>
+                            <div className={`rounded-full px-4 py-1.5 text-xs font-semibold ${result.isAvailable ? 'bg-[#34c759] text-white' : 'bg-white text-[#6e6e73] border border-black/5'}`}>
                               {result.isAvailable ? `${result.totalSlots} SLOTS` : 'NO DATA'}
                             </div>
                           </div>
 
                           {result.isAvailable ? (
                             <div className="space-y-4">
-                              <p className="text-sm text-green-700 font-black flex items-center gap-2">
+                              <p className="flex items-center gap-2 text-sm font-semibold text-green-700">
                                 <Zap className="w-4 h-4" />
                                 {t('ukCheck.slotsFound', { count: result.totalSlots, days: result.totalDays })}
                               </p>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {result.slots?.slice(0, 3).map((slot: any, i: number) => (
-                                  <div key={i} className="bg-white p-4 rounded-2xl shadow-sm border border-green-100">
-                                    <p className="font-black text-on-surface">📅 {slot.date}</p>
-                                    <p className="text-xs text-on-surface-variant font-bold mt-1 uppercase">{t('ukCheck.slotsAvailable', { count: slot.slotsAvailable })}</p>
+                                  <div key={i} className="rounded-[22px] border border-green-100 bg-white p-4 shadow-sm">
+                                    <p className="font-semibold text-[#1d1d1f]">📅 {slot.date}</p>
+                                    <p className="mt-1 text-xs font-semibold text-[#6e6e73]">{t('ukCheck.slotsAvailable', { count: slot.slotsAvailable })}</p>
                                   </div>
                                 ))}
                               </div>
@@ -391,12 +394,12 @@ export default function DashboardPage() {
                             </div>
                           ) : (
                             <div className="text-on-surface-variant font-medium">
-                              <p className="flex items-center gap-2 text-sm">
+                              <p className="flex items-center gap-2 text-sm text-[#6e6e73]">
                                 <Clock className="w-4 h-4 opacity-50" />
                                 {t('ukCheck.noSlots')}
                               </p>
                               {result.lastChecked && (
-                                <p className={`mt-3 text-[10px] font-black uppercase tracking-widest opacity-40`}>
+                                <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-black/35">
                                   {t('ukCheck.lastScan')}: {result.lastChecked}
                                 </p>
                               )}
@@ -413,31 +416,31 @@ export default function DashboardPage() {
 
           {/* Right Panel - Recent Appointments */}
           <div className="lg:col-span-4 space-y-8">
-            <Card className="bg-white rounded-2xl shadow-sm border-none p-2 h-full flex flex-col">
+            <Card className="flex h-full flex-col rounded-[36px] border border-white/70 bg-white/88 p-2 shadow-[0_18px_50px_rgba(15,23,42,0.06)] backdrop-blur-xl">
               <CardHeader className="p-6">
-                <CardTitle className="text-xl font-bold text-[#1d1d1f]">{t('recent.title')}</CardTitle>
-                <CardDescription className="text-sm font-medium text-gray-500">{t('recent.description')}</CardDescription>
+                <CardTitle className="text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">{t('recent.title')}</CardTitle>
+                <CardDescription className="text-sm leading-6 text-[#6e6e73]">{t('recent.description')}</CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0 flex-1 overflow-y-auto max-h-[70vh] custom-scrollbar">
                 <div className="space-y-4">
                   {appointments.length > 0 ? (
                     appointments.map((apt: any) => (
-                      <div key={apt.id} className="p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all group">
+                      <div key={apt.id} className="group rounded-[24px] border border-black/5 bg-[#fbfbfd] p-4 transition-all hover:border-black/10 hover:bg-white hover:shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-bold text-sm text-[#1d1d1f] flex items-center gap-1.5">
+                          <span className="flex items-center gap-1.5 text-sm font-semibold text-[#1d1d1f]">
                             {COUNTRIES.find(c => c.code === apt.country)?.flag} {tCountries(apt.country) || apt.country}
                           </span>
-                          <span className="text-[10px] font-bold text-gray-500 uppercase bg-gray-200/50 px-2 py-0.5 rounded-full">
+                          <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-[#6e6e73] border border-black/5">
                             {format.dateTime(new Date(apt.appointment_date), { dateStyle: 'medium' })}
                           </span>
                         </div>
-                        <p className="text-xs font-medium text-on-surface-variant mb-3">{apt.center_name}</p>
+                        <p className="mb-3 text-xs font-medium text-[#6e6e73]">{apt.center_name}</p>
                         {apt.book_now_link && (
                           <a
                             href={apt.book_now_link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs font-black text-primary hover:underline flex items-center gap-1"
+                            className="flex items-center gap-1 text-xs font-semibold text-[#0071e3] hover:underline"
                           >
                             {t('recent.bookNow')} <Zap className="w-3 h-3" />
                           </a>

@@ -338,7 +338,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7f8fb_44%,#eef2f7_100%)] text-on-surface">
       {/* Header */}
       <PageHeader
         title={t('title')}
@@ -350,48 +350,48 @@ export default function SettingsPage() {
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">
         <div className="space-y-8">
-          <Card className="overflow-hidden rounded-[28px] border-none bg-[linear-gradient(135deg,#0f172a_0%,#1d4ed8_45%,#38bdf8_100%)] text-white shadow-[0_18px_60px_rgba(14,57,154,0.24)]">
+          <Card className="overflow-hidden rounded-[36px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(248,250,252,0.92)_100%)] text-[#1d1d1f] shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
             <CardContent className="p-6 md:p-8">
               <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                 <div className="max-w-xl">
-                  <p className="text-xs font-black uppercase tracking-[0.24em] text-white/65">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6e6e73]">
                     {t('summary.title')}
                   </p>
-                  <h2 className="mt-3 text-2xl font-black tracking-tight md:text-3xl">
+                  <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d1d1f] md:text-4xl">
                     {t('summary.description')}
                   </h2>
                 </div>
 
-                <div className="grid flex-1 grid-cols-2 gap-3 md:max-w-[360px]">
-                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
-                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('summary.countries')}</p>
-                    <p className="mt-2 text-2xl font-black">{preferences.countries.length}</p>
+                <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 md:max-w-[360px]">
+                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('summary.countries')}</p>
+                    <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#1d1d1f]">{preferences.countries.length}</p>
                   </div>
-                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
-                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('summary.cities')}</p>
-                    <p className="mt-2 text-2xl font-black">{preferences.cities.length}</p>
+                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('summary.cities')}</p>
+                    <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#1d1d1f]">{preferences.cities.length}</p>
                   </div>
-                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
-                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('summary.cooldown')}</p>
-                    <p className="mt-2 text-lg font-black">{t('summary.hours', { count: preferences.same_slot_cooldown_hours })}</p>
+                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('summary.cooldown')}</p>
+                    <p className="mt-2 text-lg font-semibold text-[#1d1d1f]">{t('summary.hours', { count: preferences.same_slot_cooldown_hours })}</p>
                   </div>
-                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
-                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('summary.automation')}</p>
-                    <p className="mt-2 text-lg font-black">
+                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('summary.automation')}</p>
+                    <p className="mt-2 text-lg font-semibold text-[#1d1d1f]">
                       {preferences.auto_check_enabled ? t('summary.enabled') : t('summary.disabled')}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                <Badge className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] ${preferences.telegram_enabled ? 'bg-white text-[#0f172a]' : 'bg-white/10 text-white/70'}`}>
+              <div className="mt-6 flex flex-wrap gap-2.5">
+                <Badge className={`rounded-full border border-black/5 px-4 py-1.5 text-[12px] font-semibold shadow-sm ${preferences.telegram_enabled ? 'bg-white text-[#1d1d1f]' : 'bg-white/55 text-[#86868b]'}`}>
                   Telegram {preferences.telegram_enabled ? t('summary.enabled') : t('summary.disabled')}
                 </Badge>
-                <Badge className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] ${preferences.email_enabled ? 'bg-white text-[#0f172a]' : 'bg-white/10 text-white/70'}`}>
+                <Badge className={`rounded-full border border-black/5 px-4 py-1.5 text-[12px] font-semibold shadow-sm ${preferences.email_enabled ? 'bg-white text-[#1d1d1f]' : 'bg-white/55 text-[#86868b]'}`}>
                   Email {preferences.email_enabled ? t('summary.enabled') : t('summary.disabled')}
                 </Badge>
-                <Badge className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] ${preferences.web_enabled ? 'bg-white text-[#0f172a]' : 'bg-white/10 text-white/70'}`}>
+                <Badge className={`rounded-full border border-black/5 px-4 py-1.5 text-[12px] font-semibold shadow-sm ${preferences.web_enabled ? 'bg-white text-[#1d1d1f]' : 'bg-white/55 text-[#86868b]'}`}>
                   Web Push {preferences.web_enabled ? t('summary.enabled') : t('summary.disabled')}
                 </Badge>
               </div>
@@ -399,13 +399,13 @@ export default function SettingsPage() {
           </Card>
 
           {/* Country Selection */}
-          <section className="m3-card p-6">
+          <section className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <div className="mb-6">
-              <h2 className="title-large text-on-surface flex items-center gap-2">
+              <h2 className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Globe className="w-5 h-5 text-primary" />
                 {t('sections.countries.title')}
               </h2>
-              <p className="body-medium text-on-surface-variant mt-1">
+              <p className="mt-1 text-sm leading-6 text-[#6e6e73]">
                 {t('sections.countries.description')}
               </p>
             </div>
@@ -415,12 +415,12 @@ export default function SettingsPage() {
                   <button
                     key={country.code}
                     onClick={() => toggleCountry(country.code)}
-                    className={`relative p-4 rounded-2xl transition-all duration-200 flex flex-col items-center justify-center gap-2 border active:scale-[0.96] ${preferences.countries.includes(country.code)
-                      ? 'border-primary border-2 bg-white shadow-md shadow-blue-500/10'
-                      : 'border-transparent bg-white shadow-sm hover:shadow-md hover:scale-[1.02]'}`}
+                    className={`relative flex flex-col items-center justify-center gap-2 rounded-[24px] border p-4 transition-all duration-200 active:scale-[0.98] ${preferences.countries.includes(country.code)
+                      ? 'border-[#0071e3] bg-[#f0f7ff] shadow-[0_10px_24px_rgba(0,113,227,0.12)]'
+                      : 'border-black/5 bg-[#fbfbfd] hover:border-black/10 hover:bg-white hover:shadow-[0_10px_24px_rgba(15,23,42,0.05)]'}`}
                   >
                     <div className="text-3xl filter drop-shadow-sm">{country.flag}</div>
-                    <div className={`text-sm font-semibold ${preferences.countries.includes(country.code) ? 'text-primary' : 'text-gray-900'}`}>
+                    <div className={`text-sm font-semibold ${preferences.countries.includes(country.code) ? 'text-[#0071e3]' : 'text-[#1d1d1f]'}`}>
                       {tCountries(country.code)}
                     </div>
                   </button>
@@ -430,12 +430,12 @@ export default function SettingsPage() {
           </section>
 
           {/* UK City Selection */}
-          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
+          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-xl font-black flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 🇬🇧 {t('sections.cities.title')}
               </CardTitle>
-              <CardDescription className="text-sm font-medium text-on-surface-variant">
+              <CardDescription className="text-sm leading-6 text-[#6e6e73]">
                 {t('sections.cities.description')}
               </CardDescription>
             </CardHeader>
@@ -445,9 +445,9 @@ export default function SettingsPage() {
                   <button
                     key={city.code}
                     onClick={() => toggleCity(city.code)}
-                    className={`relative p-3 rounded-2xl transition-all duration-200 border text-sm font-semibold active:scale-[0.96] ${preferences.cities.includes(city.code)
-                      ? 'border-tertiary border-2 bg-white shadow-md text-tertiary'
-                      : 'border-transparent bg-white shadow-sm hover:shadow-md hover:scale-[1.02] text-gray-700'
+                    className={`relative rounded-[22px] border p-3 text-sm font-semibold transition-all duration-200 active:scale-[0.98] ${preferences.cities.includes(city.code)
+                      ? 'border-[#34c759] bg-[#f3fff7] text-[#199947] shadow-[0_10px_24px_rgba(52,199,89,0.10)]'
+                      : 'border-black/5 bg-[#fbfbfd] text-[#4b5563] hover:border-black/10 hover:bg-white hover:shadow-[0_10px_24px_rgba(15,23,42,0.05)]'
                       }`}
                   >
                     {tCities(city.code)}
@@ -458,24 +458,24 @@ export default function SettingsPage() {
           </Card>
 
           {/* Notification Channel - Telegram */}
-          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
+          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-xl font-black flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Bell className="w-6 h-6 text-primary" />
                 {t('sections.telegram.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex flex-col gap-4 rounded-xl bg-[#F5F5F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-4 rounded-[24px] border border-black/5 bg-[#f5f5f7] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0 flex-1 space-y-0.5">
-                  <span className="body-large font-medium text-on-surface">{t('sections.telegram.enable')}</span>
-                  <p className="body-medium text-on-surface-variant">{t('sections.telegram.description')}</p>
+                  <span className="text-base font-semibold text-[#1d1d1f]">{t('sections.telegram.enable')}</span>
+                  <p className="text-sm leading-6 text-[#6e6e73]">{t('sections.telegram.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
                   className={`relative inline-flex h-[31px] w-[51px] shrink-0 self-end rounded-full transition-colors duration-200 focus:outline-none sm:self-auto ${preferences.telegram_enabled
-                    ? 'bg-[#0071e3]'
-                    : 'bg-[#E9E9EA]'}`}
+                    ? 'bg-[#34c759]'
+                    : 'bg-[#d2d2d7]'}`}
                 >
                   <span className={`inline-block h-[27px] w-[27px] transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${preferences.telegram_enabled
                     ? 'translate-x-[22px]'
@@ -521,24 +521,24 @@ export default function SettingsPage() {
           </Card>
 
           {/* Notification Channel - Email */}
-          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
+          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-xl font-black flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Mail className="w-6 h-6 text-tertiary" />
                 {t('sections.email.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex flex-col gap-4 rounded-xl bg-[#F5F5F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-4 rounded-[24px] border border-black/5 bg-[#f5f5f7] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0 flex-1 space-y-0.5">
-                  <span className="body-large font-medium text-on-surface">{t('sections.email.enable')}</span>
-                  <p className="body-medium text-on-surface-variant">{t('sections.email.description')}</p>
+                  <span className="text-base font-semibold text-[#1d1d1f]">{t('sections.email.enable')}</span>
+                  <p className="text-sm leading-6 text-[#6e6e73]">{t('sections.email.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, email_enabled: !prev.email_enabled }))}
                   className={`relative inline-flex h-[31px] w-[51px] shrink-0 self-end rounded-full transition-colors duration-200 focus:outline-none sm:self-auto ${preferences.email_enabled
-                    ? 'bg-[#0071e3]'
-                    : 'bg-[#E9E9EA]'}`}
+                    ? 'bg-[#34c759]'
+                    : 'bg-[#d2d2d7]'}`}
                 >
                   <span className={`inline-block h-[27px] w-[27px] transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${preferences.email_enabled
                     ? 'translate-x-[22px]'
@@ -572,24 +572,24 @@ export default function SettingsPage() {
           </Card>
 
           {/* Auto Check Configuration */}
-          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
+          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-xl font-black flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Clock className="w-6 h-6 text-primary" />
                 {t('sections.autoCheck.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex flex-col gap-4 rounded-xl bg-[#F5F5F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-4 rounded-[24px] border border-black/5 bg-[#f5f5f7] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0 flex-1 space-y-0.5">
-                  <span className="body-large font-medium text-on-surface">{t('sections.autoCheck.enable')}</span>
-                  <p className="body-medium text-on-surface-variant">{t('sections.autoCheck.description')}</p>
+                  <span className="text-base font-semibold text-[#1d1d1f]">{t('sections.autoCheck.enable')}</span>
+                  <p className="text-sm leading-6 text-[#6e6e73]">{t('sections.autoCheck.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, auto_check_enabled: !prev.auto_check_enabled }))}
                   className={`relative inline-flex h-[31px] w-[51px] shrink-0 self-end rounded-full transition-colors duration-200 focus:outline-none sm:self-auto ${preferences.auto_check_enabled
-                    ? 'bg-[#0071e3]'
-                    : 'bg-[#E9E9EA]'}`}
+                    ? 'bg-[#34c759]'
+                    : 'bg-[#d2d2d7]'}`}
                 >
                   <span className={`inline-block h-[27px] w-[27px] transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${preferences.auto_check_enabled
                     ? 'translate-x-[22px]'
@@ -630,29 +630,29 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
+          <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-xl font-black flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Bell className="w-6 h-6 text-secondary" />
                 {t('sections.webPush.title')}
               </CardTitle>
-              <CardDescription className="text-sm font-medium text-on-surface-variant">
+              <CardDescription className="text-sm leading-6 text-[#6e6e73]">
                 {t('sections.webPush.description')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0 space-y-4">
-              <div className="flex flex-col gap-4 rounded-xl bg-[#F5F5F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-4 rounded-[24px] border border-black/5 bg-[#f5f5f7] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0 flex-1 space-y-0.5">
-                  <span className="body-large font-medium text-on-surface">{t('sections.webPush.enable')}</span>
-                  <p className="body-medium text-on-surface-variant">
+                  <span className="text-base font-semibold text-[#1d1d1f]">{t('sections.webPush.enable')}</span>
+                  <p className="text-sm leading-6 text-[#6e6e73]">
                     {pushSubscribed ? t('sections.webPush.statusReady') : t('sections.webPush.statusNotReady')}
                   </p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, web_enabled: !prev.web_enabled }))}
                   className={`relative inline-flex h-[31px] w-[51px] shrink-0 self-end rounded-full transition-colors duration-200 focus:outline-none sm:self-auto ${preferences.web_enabled
-                    ? 'bg-[#0071e3]'
-                    : 'bg-[#E9E9EA]'}`}
+                    ? 'bg-[#34c759]'
+                    : 'bg-[#d2d2d7]'}`}
                 >
                   <span className={`inline-block h-[27px] w-[27px] transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${preferences.web_enabled
                     ? 'translate-x-[22px]'
@@ -666,11 +666,11 @@ export default function SettingsPage() {
                     {pushSupported ? t('sections.webPush.hint') : t('sections.webPush.unsupported')}
                   </p>
 
-                  <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
-                    <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">
+                  <div className="rounded-[24px] border border-[#dbe7f7] bg-[#f7fbff] p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#0066cc]">
                       {t('sections.webPush.stepsTitle')}
                     </p>
-                    <p className="mt-2 text-sm text-blue-900">
+                    <p className="mt-2 text-sm leading-6 text-[#1d1d1f]">
                       {t('sections.webPush.steps')}
                     </p>
                   </div>
@@ -710,20 +710,20 @@ export default function SettingsPage() {
           </Card>
 
           {/* Save Button */}
-          <Card className="rounded-[28px] border-none bg-[#111827] text-white shadow-[0_18px_50px_rgba(15,23,42,0.18)]">
+          <Card className="rounded-[32px] border border-white/70 bg-white/88 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.22em] text-white/55">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">
                   {t('actions.save')}
                 </p>
-                <p className="mt-2 text-sm text-white/75">
+                <p className="mt-2 text-sm leading-6 text-[#6e6e73]">
                   {t('summary.description')}
                 </p>
               </div>
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="h-14 min-w-[220px] rounded-2xl bg-white text-[#111827] hover:bg-white/90"
+                className="h-14 min-w-[220px] rounded-full bg-[#0071e3] text-white shadow-[0_10px_25px_rgba(0,113,227,0.24)] hover:bg-[#0077ed]"
               >
                 {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="mr-2 h-5 w-5" /> {t('actions.save')}</>}
               </Button>
@@ -735,7 +735,7 @@ export default function SettingsPage() {
               onClick={handleLogout}
               disabled={loggingOut}
               variant="outline"
-              className="w-full h-12 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+              className="h-12 w-full rounded-full border-red-200 bg-white/80 text-red-600 hover:bg-red-50 hover:text-red-700"
             >
               {loggingOut ? <Clock className="animate-spin h-5 w-5" /> : tNav('logout')}
             </Button>
