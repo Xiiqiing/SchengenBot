@@ -158,19 +158,19 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7f8fb_44%,#eef2f7_100%)] text-on-surface">
-      <main className="container mx-auto px-4 py-10 max-w-7xl">
-        <section className="pb-12 pt-8 md:pb-16 md:pt-14">
-          <div className="max-w-5xl">
-            <h1 className="text-[44px] font-semibold tracking-[-0.065em] text-[#1d1d1f] md:text-[80px] md:leading-[0.92]">
+      <main className="container mx-auto max-w-7xl px-4 py-8 md:py-10">
+        <section className="pb-8 pt-4 md:pb-10 md:pt-8">
+          <div className="max-w-4xl">
+            <h1 className="text-[34px] font-semibold tracking-[-0.055em] text-[#1d1d1f] md:text-[60px] md:leading-[0.96]">
               {t('title')}
             </h1>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-[#6e6e73] md:text-[21px] md:leading-8">
+            <p className="mt-3 max-w-2xl text-[15px] leading-7 text-[#6e6e73] md:text-[18px] md:leading-8">
               {t('overview')}
             </p>
           </div>
         </section>
 
-        <div className="mb-10 flex flex-col gap-4 border-b border-black/[0.06] pb-10 md:flex-row md:items-center md:justify-between">
+        <div className="mb-8 flex flex-col gap-3 border-b border-black/[0.06] pb-8 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
             <p className="text-sm font-medium text-[#6e6e73]">
               {t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })} · {t('ukCheck.citiesCount', { count: preferences?.cities?.length || 0 })} · {t('ukCheck.cooldownHours', { count: preferences?.same_slot_cooldown_hours || 24 })}
@@ -188,37 +188,43 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="mb-12 grid grid-cols-1 gap-6 lg:grid-cols-[1.55fr_0.75fr]">
-          <Card className="overflow-hidden rounded-[44px] border border-black/[0.04] bg-white text-[#1d1d1f] shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
-            <CardContent className="p-8 md:p-12">
+        <div className="mb-10 grid grid-cols-1 gap-4 lg:grid-cols-[1.7fr_0.85fr]">
+          <Card className="overflow-hidden rounded-[36px] border border-black/[0.04] bg-white text-[#1d1d1f] shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
+            <CardContent className="p-6 md:p-8">
               <div className="max-w-3xl">
-                <h2 className="text-[30px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[52px] md:leading-[0.96]">
+                <h2 className="text-[24px] font-semibold tracking-[-0.04em] text-[#1d1d1f] md:text-[38px] md:leading-[1.02]">
                   {t('ukCheck.title')}
                 </h2>
-                <p className="mt-5 max-w-2xl text-base leading-7 text-[#6e6e73] md:text-[19px] md:leading-8">
+                <p className="mt-3 max-w-2xl text-[15px] leading-7 text-[#6e6e73] md:text-[17px]">
                   {t('ukCheck.description')}
                 </p>
               </div>
 
-              <div className="mt-12 grid grid-cols-3 gap-8 border-t border-black/[0.06] pt-8 md:max-w-[640px]">
+              <div className="mt-8 grid grid-cols-3 gap-5 border-t border-black/[0.06] pt-6 md:max-w-[640px]">
                 <div>
                   <p className="text-[12px] font-medium text-[#86868b]">{t('stats.notificationsSent')}</p>
-                  <p className="mt-2 text-[40px] font-semibold tracking-[-0.06em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
+                  <p className="mt-1.5 text-[30px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[34px]">{stats?.total_notifications || 0}</p>
                 </div>
                 <div>
                   <p className="text-[12px] font-medium text-[#86868b]">{t('stats.slotsFound')}</p>
-                  <p className="mt-2 text-[40px] font-semibold tracking-[-0.06em] text-[#1d1d1f]">{appointments.length}</p>
+                  <p className="mt-1.5 text-[30px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[34px]">{appointments.length}</p>
                 </div>
                 <div>
                   <p className="text-[12px] font-medium text-[#86868b]">{t('stats.autoMonitor')}</p>
-                  <p className="mt-3 text-lg font-semibold text-[#1d1d1f]">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
+                  <p className="mt-2 text-[15px] font-semibold text-[#1d1d1f] md:text-base">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <div className="flex flex-col justify-end rounded-[36px] border border-black/[0.04] bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
-            <div className="mt-8 grid gap-3">
+          <div className="rounded-[32px] border border-black/[0.04] bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
+            <div className="grid gap-3">
+              <div className="rounded-[24px] bg-[#f5f5f7] px-4 py-4">
+                <p className="text-[12px] font-medium text-[#86868b]">{t('stats.autoMonitor')}</p>
+                <p className="mt-1 text-lg font-semibold tracking-[-0.03em] text-[#1d1d1f]">
+                  {preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}
+                </p>
+              </div>
               <Link href={`/${locale}/dashboard/settings`}>
                 <Button className="h-12 w-full justify-between rounded-full bg-[#0071e3] px-5 text-white shadow-none hover:bg-[#0077ed]">
                   <span className="font-semibold">{t('ukCheck.openSettings')}</span>
@@ -238,10 +244,10 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-8 space-y-8">
-            <Card className="overflow-hidden rounded-[40px] border border-black/[0.04] bg-white p-2 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
-              <CardContent className="space-y-6 p-6">
+            <Card className="overflow-hidden rounded-[36px] border border-black/[0.04] bg-white p-2 shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
+              <CardContent className="space-y-5 p-5 md:p-6">
                 {preferences ? (
-                  <div className="grid grid-cols-1 gap-6 rounded-[32px] border border-black/[0.04] bg-[#f7f7f8] p-6 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-5 rounded-[28px] border border-black/[0.04] bg-[#f7f7f8] p-5 md:grid-cols-2">
                     <div>
                       <p className="mb-3 text-sm font-medium text-[#6e6e73]">{t('ukCheck.monitoredCountries')}</p>
                       <div className="flex flex-wrap gap-2">
@@ -280,7 +286,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-[28px] border border-dashed border-black/10 bg-[#fbfbfd] py-12 text-center">
+                  <div className="rounded-[24px] border border-dashed border-black/10 bg-[#fbfbfd] py-10 text-center">
                     <p className="mb-6 font-medium text-[#6e6e73]">{t('ukCheck.noPrefs')}</p>
                     <Link href={`/${locale}/dashboard/settings`}>
                       <Button variant="outline" className="h-11 rounded-full border-black/10 bg-white px-6 text-[13px] font-semibold text-[#1d1d1f] hover:bg-black/[0.03]">
@@ -317,7 +323,7 @@ export default function DashboardPage() {
                       return (
                         <div
                           key={idx}
-                          className={`rounded-[28px] border p-6 transition-all ${result.isAvailable ? 'border-green-200 bg-[#f4fff7]' : result.error ? 'border-red-200 bg-[#fff5f5]' : 'border-black/5 bg-[#fbfbfd] shadow-sm'}`}
+                          className={`rounded-[24px] border p-5 transition-all ${result.isAvailable ? 'border-green-200 bg-[#f4fff7]' : result.error ? 'border-red-200 bg-[#fff5f5]' : 'border-black/5 bg-[#fbfbfd] shadow-sm'}`}
                         >
                           <div className="flex items-center justify-between mb-4">
                             <h3 className="flex items-center gap-2 text-xl font-semibold tracking-[-0.02em] text-[#1d1d1f]">
@@ -381,9 +387,9 @@ export default function DashboardPage() {
 
           {/* Right Panel - Recent Appointments */}
           <div className="lg:col-span-4 space-y-8">
-            <Card className="flex h-full flex-col rounded-[36px] border border-black/[0.04] bg-white p-2 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
+            <Card className="flex h-full flex-col rounded-[32px] border border-black/[0.04] bg-white p-2 shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
               <CardHeader className="p-6">
-                <CardTitle className="text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">{t('recent.title')}</CardTitle>
+                <CardTitle className="text-[20px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">{t('recent.title')}</CardTitle>
                 <CardDescription className="text-sm leading-6 text-[#6e6e73]">{t('recent.description')}</CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0 flex-1 overflow-y-auto max-h-[70vh] custom-scrollbar">
