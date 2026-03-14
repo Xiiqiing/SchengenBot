@@ -47,7 +47,7 @@ export default function DashboardLayout({
     }
 
     return (
-        <div className="min-h-screen bg-[#f5f5f7]">
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7f8fb_44%,#eef2f7_100%)]">
             {children}
         </div>
     );

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Bell, CheckCircle2, Clock, TrendingUp, Settings, History, Zap } from 'lucide-react';
+import { CheckCircle2, Clock, TrendingUp, Settings, History, Zap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -160,31 +160,28 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#f7f8fb_44%,#eef2f7_100%)] text-on-surface">
-      {/* Header */}
-      <header className="sticky top-[48px] z-40 border-b border-black/5 bg-white/72 backdrop-blur-xl">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-[linear-gradient(180deg,#0a84ff_0%,#0066cc_100%)] shadow-[0_10px_30px_rgba(0,102,204,0.22)]">
-                <Bell className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">{t('title')}</h1>
-                <p className="text-sm font-medium text-[#6e6e73]">{t('overview')}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto px-4 py-10 max-w-7xl">
+        <section className="pb-10 pt-6 md:pb-14 md:pt-10">
+          <div className="max-w-4xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
+              {t('ukCheck.summaryTitle')}
+            </p>
+            <h1 className="mt-3 text-[42px] font-semibold tracking-[-0.06em] text-[#1d1d1f] md:text-[72px] md:leading-[0.95]">
+              {t('title')}
+            </h1>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[#6e6e73] md:text-lg">
+              {t('overview')}
+            </p>
+          </div>
+        </section>
+
         <div className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_0.9fr]">
           <Card className="overflow-hidden rounded-[36px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(248,250,252,0.92)_100%)] text-[#1d1d1f] shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
             <CardContent className="p-7 md:p-8">
               <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
                 <div className="max-w-xl">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6e6e73]">
-                    {t('ukCheck.summaryTitle')}
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
+                    {t('ukCheck.quickActions')}
                   </p>
                   <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d1d1f] md:text-5xl">
                     {t('ukCheck.summaryDescription')}
@@ -247,15 +244,15 @@ export default function DashboardPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {[
-            { label: t('stats.totalChecks'), value: ukCheckCount + (stats?.total_appointments || 0), icon: TrendingUp, color: 'text-primary' },
-            { label: t('stats.slotsFound'), value: appointments.length, icon: CheckCircle2, color: 'text-tertiary' },
-            { label: t('stats.notificationsSent'), value: stats?.total_notifications || 0, icon: Bell, color: 'text-secondary' },
-            { label: t('stats.autoMonitor'), value: preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive'), icon: Clock, color: preferences?.auto_check_enabled ? 'text-green-600' : 'text-on-surface-variant/50' }
+            { label: t('stats.totalChecks'), value: ukCheckCount + (stats?.total_appointments || 0), icon: TrendingUp },
+            { label: t('stats.slotsFound'), value: appointments.length, icon: CheckCircle2 },
+            { label: t('stats.notificationsSent'), value: stats?.total_notifications || 0, icon: History },
+            { label: t('stats.autoMonitor'), value: preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive'), icon: Clock }
           ].map((stat, i) => (
             <Card key={i} className="rounded-[30px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
               <div className="flex flex-row items-center justify-between mb-4">
                 <span className="text-sm font-semibold tracking-[-0.01em] text-[#6e6e73]">{stat.label}</span>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                <stat.icon className="h-5 w-5 text-[#86868b]" />
               </div>
               <div className="text-3xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">{stat.value}</div>
             </Card>

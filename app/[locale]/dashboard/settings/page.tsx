@@ -19,6 +19,12 @@ import {
 
 import { useLocale, useTranslations } from 'next-intl';
 
+const appleFieldClassName =
+  'w-full rounded-[20px] border border-black/6 bg-[#f5f5f7] px-4 py-3.5 text-[15px] font-medium text-[#1d1d1f] outline-none transition-all placeholder:text-[#8e8e93] focus:border-[#0071e3] focus:bg-white focus:shadow-[0_0_0_4px_rgba(0,113,227,0.12)]';
+
+const appleLabelClassName =
+  'text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]';
+
 export default function SettingsPage() {
   const t = useTranslations('Settings');
   const tNav = useTranslations('Dashboard.nav');
@@ -345,7 +351,7 @@ export default function SettingsPage() {
         description={t('description')}
         backHref={`/${locale}/dashboard`}
         backLabel={t('backLabel') || 'Back'}
-        icon={<Settings className="w-5 h-5 text-[#f5f5f7]" />}
+        icon={<Settings className="w-5 h-5 text-[#86868b]" />}
       />
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">
@@ -402,7 +408,7 @@ export default function SettingsPage() {
           <section className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <div className="mb-6">
               <h2 className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
-                <Globe className="w-5 h-5 text-primary" />
+                <Globe className="h-5 w-5 text-[#86868b]" />
                 {t('sections.countries.title')}
               </h2>
               <p className="mt-1 text-sm leading-6 text-[#6e6e73]">
@@ -461,7 +467,7 @@ export default function SettingsPage() {
           <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
-                <Bell className="w-6 h-6 text-primary" />
+                <Bell className="h-5 w-5 text-[#86868b]" />
                 {t('sections.telegram.title')}
               </CardTitle>
             </CardHeader>
@@ -486,24 +492,24 @@ export default function SettingsPage() {
               {preferences.telegram_enabled && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.telegram.botToken')}</label>
+                    <label className={appleLabelClassName}>{t('sections.telegram.botToken')}</label>
                     <input
                       type="text"
                       value={botToken}
                       onChange={(e) => setBotToken(e.target.value)}
                       placeholder="API TOKEN FROM @BOTFATHER"
-                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none transition-all font-medium"
+                      className={appleFieldClassName}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.telegram.chatId')}</label>
+                    <label className={appleLabelClassName}>{t('sections.telegram.chatId')}</label>
                     <input
                       type="text"
                       value={preferences.telegram_chat_id}
                       onChange={(e) => setPreferences(prev => ({ ...prev, telegram_chat_id: e.target.value }))}
                       placeholder="YOUR NUMERIC CHAT ID"
-                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none transition-all font-medium"
+                      className={appleFieldClassName}
                     />
                   </div>
 
@@ -511,7 +517,7 @@ export default function SettingsPage() {
                     onClick={handleTestTelegram}
                     disabled={testing}
                     variant="outline"
-                    className="w-full m3-button-pill border-2 border-primary text-primary hover:bg-primary/10 h-12 font-bold"
+                    className="h-12 w-full rounded-full border-black/8 bg-white text-[#1d1d1f] hover:bg-black/[0.03]"
                   >
                     {testing ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> {t('sections.telegram.test')}</>}
                   </Button>
@@ -524,7 +530,7 @@ export default function SettingsPage() {
           <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
-                <Mail className="w-6 h-6 text-tertiary" />
+                <Mail className="h-5 w-5 text-[#86868b]" />
                 {t('sections.email.title')}
               </CardTitle>
             </CardHeader>
@@ -549,20 +555,20 @@ export default function SettingsPage() {
               {preferences.email_enabled && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.email.address')}</label>
+                    <label className={appleLabelClassName}>{t('sections.email.address')}</label>
                     <input
                       type="email"
                       value={preferences.email_address || ''}
                       onChange={(e) => setPreferences(prev => ({ ...prev, email_address: e.target.value }))}
                       placeholder="NAME@DOMAIN.COM"
-                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-tertiary outline-none transition-all font-medium"
+                      className={appleFieldClassName}
                     />
                   </div>
                   <Button
                     onClick={handleTestEmail}
                     disabled={testingEmail}
                     variant="outline"
-                    className="w-full m3-button-pill border-2 border-tertiary text-tertiary hover:bg-tertiary/10 h-12 font-bold"
+                    className="h-12 w-full rounded-full border-black/8 bg-white text-[#1d1d1f] hover:bg-black/[0.03]"
                   >
                     {testingEmail ? <Clock className="animate-spin h-5 w-5" /> : <><TestTube className="mr-2 h-4 w-4" /> {t('sections.email.test')}</>}
                   </Button>
@@ -575,7 +581,7 @@ export default function SettingsPage() {
           <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
-                <Clock className="w-6 h-6 text-primary" />
+                <Clock className="h-5 w-5 text-[#86868b]" />
                 {t('sections.autoCheck.title')}
               </CardTitle>
             </CardHeader>
@@ -600,28 +606,28 @@ export default function SettingsPage() {
               {preferences.auto_check_enabled && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.autoCheck.frequency')}</label>
+                    <label className={appleLabelClassName}>{t('sections.autoCheck.frequency')}</label>
                     <input
                       type="number"
                       min="5"
                       max="60"
                       value={preferences.check_frequency}
                       onChange={(e) => setPreferences(prev => ({ ...prev, check_frequency: Number.parseInt(e.target.value, 10) || 5 }))}
-                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none font-black text-xl"
+                      className={`${appleFieldClassName} text-lg font-semibold`}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.autoCheck.sameSlotCooldown')}</label>
+                    <label className={appleLabelClassName}>{t('sections.autoCheck.sameSlotCooldown')}</label>
                     <input
                       type="number"
                       min="0"
                       max="168"
                       value={preferences.same_slot_cooldown_hours}
                       onChange={(e) => setPreferences(prev => ({ ...prev, same_slot_cooldown_hours: Number.parseInt(e.target.value, 10) || 0 }))}
-                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none font-black text-xl"
+                      className={`${appleFieldClassName} text-lg font-semibold`}
                     />
-                    <p className="text-sm text-on-surface-variant">
+                    <p className="text-sm leading-6 text-[#6e6e73]">
                       {t('sections.autoCheck.sameSlotCooldownDescription')}
                     </p>
                   </div>
@@ -633,7 +639,7 @@ export default function SettingsPage() {
           <Card className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
-                <Bell className="w-6 h-6 text-secondary" />
+                <Bell className="h-5 w-5 text-[#86868b]" />
                 {t('sections.webPush.title')}
               </CardTitle>
               <CardDescription className="text-sm leading-6 text-[#6e6e73]">
@@ -662,7 +668,7 @@ export default function SettingsPage() {
 
               {preferences.web_enabled && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
-                  <p className="text-sm text-on-surface-variant">
+                  <p className="text-sm leading-6 text-[#6e6e73]">
                     {pushSupported ? t('sections.webPush.hint') : t('sections.webPush.unsupported')}
                   </p>
 
@@ -685,7 +691,7 @@ export default function SettingsPage() {
                     onClick={handlePushSubscriptionToggle}
                     disabled={pushLoading || !pushSupported}
                     variant="outline"
-                    className="w-full h-12 font-bold"
+                    className="h-12 w-full rounded-full border-black/8 bg-white text-[#1d1d1f] hover:bg-black/[0.03]"
                   >
                     {pushLoading
                       ? <Clock className="animate-spin h-5 w-5" />
@@ -698,7 +704,7 @@ export default function SettingsPage() {
                     onClick={handleTestPush}
                     disabled={pushTesting || !pushSupported || !pushSubscribed}
                     variant="outline"
-                    className="w-full h-12 font-bold"
+                    className="h-12 w-full rounded-full border-black/8 bg-white text-[#1d1d1f] hover:bg-black/[0.03]"
                   >
                     {pushTesting
                       ? <Clock className="animate-spin h-5 w-5" />
