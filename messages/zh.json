@@ -49,7 +49,7 @@
             "title": "🇬🇧 英国中心实时检查",
             "description": "即时检索选定城市与国家的最新预约槽位",
             "summaryTitle": "监控概览",
-            "summaryDescription": "快速查看当前监控覆盖范围与通知状态",
+            "summaryDescription": "当前配置",
             "quickActions": "快捷操作",
             "openSettings": "调整设置",
             "viewHistory": "查看历史",
@@ -108,7 +108,7 @@
         "backLabel": "返回",
         "summary": {
             "title": "当前配置速览",
-            "description": "在保存前快速确认哪些渠道和监控项处于开启状态",
+            "description": "当前配置",
             "countries": "监控国家",
             "cities": "监控城市",
             "cooldown": "相同 slot 冷却",

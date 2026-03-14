@@ -49,7 +49,7 @@
             "title": "🇬🇧 UK Center Real-time Check",
             "description": "Instantly check latest slots for selected cities and countries",
             "summaryTitle": "Monitoring Snapshot",
-            "summaryDescription": "Quickly see what is being watched and which channels are active",
+            "summaryDescription": "Current setup",
             "quickActions": "Quick Actions",
             "openSettings": "Adjust Settings",
             "viewHistory": "View History",
@@ -108,7 +108,7 @@
         "backLabel": "Back",
         "summary": {
             "title": "Current Setup Snapshot",
-            "description": "Quickly verify which channels and monitoring options are currently active",
+            "description": "Current setup",
             "countries": "Monitored Countries",
             "cities": "Monitored Cities",
             "cooldown": "Same Slot Cooldown",

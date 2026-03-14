@@ -366,8 +366,8 @@ export default function SettingsPage() {
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6e6e73]">
                     {t('summary.title')}
                   </p>
-                  <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d1d1f] md:text-4xl">
-                    {t('summary.description')}
+                  <h2 className="mt-3 text-[34px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[48px] md:leading-[0.98]">
+                    {t('title')}
                   </h2>
                 </div>
 
@@ -734,7 +734,7 @@ export default function SettingsPage() {
                   {t('actions.save')}
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[#6e6e73]">
-                  {t('summary.description')}
+                  {t('description')}
                 </p>
               </div>
               <Button
