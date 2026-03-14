@@ -367,30 +367,9 @@ export default function SettingsPage() {
                     {t('description')}
                   </p>
                 </div>
-
-                <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 md:max-w-[360px]">
-                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('summary.countries')}</p>
-                    <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#1d1d1f]">{preferences.countries.length}</p>
-                  </div>
-                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('summary.cities')}</p>
-                    <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#1d1d1f]">{preferences.cities.length}</p>
-                  </div>
-                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('summary.cooldown')}</p>
-                    <p className="mt-2 text-lg font-semibold text-[#1d1d1f]">{t('summary.hours', { count: preferences.same_slot_cooldown_hours })}</p>
-                  </div>
-                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('summary.automation')}</p>
-                    <p className="mt-2 text-lg font-semibold text-[#1d1d1f]">
-                      {preferences.auto_check_enabled ? t('summary.enabled') : t('summary.disabled')}
-                    </p>
-                  </div>
-                </div>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-2.5">
+              <div className="mt-8 flex flex-wrap gap-2.5">
                 <Badge className={`rounded-full border border-black/5 px-4 py-1.5 text-[12px] font-semibold shadow-sm ${preferences.telegram_enabled ? 'bg-white text-[#1d1d1f]' : 'bg-white/55 text-[#86868b]'}`}>
                   Telegram {preferences.telegram_enabled ? t('summary.enabled') : t('summary.disabled')}
                 </Badge>

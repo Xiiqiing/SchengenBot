@@ -195,10 +195,14 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="mt-10 grid grid-cols-2 gap-4 md:max-w-[420px]">
+              <div className="mt-10 grid grid-cols-3 gap-6 md:max-w-[640px]">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.notificationsSent')}</p>
                   <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.slotsFound')}</p>
+                  <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">{appointments.length}</p>
                 </div>
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.autoMonitor')}</p>
@@ -225,29 +229,8 @@ export default function DashboardPage() {
                   <History className="h-4 w-4" />
                 </Button>
               </Link>
-              <div className="rounded-[28px] border border-black/5 bg-[#f5f5f7] px-4 py-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.slotsFound')}</p>
-                <p className="mt-1 text-lg font-semibold text-[#1d1d1f]">{appointments.length}</p>
-              </div>
             </CardContent>
           </Card>
-        </div>
-
-        <div className="mb-14 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {[
-            { label: t('stats.totalChecks'), value: ukCheckCount + (stats?.total_appointments || 0), icon: TrendingUp },
-            { label: t('stats.slotsFound'), value: appointments.length, icon: CheckCircle2 },
-            { label: t('stats.notificationsSent'), value: stats?.total_notifications || 0, icon: History },
-            { label: t('stats.autoMonitor'), value: preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive'), icon: Clock }
-          ].map((stat, i) => (
-            <Card key={i} className="rounded-[26px] border border-white/70 bg-white/76 p-5 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(15,23,42,0.08)]">
-              <div className="flex flex-row items-center justify-between mb-4">
-                <span className="text-xs font-semibold tracking-[0.08em] text-[#6e6e73]">{stat.label}</span>
-                <stat.icon className="h-5 w-5 text-[#86868b]" />
-              </div>
-              <div className="text-[28px] font-semibold tracking-[-0.04em] text-[#1d1d1f]">{stat.value}</div>
-            </Card>
-          ))}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
