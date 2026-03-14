@@ -16,6 +16,7 @@ export interface UserPreferences {
   countries: string[];
   cities: string[];
   check_frequency: number;
+  same_slot_cooldown_hours: number;
   telegram_enabled: boolean;
   telegram_chat_id?: string;
   email_enabled: boolean;
@@ -39,6 +40,8 @@ export interface Appointment {
   book_now_link?: string;
   notified: boolean;
   created_at: string;
+  last_seen_at?: string;
+  last_notified_at?: string | null;
 }
 
 export interface NotificationHistory {

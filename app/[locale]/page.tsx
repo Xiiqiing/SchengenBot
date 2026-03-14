@@ -16,15 +16,27 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
-    // Check if user is already logged in
-    import('@/lib/user-id').then(({ getUserId, setUserId }) => {
-      const userId = getUserId();
-      if (userId) {
-        // Ensure cookie is set (sync localStorage to cookie) for Middleware protection
-        setUserId(userId);
-        window.location.href = '/dashboard';
-      }
-    });
+    let isMounted = true;
+
+    fetch('/api/auth/session')
+      .then(async (response) => {
+        if (!response.ok || !isMounted) return null;
+        return await response.json();
+      })
+      .then(async (data) => {
+        if (data?.authenticated && data?.userId) {
+          const { setUserId } = await import('@/lib/user-id');
+          setUserId(data.userId);
+          window.location.href = '/dashboard';
+        }
+      })
+      .catch((error) => {
+        console.warn('Session check failed:', error);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleVerifyCode = async (e: React.FormEvent) => {

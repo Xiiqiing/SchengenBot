@@ -154,9 +154,12 @@ export class NotificationService {
   async sendAppointmentNotifications(
     appointments: AppointmentData[],
     options: NotificationOptions
-  ): Promise<void> {
+  ): Promise<{ delivered: boolean; results: Array<{ type: string; success: boolean; error?: string }> }> {
     const message = this.formatAppointmentMessage(appointments);
     const results: Array<{ type: string; success: boolean; error?: string }> = [];
+    const hasDirectChannel =
+      !!(options.telegram?.enabled && options.telegram.chatId && options.telegram.botToken) ||
+      !!(options.email?.enabled && options.email.address);
 
     // Telegram notification
     if (options.telegram?.enabled && options.telegram.chatId && options.telegram.botToken) {
@@ -243,6 +246,18 @@ export class NotificationService {
         success: true,
       });
     }
+
+    return {
+      delivered:
+        results.some(
+          (result) =>
+            result.success &&
+            (result.type === 'telegram' || result.type === 'email')
+        ) ||
+        (!hasDirectChannel &&
+          results.some((result) => result.success && result.type === 'web')),
+      results,
+    };
   }
 
   /**

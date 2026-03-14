@@ -196,10 +196,95 @@ export async function markAppointmentNotified(appointmentId: string) {
 
   const { error } = await supabase
     .from('appointments')
-    .update({ notified: true })
+    .update({
+      notified: true,
+      last_notified_at: new Date().toISOString(),
+    })
     .eq('id', appointmentId);
 
   if (error) throw error;
+}
+
+type AppointmentSlotIdentity = Pick<Appointment, 'country' | 'city' | 'appointment_date'>;
+
+function buildAppointmentSlotKey(appointment: AppointmentSlotIdentity) {
+  return `${appointment.country}::${appointment.city}::${appointment.appointment_date}`;
+}
+
+export async function filterAppointmentsByNotificationCooldown(
+  userId: string,
+  appointments: Partial<Appointment>[],
+  cooldownHours: number
+) {
+  if (!supabase || appointments.length === 0) {
+    return appointments;
+  }
+
+  const dedupedAppointments = appointments.filter((appointment, index, list) => {
+    if (!appointment.country || !appointment.city || !appointment.appointment_date) {
+      return false;
+    }
+
+    const currentKey = buildAppointmentSlotKey({
+      country: appointment.country,
+      city: appointment.city,
+      appointment_date: appointment.appointment_date,
+    });
+
+    return index === list.findIndex((item) => {
+      if (!item.country || !item.city || !item.appointment_date) {
+        return false;
+      }
+
+      return currentKey === buildAppointmentSlotKey({
+        country: item.country,
+        city: item.city,
+        appointment_date: item.appointment_date,
+      });
+    });
+  });
+
+  if (cooldownHours <= 0) {
+    return dedupedAppointments;
+  }
+
+  const sinceIso = new Date(Date.now() - cooldownHours * 60 * 60 * 1000).toISOString();
+  const countries = [...new Set(dedupedAppointments.map((appointment) => appointment.country!))];
+  const cities = [...new Set(dedupedAppointments.map((appointment) => appointment.city!))];
+  const dates = [...new Set(dedupedAppointments.map((appointment) => appointment.appointment_date!))];
+
+  const { data: recentlyNotifiedAppointments, error } = await supabase
+    .from('appointments')
+    .select('country, city, appointment_date')
+    .eq('user_id', userId)
+    .not('last_notified_at', 'is', null)
+    .gte('last_notified_at', sinceIso)
+    .in('country', countries)
+    .in('city', cities)
+    .in('appointment_date', dates);
+
+  if (error) throw error;
+
+  const notifiedKeys = new Set(
+    (recentlyNotifiedAppointments || []).map((appointment) =>
+      buildAppointmentSlotKey({
+        country: appointment.country,
+        city: appointment.city,
+        appointment_date: appointment.appointment_date,
+      })
+    )
+  );
+
+  return dedupedAppointments.filter(
+    (appointment) =>
+      !notifiedKeys.has(
+        buildAppointmentSlotKey({
+          country: appointment.country!,
+          city: appointment.city!,
+          appointment_date: appointment.appointment_date!,
+        })
+      )
+  );
 }
 
 // ============================================
@@ -304,7 +389,10 @@ export async function bulkCreateAppointments(appointments: Partial<Appointment>[
 
   const { data, error } = await supabase
     .from('appointments')
-    .insert(appointments)
+    .upsert(appointments, {
+      onConflict: 'user_id,country,city,appointment_date',
+      ignoreDuplicates: false,
+    })
     .select();
 
   if (error) throw error;

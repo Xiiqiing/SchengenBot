@@ -126,7 +126,9 @@
                 "title": "Background Auto-Crawl",
                 "enable": "Activate Auto Mode",
                 "description": "Background automatic data fetching",
-                "frequency": "Frequency (Minutes)"
+                "frequency": "Frequency (Minutes)",
+                "sameSlotCooldown": "Same Slot Cooldown (Hours)",
+                "sameSlotCooldownDescription": "Do not remind again for the same date, city, and country during this window"
             }
         },
         "actions": {

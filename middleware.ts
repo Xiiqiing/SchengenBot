@@ -1,5 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
+import { isSessionCookieValid } from '@/lib/auth/session';
 
 const intlMiddleware = createMiddleware({
     // A list of all locales that are supported
@@ -12,14 +13,16 @@ const intlMiddleware = createMiddleware({
     localePrefix: 'always'
 });
 
-export default function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
     // 1. Check Auth for protected routes (Dashboard)
     // Check if the path is a dashboard route (e.g. /zh/dashboard, /en/dashboard, /dashboard)
     const isDashboard = req.nextUrl.pathname.includes('/dashboard');
 
     if (isDashboard) {
-        const token = req.cookies.get('session_user_id')?.value;
-        if (!token) {
+        const token = req.cookies.get('session_token')?.value;
+        const isValidSession = await isSessionCookieValid(token);
+
+        if (!isValidSession) {
             // Determine locale to redirect to (defaulting to zh if not found)
             const locale = req.nextUrl.pathname.split('/')[1] || 'en';
             const targetLocale = ['en', 'zh'].includes(locale) ? locale : 'en';

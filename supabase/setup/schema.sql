@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   countries TEXT[] DEFAULT '{}',
   cities TEXT[] DEFAULT '{}',
   check_frequency INTEGER DEFAULT 5,
+  same_slot_cooldown_hours INTEGER DEFAULT 24,
   telegram_enabled BOOLEAN DEFAULT false,
   telegram_chat_id VARCHAR(100),
   email_enabled BOOLEAN DEFAULT false,
@@ -47,6 +48,7 @@ COMMENT ON TABLE user_preferences IS 'User preferences and settings';
 COMMENT ON COLUMN user_preferences.countries IS 'Monitored countries (array)';
 COMMENT ON COLUMN user_preferences.cities IS 'Monitored cities (array)';
 COMMENT ON COLUMN user_preferences.check_frequency IS 'Check frequency (minutes)';
+COMMENT ON COLUMN user_preferences.same_slot_cooldown_hours IS 'Same slot reminder cooldown in hours';
 COMMENT ON COLUMN user_preferences.telegram_chat_id IS 'Telegram chat ID for notifications';
 
 -- ============================================
@@ -63,11 +65,16 @@ CREATE TABLE IF NOT EXISTS appointments (
   visa_subcategory VARCHAR(100),
   book_now_link TEXT,
   notified BOOLEAN DEFAULT false,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  last_seen_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  last_notified_at TIMESTAMP WITH TIME ZONE,
+  UNIQUE(user_id, country, city, appointment_date)
 );
 
 COMMENT ON TABLE appointments IS 'Found appointments';
 COMMENT ON COLUMN appointments.notified IS 'Notification sent?';
+COMMENT ON COLUMN appointments.last_seen_at IS 'Last time this slot was observed';
+COMMENT ON COLUMN appointments.last_notified_at IS 'Last time a notification for this slot was successfully delivered';
 
 -- ============================================
 -- NOTIFICATION HISTORY TABLE
@@ -114,8 +121,8 @@ CREATE INDEX IF NOT EXISTS idx_appointments_user_id ON appointments(user_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date);
 CREATE INDEX IF NOT EXISTS idx_appointments_country_city ON appointments(country, city);
 CREATE INDEX IF NOT EXISTS idx_appointments_created_at ON appointments(created_at);
--- Composite index to rapidly filter recent notifications for the 6-hour debounce logic
-CREATE INDEX IF NOT EXISTS idx_debounce_check ON appointments(user_id, country, city, notified, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_appointments_last_notified_at ON appointments(last_notified_at DESC);
+CREATE INDEX IF NOT EXISTS idx_debounce_check ON appointments(user_id, country, city, last_notified_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_notification_history_user_id ON notification_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_notification_history_sent_at ON notification_history(sent_at DESC);

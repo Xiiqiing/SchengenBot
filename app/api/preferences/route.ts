@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { AuthError, requireAuthenticatedUserId } from '@/lib/auth/session';
 import {
   getUserPreferences,
   upsertUserPreferences,
@@ -15,14 +16,7 @@ import {
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const userId = searchParams.get('userId');
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'userId is required' },
-        { status: 400 }
-      );
-    }
+    const userId = await requireAuthenticatedUserId(request, searchParams.get('userId'));
 
     const preferences = await getUserPreferences(userId);
 
@@ -34,6 +28,7 @@ export async function GET(request: NextRequest) {
           countries: [],
           cities: [],
           check_frequency: 15,
+          same_slot_cooldown_hours: 24,
           telegram_enabled: false,
           telegram_chat_id: '',
           email_enabled: false,
@@ -49,6 +44,13 @@ export async function GET(request: NextRequest) {
       preferences,
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      );
+    }
+
     console.error('Get preferences error:', error);
     return NextResponse.json(
       { error: error.message || 'Internal server error' },
@@ -62,17 +64,11 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { userId, ...preferencesData } = body;
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'userId is required' },
-        { status: 400 }
-      );
-    }
+    const authenticatedUserId = await requireAuthenticatedUserId(request, userId);
 
     // UUID format check
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(userId)) {
+    if (!uuidRegex.test(authenticatedUserId)) {
       return NextResponse.json(
         { error: 'Invalid userId format. Must be a valid UUID.' },
         { status: 400 }
@@ -80,13 +76,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user profile if not exists
-    let userProfile = await getUserProfile(userId);
+    let userProfile = await getUserProfile(authenticatedUserId);
     if (!userProfile) {
       // Create new user profile (email required, use temporary email)
       try {
         userProfile = await createUserProfile({
-          id: userId,
-          email: `user-${userId}@temp.local`, // Temporary email
+          id: authenticatedUserId,
+          email: `user-${authenticatedUserId}@temp.local`, // Temporary email
         });
       } catch (error: any) {
         // Continue if email already exists or other error occurs
@@ -94,7 +90,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const preferences = await upsertUserPreferences(userId, preferencesData);
+    const preferences = await upsertUserPreferences(authenticatedUserId, preferencesData);
 
     // The telegram_chat_id is now fully managed within `user_preferences`.
 
@@ -104,6 +100,13 @@ export async function POST(request: NextRequest) {
       preferences,
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      );
+    }
+
     console.error('Update preferences error:', error);
     return NextResponse.json(
       { error: error.message || 'Internal server error' },

@@ -32,10 +32,6 @@ export function setUserId(id: string): void {
 
   if (isValidUUID(id)) {
     localStorage.setItem(USER_ID_KEY, id);
-
-    // Also set cookie for middleware route protection
-    // We use a simple document.cookie if no library is available
-    document.cookie = `session_user_id=${id}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
   }
 }
 
@@ -90,10 +86,7 @@ export function clearUserId(): void {
 
   try {
     localStorage.removeItem(USER_ID_KEY);
-    // Clear cookie
-    document.cookie = 'session_user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   } catch (error) {
     console.warn('Failed to clear user ID:', error);
   }
 }
-

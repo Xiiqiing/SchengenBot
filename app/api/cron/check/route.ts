@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { appointmentService } from '@/lib/services/appointment-service';
 import { notificationService } from '@/lib/services/notification-service';
 import { supabase } from '@/lib/supabase';
-import { createCheckHistory } from '@/lib/supabase/client';
+import { bulkCreateAppointments, createCheckHistory, filterAppointmentsByNotificationCooldown } from '@/lib/supabase/client';
 import type { CheckResult } from '@/lib/services/appointment-service';
 import * as Sentry from '@sentry/nextjs';
 
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     // Get users with auto-check enabled, including their notification settings and joined email
     const { data: activeUsers, error } = await supabase
       .from('user_preferences')
-      .select('user_id, countries, cities, telegram_enabled, telegram_chat_id, email_enabled, email_address, web_enabled, check_frequency, user_profiles(email)')
+      .select('user_id, countries, cities, telegram_enabled, telegram_chat_id, email_enabled, email_address, web_enabled, check_frequency, same_slot_cooldown_hours, user_profiles(email)')
       .eq('auto_check_enabled', true);
 
     if (error) throw error;
@@ -142,7 +142,7 @@ export async function GET(request: NextRequest) {
           found_count: totalFound,
         });
 
-        // Delegate to original notification sending logic (which includes the 6-hour debounce)
+        // Reuse the same slot-cooldown notification semantics as the service layer
         if (user.telegram_enabled || user.web_enabled || user.email_enabled) {
           // We reuse an internal method signature of appointmentService for fan-out (requires exposed or manual adaptation)
           // Instead of modifying the Class access modifier, we can manually trigger the notification service directly
@@ -162,11 +162,9 @@ export async function GET(request: NextRequest) {
                 visa_category: apt.visa_category,
                 visa_subcategory: apt.visa_subcategory || undefined,
                 book_now_link: apt.book_now_link,
-                notified: false,
+                last_seen_at: new Date().toISOString(),
               }));
-              if (!supabase) throw new Error('Supabase client missing');
-              const { error: insertErr } = await supabase.from('appointments').insert(aptData);
-              if (insertErr) console.warn('Failed to insert appointments for user', user.user_id, insertErr);
+              await bulkCreateAppointments(aptData);
             }
           }
 
@@ -174,32 +172,40 @@ export async function GET(request: NextRequest) {
           // and modifying the class signature requires opening more files, 
           // we'll adapt by using `appointmentService.checkForUser` logic inline:
           const emailAddress = user.email_address || (user.user_profiles && Array.isArray(user.user_profiles) ? user.user_profiles[0]?.email : (user.user_profiles as any)?.email) || undefined;
+          const sameSlotCooldownHours = user.same_slot_cooldown_hours ?? 24;
 
           for (const result of personalResults) {
             if (result.appointments.length === 0) continue;
 
-            // Debounce check
-            const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
-            if (!supabase) throw new Error('Supabase client missing');
-            const { data: recentNotifications } = await supabase
-              .from('appointments')
-              .select('id')
-              .eq('user_id', user.user_id)
-              .eq('city', result.city)
-              .eq('country', result.country)
-              .eq('notified', true)
-              .gte('created_at', sixHoursAgo)
-              .limit(1);
+            const appointmentsToNotify = await filterAppointmentsByNotificationCooldown(
+              user.user_id,
+              result.appointments.map((apt) => ({
+                country: apt.mission_country,
+                city: apt.center_name,
+                appointment_date: apt.appointment_date,
+              })),
+              sameSlotCooldownHours
+            );
 
-            if (recentNotifications && recentNotifications.length > 0) {
-              console.log(`[Notification] Debounce activated for User ${user.user_id}, ${result.city} -> ${result.country}.`);
+            const allowedAppointmentKeys = new Set(
+              appointmentsToNotify.map((apt) => `${apt.country}::${apt.city}::${apt.appointment_date}`)
+            );
+
+            const filteredAppointments = result.appointments.filter((apt) =>
+              allowedAppointmentKeys.has(`${apt.mission_country}::${apt.center_name}::${apt.appointment_date}`)
+            );
+
+            if (filteredAppointments.length === 0) {
+              console.log(
+                `[Notification] Same-slot cooldown active for User ${user.user_id}, ${result.city} -> ${result.country}. Cooldown: ${sameSlotCooldownHours}h.`
+              );
               continue;
             }
 
             // Dispatch Notification
             try {
-              await notificationService.sendAppointmentNotifications(
-                result.appointments,
+              const dispatchResult = await notificationService.sendAppointmentNotifications(
+                filteredAppointments,
                 {
                   userId: user.user_id,
                   telegram: {
@@ -217,8 +223,13 @@ export async function GET(request: NextRequest) {
                 }
               );
 
-              // Mark appointments as notified so debounce works
-              for (const apt of result.appointments) {
+              if (!dispatchResult.delivered) {
+                console.warn(`[Notification] No notification channel succeeded for user ${user.user_id}; appointments remain pending.`);
+                continue;
+              }
+
+              // Refresh slot notification timestamps so cooldown works on repeated alerts
+              for (const apt of filteredAppointments) {
                 try {
                   const { data: matchedApts } = await supabase
                     .from('appointments')
@@ -227,7 +238,6 @@ export async function GET(request: NextRequest) {
                     .eq('country', apt.mission_country)
                     .eq('city', apt.center_name)
                     .eq('appointment_date', apt.appointment_date)
-                    .eq('notified', false)
                     .limit(1);
 
                   if (matchedApts && matchedApts.length > 0) {

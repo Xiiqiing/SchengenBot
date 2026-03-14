@@ -126,7 +126,9 @@
                 "title": "后台自动爬取",
                 "enable": "激活自动模式",
                 "description": "后台自动定时爵取数据",
-                "frequency": "频率 (分钟)"
+                "frequency": "频率 (分钟)",
+                "sameSlotCooldown": "相同 slot 静默时长 (小时)",
+                "sameSlotCooldownDescription": "同一个日期、城市、国家的预约，在这段时间内不重复提醒"
             }
         },
         "actions": {

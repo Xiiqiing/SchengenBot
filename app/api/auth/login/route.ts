@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { generateUUID } from '@/lib/user-id';
+import {
+  clearInviteVerificationCookie,
+  createSessionToken,
+  isInviteVerificationValid,
+  setSessionCookie,
+} from '@/lib/auth/session';
 
 /**
  * POST /api/auth/login
@@ -10,8 +16,9 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const { email } = body;
+        const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-        if (!email || typeof email !== 'string') {
+        if (!normalizedEmail) {
             return NextResponse.json(
                 { error: 'Valid email is required' },
                 { status: 400 }
@@ -25,11 +32,17 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        if (!(await isInviteVerificationValid(request))) {
+            return NextResponse.json(
+                { error: 'Invitation verification required' },
+                { status: 401 }
+            );
+        }
         // 1. Check if user exists with this email
         const { data: existingUser, error: fetchError } = await supabase
             .from('user_profiles')
             .select('id, email')
-            .eq('email', email)
+            .eq('email', normalizedEmail)
             .single();
 
         if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "No rows found"
@@ -48,7 +61,7 @@ export async function POST(request: NextRequest) {
                 .insert([
                     {
                         id: newUserId,
-                        email: email,
+                        email: normalizedEmail,
                         created_at: new Date().toISOString()
                     }
                 ])
@@ -71,13 +84,9 @@ export async function POST(request: NextRequest) {
             isNewUser
         });
 
-        // Set session cookie
-        response.cookies.set('session_user_id', userId, {
-            path: '/',
-            maxAge: 60 * 60 * 24 * 30, // 30 days
-            httpOnly: false,
-            sameSite: 'lax',
-        });
+        const sessionToken = await createSessionToken(userId);
+        setSessionCookie(response, sessionToken);
+        clearInviteVerificationCookie(response);
 
         return response;
 

@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  createInviteVerificationToken,
+  setInviteVerificationCookie,
+} from '@/lib/auth/session';
 
 /**
  * POST /api/auth/verify-code
@@ -27,10 +31,15 @@ export async function POST(request: NextRequest) {
         }
 
         if (code === expectedCode) {
-            return NextResponse.json({
+            const response = NextResponse.json({
                 success: true,
                 message: 'Code verified'
             });
+
+            const inviteToken = await createInviteVerificationToken();
+            setInviteVerificationCookie(response, inviteToken);
+
+            return response;
         } else {
             return NextResponse.json(
                 { success: false, error: '无效的邀请码' },

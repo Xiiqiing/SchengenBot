@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getUserId } from '@/lib/user-id';
+import { getUserId, setUserId } from '@/lib/user-id';
 
 export default function DashboardLayout({
     children,
@@ -15,10 +15,30 @@ export default function DashboardLayout({
     useEffect(() => {
         const userId = getUserId();
         if (!userId) {
-            router.replace('/');
-        } else {
-            setIsAuthorized(true);
+            fetch('/api/auth/session')
+                .then(async (response) => {
+                    if (!response.ok) {
+                        throw new Error('Unauthorized');
+                    }
+
+                    return await response.json();
+                })
+                .then((data) => {
+                    if (data?.userId) {
+                        setUserId(data.userId);
+                        setIsAuthorized(true);
+                        return;
+                    }
+
+                    router.replace('/');
+                })
+                .catch(() => {
+                    router.replace('/');
+                });
+            return;
         }
+
+        setIsAuthorized(true);
     }, [router]);
 
     if (!isAuthorized) {

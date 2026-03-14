@@ -21,6 +21,7 @@ export default function SettingsPage() {
     countries: [] as string[],
     cities: [] as string[],
     check_frequency: 5,
+    same_slot_cooldown_hours: 24,
     telegram_enabled: false,
     telegram_chat_id: '',
     email_enabled: false,
@@ -380,16 +381,33 @@ export default function SettingsPage() {
               </div>
 
               {preferences.auto_check_enabled && (
-                <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.autoCheck.frequency')}</label>
-                  <input
-                    type="number"
-                    min="5"
-                    max="60"
-                    value={preferences.check_frequency}
-                    onChange={(e) => setPreferences(prev => ({ ...prev, check_frequency: parseInt(e.target.value) }))}
-                    className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none font-black text-xl"
-                  />
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.autoCheck.frequency')}</label>
+                    <input
+                      type="number"
+                      min="5"
+                      max="60"
+                      value={preferences.check_frequency}
+                      onChange={(e) => setPreferences(prev => ({ ...prev, check_frequency: Number.parseInt(e.target.value, 10) || 5 }))}
+                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none font-black text-xl"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{t('sections.autoCheck.sameSlotCooldown')}</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="168"
+                      value={preferences.same_slot_cooldown_hours}
+                      onChange={(e) => setPreferences(prev => ({ ...prev, same_slot_cooldown_hours: Number.parseInt(e.target.value, 10) || 0 }))}
+                      className="w-full px-4 py-3 rounded-2xl bg-surface-variant/20 border border-outline/10 focus:border-primary outline-none font-black text-xl"
+                    />
+                    <p className="text-sm text-on-surface-variant">
+                      {t('sections.autoCheck.sameSlotCooldownDescription')}
+                    </p>
+                  </div>
                 </div>
               )}
             </CardContent>

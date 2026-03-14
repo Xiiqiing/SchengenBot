@@ -7,12 +7,12 @@ import { ukScraper, type UKAppointmentData } from '../api/uk-scraper';
 import { notificationService, type AppointmentData } from './notification-service';
 import { supabase } from '../supabase';
 import {
-  createAppointment,
   bulkCreateAppointments,
   getUserPreferences,
   getUserProfile,
   createCheckHistory,
   markAppointmentNotified,
+  filterAppointmentsByNotificationCooldown,
 } from '../supabase/client';
 import type { UserPreferences } from '../supabase/types';
 import { UK_CITIES } from '../constants/countries';
@@ -181,7 +181,7 @@ export class AppointmentService {
       visa_category: apt.visa_category,
       visa_subcategory: apt.visa_subcategory || undefined,
       book_now_link: apt.book_now_link,
-      notified: false,
+      last_seen_at: new Date().toISOString(),
     }));
 
     try {
@@ -201,6 +201,7 @@ export class AppointmentService {
   ): Promise<void> {
     const userProfile = await getUserProfile(userId);
     const emailAddress = preferences.email_address || userProfile?.email;
+    const sameSlotCooldownHours = preferences.same_slot_cooldown_hours ?? 24;
 
     console.log(`[Notification] Sending to user ${userId}, Email: ${emailAddress}, Channels: Telegram=${preferences.telegram_enabled}, Email=${preferences.email_enabled}`);
 
@@ -214,32 +215,34 @@ export class AppointmentService {
         return;
       }
 
-      // -- Debounce Logic (Rate Limiting) --
-      // Check if user was already notified for this city & country within the last 6 hours
-      const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
-      const { data: recentNotifications, error: debounceError } = await supabase
-        .from('appointments')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('city', result.city)
-        .eq('country', result.country)
-        .eq('notified', true)
-        .gte('created_at', sixHoursAgo)
-        .limit(1);
+      const appointmentsToNotify = await filterAppointmentsByNotificationCooldown(
+        userId,
+        result.appointments.map((apt) => ({
+          country: apt.mission_country,
+          city: apt.center_name,
+          appointment_date: apt.appointment_date,
+        })),
+        sameSlotCooldownHours
+      );
 
-      if (debounceError) {
-        console.error('Error checking debounce logic:', debounceError);
-      }
+      const allowedAppointmentKeys = new Set(
+        appointmentsToNotify.map((apt) => `${apt.country}::${apt.city}::${apt.appointment_date}`)
+      );
 
-      if (recentNotifications && recentNotifications.length > 0) {
-        console.log(`[Notification] Debounce activated for User ${userId}, ${result.city} -> ${result.country}. Already notified within 6 hours. Skipping.`);
+      const filteredAppointments = result.appointments.filter((apt) =>
+        allowedAppointmentKeys.has(`${apt.mission_country}::${apt.center_name}::${apt.appointment_date}`)
+      );
+
+      if (filteredAppointments.length === 0) {
+        console.log(
+          `[Notification] Same-slot cooldown active for User ${userId}, ${result.city} -> ${result.country}. Cooldown: ${sameSlotCooldownHours}h.`
+        );
         continue;
       }
-      // -- End Debounce Logic --
 
       try {
-        await notificationService.sendAppointmentNotifications(
-          result.appointments,
+        const dispatchResult = await notificationService.sendAppointmentNotifications(
+          filteredAppointments,
           {
             userId,
             telegram: {
@@ -257,11 +260,16 @@ export class AppointmentService {
           }
         );
 
+        if (!dispatchResult.delivered) {
+          console.warn(`[Notification] No notification channel succeeded for user ${userId}; appointments remain pending.`);
+          continue;
+        }
+
         // Mark appointments as notified in DB
         if (supabase) {
-          for (const apt of result.appointments) {
+          for (const apt of filteredAppointments) {
             try {
-              // Find matching unnotified appointment and mark it
+              // Find the stored slot row and refresh its notification timestamp
               const { data: matchedApts } = await supabase
                 .from('appointments')
                 .select('id')
@@ -269,7 +277,6 @@ export class AppointmentService {
                 .eq('country', apt.mission_country)
                 .eq('city', apt.center_name)
                 .eq('appointment_date', apt.appointment_date)
-                .eq('notified', false)
                 .limit(1);
 
               if (matchedApts && matchedApts.length > 0) {
