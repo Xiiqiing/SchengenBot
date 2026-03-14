@@ -217,24 +217,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <div className="flex flex-col justify-between rounded-[36px] border border-black/[0.04] bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
-            <div>
-              <div className="mt-5 space-y-5">
-                <div>
-                  <p className="text-sm text-[#6e6e73]">{t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })}</p>
-                  <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">
-                    {preferences?.countries?.slice(0, 2).map((code: string) => tCountries(code)).join(', ') || tCountries('Portugal')}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-[#6e6e73]">{t('ukCheck.targetCities')}</p>
-                  <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">
-                    {preferences?.cities?.slice(0, 2).map((code: string) => tCities(code)).join(', ') || tCities('manchester')}
-                  </p>
-                </div>
-              </div>
-            </div>
-
+          <div className="flex flex-col justify-end rounded-[36px] border border-black/[0.04] bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
             <div className="mt-8 grid gap-3">
               <Link href={`/${locale}/dashboard/settings`}>
                 <Button className="h-12 w-full justify-between rounded-full bg-[#0071e3] px-5 text-white shadow-none hover:bg-[#0077ed]">
@@ -256,15 +239,7 @@ export default function DashboardPage() {
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-8 space-y-8">
             <Card className="overflow-hidden rounded-[40px] border border-black/[0.04] bg-white p-2 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
-              <CardHeader className="p-8 pb-4">
-                <CardTitle className="flex items-center gap-3 text-[28px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
-                  {t('ukCheck.title')}
-                </CardTitle>
-                <CardDescription className="text-base leading-7 text-[#6e6e73]">
-                  {t('ukCheck.description')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-6 pt-2 space-y-6">
+              <CardContent className="space-y-6 p-6">
                 {preferences ? (
                   <div className="grid grid-cols-1 gap-6 rounded-[32px] border border-black/[0.04] bg-[#f7f7f8] p-6 md:grid-cols-2">
                     <div>
