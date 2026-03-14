@@ -5,6 +5,7 @@ const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
 const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@example.com';
 
 let configured = false;
+let configurationError: string | null = null;
 
 export interface StoredPushSubscription {
   endpoint: string;
@@ -18,16 +19,28 @@ function ensureConfigured() {
   }
 
   if (!vapidPublicKey || !vapidPrivateKey) {
+    configurationError = 'Missing NEXT_PUBLIC_VAPID_PUBLIC_KEY or VAPID_PRIVATE_KEY';
     return false;
   }
 
-  webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
-  configured = true;
-  return true;
+  try {
+    webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+    configured = true;
+    configurationError = null;
+    return true;
+  } catch (error: any) {
+    configurationError = error?.message || 'Invalid Web Push configuration';
+    return false;
+  }
 }
 
 export function isWebPushConfigured() {
   return ensureConfigured();
+}
+
+export function getWebPushConfigurationError() {
+  ensureConfigured();
+  return configurationError;
 }
 
 export function getVapidPublicKey() {

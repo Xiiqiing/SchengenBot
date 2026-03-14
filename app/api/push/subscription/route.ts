@@ -5,7 +5,11 @@ import {
   getUserPushSubscriptions,
   upsertPushSubscription,
 } from '@/lib/supabase/client';
-import { getVapidPublicKey, isWebPushConfigured } from '@/lib/push/web-push';
+import {
+  getVapidPublicKey,
+  getWebPushConfigurationError,
+  isWebPushConfigured,
+} from '@/lib/push/web-push';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,6 +21,7 @@ export async function GET(request: NextRequest) {
       success: true,
       vapidPublicKey: getVapidPublicKey(),
       configured: isWebPushConfigured(),
+      configurationError: getWebPushConfigurationError(),
       subscriptions,
       hasSubscription: subscriptions.length > 0,
     });
@@ -50,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     if (!isWebPushConfigured()) {
       return NextResponse.json(
-        { error: 'Web Push is not configured on the server' },
+        { error: getWebPushConfigurationError() || 'Web Push is not configured on the server' },
         { status: 500 }
       );
     }

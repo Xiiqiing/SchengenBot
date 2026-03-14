@@ -53,6 +53,7 @@ export default function SettingsPage() {
   const [pushLoading, setPushLoading] = useState(false);
   const [pushTesting, setPushTesting] = useState(false);
   const [vapidPublicKey, setVapidPublicKey] = useState('');
+  const [pushConfigError, setPushConfigError] = useState('');
 
   useEffect(() => {
     loadPreferences();
@@ -94,11 +95,15 @@ export default function SettingsPage() {
         const data = await apiResponse.json();
         setPushConfigReady(!!data.configured);
         setVapidPublicKey(data.vapidPublicKey || '');
+        setPushConfigError(data.configurationError || '');
         const existingEndpoint = existingSubscription?.endpoint;
         const matchedSubscription = data.subscriptions?.some(
           (subscription: { endpoint: string }) => subscription.endpoint === existingEndpoint
         );
         setPushSubscribed(Boolean(existingEndpoint) && Boolean(matchedSubscription));
+      } else {
+        const data = await apiResponse.json().catch(() => null);
+        setPushConfigError(data?.error || 'Failed to load push configuration');
       }
     } catch (error) {
       console.error('Error loading push status:', error);
@@ -240,7 +245,7 @@ export default function SettingsPage() {
     }
 
     if (!pushConfigReady || !vapidPublicKey) {
-      alert(t('alerts.pushUnavailable'));
+      alert(pushConfigError || t('alerts.pushUnavailable'));
       return;
     }
 
@@ -613,6 +618,12 @@ export default function SettingsPage() {
                   <p className="text-sm text-on-surface-variant">
                     {pushSupported ? t('sections.webPush.hint') : t('sections.webPush.unsupported')}
                   </p>
+
+                  {pushConfigError && (
+                    <p className="text-sm text-red-600">
+                      {pushConfigError}
+                    </p>
+                  )}
 
                   <Button
                     onClick={handlePushSubscriptionToggle}
