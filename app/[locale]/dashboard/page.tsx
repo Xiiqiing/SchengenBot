@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Bell, CheckCircle2, Clock, TrendingUp, Settings, History, Zap, LayoutGrid } from 'lucide-react';
+import { Bell, CheckCircle2, Clock, TrendingUp, Settings, History, Zap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PageHeader } from '@/components/page-header';
-import { COUNTRIES, UK_CITIES, formatDate } from '@/lib/constants/countries';
+import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
 
-import { useTranslations, useFormatter } from 'next-intl';
+import { useLocale, useTranslations, useFormatter } from 'next-intl';
 
 export default function DashboardPage() {
   const t = useTranslations('DashboardHome');
@@ -18,6 +17,7 @@ export default function DashboardPage() {
   const tCountries = useTranslations('Countries');
   const tCities = useTranslations('Cities');
   const format = useFormatter();
+  const locale = useLocale();
   const [userId] = useState(() => getOrCreateUserId());
   const [preferences, setPreferences] = useState<any>(null);
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -178,6 +178,69 @@ export default function DashboardPage() {
       </header>
 
       <main className="container mx-auto px-4 py-10 max-w-7xl">
+        <div className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_0.9fr]">
+          <Card className="overflow-hidden rounded-[32px] border-none bg-[linear-gradient(135deg,#111827_0%,#1d4ed8_45%,#60a5fa_100%)] text-white shadow-[0_20px_80px_rgba(29,78,216,0.28)]">
+            <CardContent className="p-7 md:p-8">
+              <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+                <div className="max-w-xl">
+                  <p className="text-xs font-black uppercase tracking-[0.24em] text-white/55">
+                    {t('ukCheck.summaryTitle')}
+                  </p>
+                  <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">
+                    {t('ukCheck.summaryDescription')}
+                  </h2>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    <Badge className="rounded-full bg-white text-[#0f172a] px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em]">
+                      {t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })}
+                    </Badge>
+                    <Badge className="rounded-full bg-white/15 text-white px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em]">
+                      {t('ukCheck.citiesCount', { count: preferences?.cities?.length || 0 })}
+                    </Badge>
+                    <Badge className="rounded-full bg-white/15 text-white px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em]">
+                      {t('ukCheck.cooldownHours', { count: preferences?.same_slot_cooldown_hours || 24 })}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 md:min-w-[250px]">
+                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
+                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('stats.notificationsSent')}</p>
+                    <p className="mt-2 text-3xl font-black">{stats?.total_notifications || 0}</p>
+                  </div>
+                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
+                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('stats.autoMonitor')}</p>
+                    <p className="mt-2 text-lg font-black">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-[32px] border-none bg-white p-2 shadow-sm">
+            <CardHeader className="p-6 pb-3">
+              <CardTitle className="text-lg font-black text-[#1d1d1f]">{t('ukCheck.quickActions')}</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-3 p-6 pt-0">
+              <Link href={`/${locale}/dashboard/settings`}>
+                <Button className="w-full h-12 justify-between rounded-2xl bg-[#111827] px-5 text-white hover:bg-[#0b1220]">
+                  <span className="font-bold">{t('ukCheck.openSettings')}</span>
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href={`/${locale}/dashboard/history`}>
+                <Button variant="outline" className="w-full h-12 justify-between rounded-2xl px-5">
+                  <span className="font-bold">{t('ukCheck.viewHistory')}</span>
+                  <History className="h-4 w-4" />
+                </Button>
+              </Link>
+              <div className="rounded-2xl bg-[#f5f7fb] px-4 py-3">
+                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#64748b]">{t('stats.slotsFound')}</p>
+                <p className="mt-1 text-lg font-black text-[#111827]">{appointments.length}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {[
@@ -251,7 +314,7 @@ export default function DashboardPage() {
                 ) : (
                   <div className="text-center py-12 bg-surface rounded-[24px] border-2 border-dashed border-outline/20">
                     <p className="text-on-surface-variant font-medium mb-6">{t('ukCheck.noPrefs')}</p>
-                    <Link href="/dashboard/settings">
+                    <Link href={`/${locale}/dashboard/settings`}>
                       <Button className="h-10 px-6 rounded-full bg-[#E9E9EA] text-black hover:bg-[#dcdcdd] font-medium text-[13px] shadow-none">
                         <Settings className="mr-2 h-4 w-4" />
                         {t('ukCheck.configureNow')}

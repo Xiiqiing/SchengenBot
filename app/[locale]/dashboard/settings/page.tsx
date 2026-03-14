@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, TestTube, ArrowLeft, Bell, Globe, Clock, Mail, Settings } from 'lucide-react';
+import { Save, TestTube, Bell, Globe, Clock, Mail, Settings } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
-import Link from 'next/link';
 import { clearUserId, getOrCreateUserId } from '@/lib/user-id';
 import {
   getExistingPushSubscription,
@@ -344,13 +343,61 @@ export default function SettingsPage() {
       <PageHeader
         title={t('title')}
         description={t('description')}
-        backHref="/dashboard"
+        backHref={`/${locale}/dashboard`}
         backLabel={t('backLabel') || 'Back'}
         icon={<Settings className="w-5 h-5 text-[#f5f5f7]" />}
       />
 
       <main className="container mx-auto px-4 py-10 max-w-4xl">
         <div className="space-y-8">
+          <Card className="overflow-hidden rounded-[28px] border-none bg-[linear-gradient(135deg,#0f172a_0%,#1d4ed8_45%,#38bdf8_100%)] text-white shadow-[0_18px_60px_rgba(14,57,154,0.24)]">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+                <div className="max-w-xl">
+                  <p className="text-xs font-black uppercase tracking-[0.24em] text-white/65">
+                    {t('summary.title')}
+                  </p>
+                  <h2 className="mt-3 text-2xl font-black tracking-tight md:text-3xl">
+                    {t('summary.description')}
+                  </h2>
+                </div>
+
+                <div className="grid flex-1 grid-cols-2 gap-3 md:max-w-[360px]">
+                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
+                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('summary.countries')}</p>
+                    <p className="mt-2 text-2xl font-black">{preferences.countries.length}</p>
+                  </div>
+                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
+                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('summary.cities')}</p>
+                    <p className="mt-2 text-2xl font-black">{preferences.cities.length}</p>
+                  </div>
+                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
+                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('summary.cooldown')}</p>
+                    <p className="mt-2 text-lg font-black">{t('summary.hours', { count: preferences.same_slot_cooldown_hours })}</p>
+                  </div>
+                  <div className="rounded-3xl bg-white/12 p-4 backdrop-blur-sm">
+                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">{t('summary.automation')}</p>
+                    <p className="mt-2 text-lg font-black">
+                      {preferences.auto_check_enabled ? t('summary.enabled') : t('summary.disabled')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Badge className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] ${preferences.telegram_enabled ? 'bg-white text-[#0f172a]' : 'bg-white/10 text-white/70'}`}>
+                  Telegram {preferences.telegram_enabled ? t('summary.enabled') : t('summary.disabled')}
+                </Badge>
+                <Badge className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] ${preferences.email_enabled ? 'bg-white text-[#0f172a]' : 'bg-white/10 text-white/70'}`}>
+                  Email {preferences.email_enabled ? t('summary.enabled') : t('summary.disabled')}
+                </Badge>
+                <Badge className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] ${preferences.web_enabled ? 'bg-white text-[#0f172a]' : 'bg-white/10 text-white/70'}`}>
+                  Web Push {preferences.web_enabled ? t('summary.enabled') : t('summary.disabled')}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Country Selection */}
           <section className="m3-card p-6">
             <div className="mb-6">
@@ -419,14 +466,14 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
-                <div className="space-y-0.5">
+              <div className="flex flex-col gap-4 rounded-xl bg-[#F5F5F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 flex-1 space-y-0.5">
                   <span className="body-large font-medium text-on-surface">{t('sections.telegram.enable')}</span>
                   <p className="body-medium text-on-surface-variant">{t('sections.telegram.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, telegram_enabled: !prev.telegram_enabled }))}
-                  className={`relative inline-flex h-[31px] w-[51px] items-center rounded-full transition-colors duration-200 focus:outline-none ${preferences.telegram_enabled
+                  className={`relative inline-flex h-[31px] w-[51px] shrink-0 self-end rounded-full transition-colors duration-200 focus:outline-none sm:self-auto ${preferences.telegram_enabled
                     ? 'bg-[#0071e3]'
                     : 'bg-[#E9E9EA]'}`}
                 >
@@ -482,14 +529,14 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
-                <div className="space-y-0.5">
+              <div className="flex flex-col gap-4 rounded-xl bg-[#F5F5F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 flex-1 space-y-0.5">
                   <span className="body-large font-medium text-on-surface">{t('sections.email.enable')}</span>
                   <p className="body-medium text-on-surface-variant">{t('sections.email.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, email_enabled: !prev.email_enabled }))}
-                  className={`relative inline-flex h-[31px] w-[51px] items-center rounded-full transition-colors duration-200 focus:outline-none ${preferences.email_enabled
+                  className={`relative inline-flex h-[31px] w-[51px] shrink-0 self-end rounded-full transition-colors duration-200 focus:outline-none sm:self-auto ${preferences.email_enabled
                     ? 'bg-[#0071e3]'
                     : 'bg-[#E9E9EA]'}`}
                 >
@@ -533,14 +580,14 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 space-y-6">
-              <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
-                <div className="space-y-0.5">
+              <div className="flex flex-col gap-4 rounded-xl bg-[#F5F5F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 flex-1 space-y-0.5">
                   <span className="body-large font-medium text-on-surface">{t('sections.autoCheck.enable')}</span>
                   <p className="body-medium text-on-surface-variant">{t('sections.autoCheck.description')}</p>
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, auto_check_enabled: !prev.auto_check_enabled }))}
-                  className={`relative inline-flex h-[31px] w-[51px] items-center rounded-full transition-colors duration-200 focus:outline-none ${preferences.auto_check_enabled
+                  className={`relative inline-flex h-[31px] w-[51px] shrink-0 self-end rounded-full transition-colors duration-200 focus:outline-none sm:self-auto ${preferences.auto_check_enabled
                     ? 'bg-[#0071e3]'
                     : 'bg-[#E9E9EA]'}`}
                 >
@@ -594,8 +641,8 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0 space-y-4">
-              <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
-                <div className="space-y-0.5">
+              <div className="flex flex-col gap-4 rounded-xl bg-[#F5F5F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 flex-1 space-y-0.5">
                   <span className="body-large font-medium text-on-surface">{t('sections.webPush.enable')}</span>
                   <p className="body-medium text-on-surface-variant">
                     {pushSubscribed ? t('sections.webPush.statusReady') : t('sections.webPush.statusNotReady')}
@@ -603,7 +650,7 @@ export default function SettingsPage() {
                 </div>
                 <button
                   onClick={() => setPreferences(prev => ({ ...prev, web_enabled: !prev.web_enabled }))}
-                  className={`relative inline-flex h-[31px] w-[51px] items-center rounded-full transition-colors duration-200 focus:outline-none ${preferences.web_enabled
+                  className={`relative inline-flex h-[31px] w-[51px] shrink-0 self-end rounded-full transition-colors duration-200 focus:outline-none sm:self-auto ${preferences.web_enabled
                     ? 'bg-[#0071e3]'
                     : 'bg-[#E9E9EA]'}`}
                 >
@@ -618,6 +665,15 @@ export default function SettingsPage() {
                   <p className="text-sm text-on-surface-variant">
                     {pushSupported ? t('sections.webPush.hint') : t('sections.webPush.unsupported')}
                   </p>
+
+                  <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">
+                      {t('sections.webPush.stepsTitle')}
+                    </p>
+                    <p className="mt-2 text-sm text-blue-900">
+                      {t('sections.webPush.steps')}
+                    </p>
+                  </div>
 
                   {pushConfigError && (
                     <p className="text-sm text-red-600">
@@ -654,15 +710,25 @@ export default function SettingsPage() {
           </Card>
 
           {/* Save Button */}
-          <div className="pt-6">
-            <Button
-              onClick={handleSave}
-              disabled={saving}
-              className="w-full h-14 text-base"
-            >
-              {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="h-5 w-5 mr-2" /> {t('actions.save')}</>}
-            </Button>
-          </div>
+          <Card className="rounded-[28px] border-none bg-[#111827] text-white shadow-[0_18px_50px_rgba(15,23,42,0.18)]">
+            <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-white/55">
+                  {t('actions.save')}
+                </p>
+                <p className="mt-2 text-sm text-white/75">
+                  {t('summary.description')}
+                </p>
+              </div>
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                className="h-14 min-w-[220px] rounded-2xl bg-white text-[#111827] hover:bg-white/90"
+              >
+                {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="mr-2 h-5 w-5" /> {t('actions.save')}</>}
+              </Button>
+            </CardContent>
+          </Card>
 
           <div className="pt-2">
             <Button

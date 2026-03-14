@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { getUserId, setUserId } from '@/lib/user-id';
 
 export default function DashboardLayout({
@@ -10,6 +10,7 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     const router = useRouter();
+    const params = useParams<{ locale: string }>();
     const [isAuthorized, setIsAuthorized] = useState(false);
 
     useEffect(() => {
@@ -30,16 +31,16 @@ export default function DashboardLayout({
                         return;
                     }
 
-                    router.replace('/');
+                    router.replace(`/${params.locale}`);
                 })
                 .catch(() => {
-                    router.replace('/');
+                    router.replace(`/${params.locale}`);
                 });
             return;
         }
 
         setIsAuthorized(true);
-    }, [router]);
+    }, [params.locale, router]);
 
     if (!isAuthorized) {
         return null; // Or a loading spinner

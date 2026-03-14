@@ -48,6 +48,14 @@
         "ukCheck": {
             "title": "🇬🇧 英国中心实时检查",
             "description": "即时检索选定城市与国家的最新预约槽位",
+            "summaryTitle": "监控概览",
+            "summaryDescription": "快速查看当前监控覆盖范围与通知状态",
+            "quickActions": "快捷操作",
+            "openSettings": "调整设置",
+            "viewHistory": "查看历史",
+            "countriesCount": "{count} 个国家",
+            "citiesCount": "{count} 个城市",
+            "cooldownHours": "冷却 {count} 小时",
             "monitoredCountries": "监控国家",
             "targetCities": "目标城市",
             "noPrefs": "尚未设置偏好，点击下方按钮开始配置",
@@ -98,6 +106,18 @@
         "title": "偏好设置",
         "description": "管理您的通知和监控偏好",
         "backLabel": "返回",
+        "summary": {
+            "title": "当前配置速览",
+            "description": "在保存前快速确认哪些渠道和监控项处于开启状态",
+            "countries": "监控国家",
+            "cities": "监控城市",
+            "cooldown": "相同 slot 冷却",
+            "channels": "通知渠道",
+            "automation": "自动监控",
+            "enabled": "已开启",
+            "disabled": "未开启",
+            "hours": "{count} 小时"
+        },
         "sections": {
             "countries": {
                 "title": "目标国家监控",
@@ -132,7 +152,9 @@
                 "subscribe": "启用此设备推送",
                 "unsubscribe": "关闭此设备推送",
                 "test": "发送测试推送",
-                "hint": "iOS 需使用 Safari 添加到主屏幕，再允许通知权限"
+                "hint": "iOS 需使用 Safari 添加到主屏幕，再允许通知权限",
+                "stepsTitle": "iPhone 使用步骤",
+                "steps": "Safari 打开网站，添加到主屏幕，再从主屏幕进入应用并允许通知，最后点击启用此设备推送。"
             },
             "autoCheck": {
                 "title": "后台自动爬取",

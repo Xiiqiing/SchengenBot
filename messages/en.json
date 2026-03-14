@@ -48,6 +48,14 @@
         "ukCheck": {
             "title": "🇬🇧 UK Center Real-time Check",
             "description": "Instantly check latest slots for selected cities and countries",
+            "summaryTitle": "Monitoring Snapshot",
+            "summaryDescription": "Quickly see what is being watched and which channels are active",
+            "quickActions": "Quick Actions",
+            "openSettings": "Adjust Settings",
+            "viewHistory": "View History",
+            "countriesCount": "{count} countries",
+            "citiesCount": "{count} cities",
+            "cooldownHours": "{count}h cooldown",
             "monitoredCountries": "Monitored Countries",
             "targetCities": "Target Cities",
             "noPrefs": "Preferences not set, click below to configure",
@@ -98,6 +106,18 @@
         "title": "Preferences",
         "description": "Manage your notification and monitoring preferences",
         "backLabel": "Back",
+        "summary": {
+            "title": "Current Setup Snapshot",
+            "description": "Quickly verify which channels and monitoring options are currently active",
+            "countries": "Monitored Countries",
+            "cities": "Monitored Cities",
+            "cooldown": "Same Slot Cooldown",
+            "channels": "Notification Channels",
+            "automation": "Auto Monitor",
+            "enabled": "Enabled",
+            "disabled": "Disabled",
+            "hours": "{count} hours"
+        },
         "sections": {
             "countries": {
                 "title": "Target Country Monitoring",
@@ -132,7 +152,9 @@
                 "subscribe": "Enable Push On This Device",
                 "unsubscribe": "Disable Push On This Device",
                 "test": "Send Test Push",
-                "hint": "On iOS, add the site to Home Screen in Safari first, then allow notifications"
+                "hint": "On iOS, add the site to Home Screen in Safari first, then allow notifications",
+                "stepsTitle": "iPhone Setup",
+                "steps": "Open the site in Safari, add it to Home Screen, launch it from the Home Screen, allow notifications, then enable push on this device."
             },
             "autoCheck": {
                 "title": "Background Auto-Crawl",

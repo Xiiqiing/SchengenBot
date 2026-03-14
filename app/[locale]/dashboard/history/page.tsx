@@ -1,19 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, Bell, CheckCircle2, AlertCircle, History } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Calendar, Bell, CheckCircle2, AlertCircle, History } from 'lucide-react';
 import { PageHeader } from '@/components/page-header';
-import { COUNTRIES, formatDate } from '@/lib/constants/countries';
-import Link from 'next/link';
+import { COUNTRIES } from '@/lib/constants/countries';
 import { cn } from '@/lib/utils';
 
-import { useTranslations, useFormatter } from 'next-intl';
+import { useLocale, useTranslations, useFormatter } from 'next-intl';
 
 export default function HistoryPage() {
   const t = useTranslations('History');
   const tCountries = useTranslations('Countries');
   const format = useFormatter();
+  const locale = useLocale();
   const [appointments, setAppointments] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'appointments' | 'notifications'>('appointments');
@@ -57,7 +56,7 @@ export default function HistoryPage() {
       <PageHeader
         title={t('title')}
         description={t('description')}
-        backHref="/dashboard"
+        backHref={`/${locale}/dashboard`}
         backLabel={t('backLabel') || 'Back'}
         icon={<History className="w-5 h-5 text-[#f5f5f7]" />}
       />
