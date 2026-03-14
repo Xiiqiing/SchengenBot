@@ -63,14 +63,14 @@ export default function HistoryPage() {
 
       <main className="container mx-auto max-w-6xl px-4 pb-12">
         {/* Tabs */}
-        <div className="mb-10 inline-flex w-fit gap-2 rounded-full border border-black/5 bg-white p-1.5 shadow-[0_12px_30px_rgba(15,23,42,0.05)]">
+        <div className="mb-10 inline-flex w-fit gap-1 rounded-full bg-[#f3f3f5] p-1">
           <button
             onClick={() => setActiveTab('appointments')}
             className={cn(
               'flex items-center rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 outline-none',
               activeTab === 'appointments'
-                ? 'bg-white text-[#1d1d1f] shadow-[0_8px_20px_rgba(15,23,42,0.08)]'
-                : 'text-[#6e6e73] hover:bg-white/60 hover:text-[#1d1d1f]'
+                ? 'bg-white text-[#1d1d1f] shadow-[0_1px_2px_rgba(15,23,42,0.08)]'
+                : 'text-[#6e6e73] hover:text-[#1d1d1f]'
             )}
           >
             <Calendar className="mr-2 h-4 w-4" />
@@ -81,8 +81,8 @@ export default function HistoryPage() {
             className={cn(
               'flex items-center rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 outline-none',
               activeTab === 'notifications'
-                ? 'bg-white text-[#1d1d1f] shadow-[0_8px_20px_rgba(15,23,42,0.08)]'
-                : 'text-[#6e6e73] hover:bg-white/60 hover:text-[#1d1d1f]'
+                ? 'bg-white text-[#1d1d1f] shadow-[0_1px_2px_rgba(15,23,42,0.08)]'
+                : 'text-[#6e6e73] hover:text-[#1d1d1f]'
             )}
           >
             <Bell className="mr-2 h-4 w-4" />
@@ -95,13 +95,13 @@ export default function HistoryPage() {
           {activeTab === 'appointments' ? (
             //  Appointments List
             appointments.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {appointments.map((apt) => {
                   const country = COUNTRIES.find(c => c.code === apt.country);
                   return (
                     <div
                       key={apt.id}
-                      className="group relative rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
+                      className="group relative rounded-[32px] border border-black/[0.04] bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.035)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.05)]"
                     >
                       <div className="flex items-start justify-between mb-5">
                         <div className="flex items-center gap-4">
@@ -178,11 +178,11 @@ export default function HistoryPage() {
           ) : (
             // Notifications List
             notifications.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {notifications.map((notif) => (
                   <div
                     key={notif.id}
-                    className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
+                    className="rounded-[32px] border border-black/[0.04] bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.035)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.05)]"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">

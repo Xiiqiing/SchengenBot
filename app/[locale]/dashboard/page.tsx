@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, Clock, TrendingUp, Settings, History, Zap } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Clock, Settings, History, Zap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { getOrCreateUserId } from '@/lib/user-id';
@@ -13,7 +12,6 @@ import { useLocale, useTranslations, useFormatter } from 'next-intl';
 
 export default function DashboardPage() {
   const t = useTranslations('DashboardHome');
-  const tDash = useTranslations('Dashboard');
   const tCountries = useTranslations('Countries');
   const tCities = useTranslations('Cities');
   const format = useFormatter();
@@ -163,10 +161,7 @@ export default function DashboardPage() {
       <main className="container mx-auto px-4 py-10 max-w-7xl">
         <section className="pb-12 pt-8 md:pb-16 md:pt-14">
           <div className="max-w-5xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-              {t('ukCheck.summaryTitle')}
-            </p>
-            <h1 className="mt-3 text-[42px] font-semibold tracking-[-0.06em] text-[#1d1d1f] md:text-[72px] md:leading-[0.95]">
+            <h1 className="text-[44px] font-semibold tracking-[-0.065em] text-[#1d1d1f] md:text-[80px] md:leading-[0.92]">
               {t('title')}
             </h1>
             <p className="mt-5 max-w-3xl text-base leading-7 text-[#6e6e73] md:text-[21px] md:leading-8">
@@ -175,68 +170,92 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <div className="mb-12 grid grid-cols-1 gap-6 lg:grid-cols-[1.45fr_0.85fr]">
-          <Card className="overflow-hidden rounded-[40px] border border-white/70 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-[#1d1d1f] shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
-            <CardContent className="p-8 md:p-10">
+        <div className="mb-10 flex flex-col gap-4 border-b border-black/[0.06] pb-10 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-[#6e6e73]">
+              {t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })} · {t('ukCheck.citiesCount', { count: preferences?.cities?.length || 0 })} · {t('ukCheck.cooldownHours', { count: preferences?.same_slot_cooldown_hours || 24 })}
+            </p>
+            <div className="flex flex-wrap gap-3 text-sm font-semibold text-[#1d1d1f]">
+              <Link href={`/${locale}/dashboard/settings`} className="inline-flex items-center gap-1.5 hover:text-[#0071e3]">
+                {t('ukCheck.openSettings')}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href={`/${locale}/dashboard/history`} className="inline-flex items-center gap-1.5 text-[#6e6e73] hover:text-[#1d1d1f]">
+                {t('ukCheck.viewHistory')}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-12 grid grid-cols-1 gap-6 lg:grid-cols-[1.55fr_0.75fr]">
+          <Card className="overflow-hidden rounded-[44px] border border-black/[0.04] bg-white text-[#1d1d1f] shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
+            <CardContent className="p-8 md:p-12">
               <div className="max-w-3xl">
-                <h2 className="text-[34px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[56px] md:leading-[0.95]">
-                  {t('ukCheck.summaryDescription')}
+                <h2 className="text-[30px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[52px] md:leading-[0.96]">
+                  {t('ukCheck.title')}
                 </h2>
-                <div className="mt-7 flex flex-wrap gap-2.5">
-                  <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
-                    {t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })}
-                  </Badge>
-                  <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
-                    {t('ukCheck.citiesCount', { count: preferences?.cities?.length || 0 })}
-                  </Badge>
-                  <Badge className="rounded-full border border-black/5 bg-white px-4 py-1.5 text-[12px] font-semibold text-[#1d1d1f] shadow-sm">
-                    {t('ukCheck.cooldownHours', { count: preferences?.same_slot_cooldown_hours || 24 })}
-                  </Badge>
-                </div>
+                <p className="mt-5 max-w-2xl text-base leading-7 text-[#6e6e73] md:text-[19px] md:leading-8">
+                  {t('ukCheck.description')}
+                </p>
               </div>
 
-              <div className="mt-10 grid grid-cols-3 gap-6 md:max-w-[640px]">
+              <div className="mt-12 grid grid-cols-3 gap-8 border-t border-black/[0.06] pt-8 md:max-w-[640px]">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.notificationsSent')}</p>
-                  <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
+                  <p className="text-[12px] font-medium text-[#86868b]">{t('stats.notificationsSent')}</p>
+                  <p className="mt-2 text-[40px] font-semibold tracking-[-0.06em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
                 </div>
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.slotsFound')}</p>
-                  <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">{appointments.length}</p>
+                  <p className="text-[12px] font-medium text-[#86868b]">{t('stats.slotsFound')}</p>
+                  <p className="mt-2 text-[40px] font-semibold tracking-[-0.06em] text-[#1d1d1f]">{appointments.length}</p>
                 </div>
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.autoMonitor')}</p>
-                  <p className="mt-2 text-xl font-semibold text-[#1d1d1f]">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
+                  <p className="text-[12px] font-medium text-[#86868b]">{t('stats.autoMonitor')}</p>
+                  <p className="mt-3 text-lg font-semibold text-[#1d1d1f]">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-[32px] border border-black/5 bg-white p-2 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
-            <CardHeader className="p-6 pb-3">
-              <CardTitle className="text-lg font-semibold tracking-[-0.02em] text-[#1d1d1f]">{t('ukCheck.quickActions')}</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-3 p-6 pt-0">
+          <div className="flex flex-col justify-between rounded-[36px] border border-black/[0.04] bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
+            <div>
+              <div className="mt-5 space-y-5">
+                <div>
+                  <p className="text-sm text-[#6e6e73]">{t('ukCheck.countriesCount', { count: preferences?.countries?.length || 0 })}</p>
+                  <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">
+                    {preferences?.countries?.slice(0, 2).map((code: string) => tCountries(code)).join(', ') || tCountries('Portugal')}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-[#6e6e73]">{t('ukCheck.targetCities')}</p>
+                  <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">
+                    {preferences?.cities?.slice(0, 2).map((code: string) => tCities(code)).join(', ') || tCities('manchester')}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 grid gap-3">
               <Link href={`/${locale}/dashboard/settings`}>
-                <Button className="h-12 w-full justify-between rounded-full bg-[#0071e3] px-5 text-white shadow-[0_10px_25px_rgba(0,113,227,0.24)] hover:bg-[#0077ed]">
+                <Button className="h-12 w-full justify-between rounded-full bg-[#0071e3] px-5 text-white shadow-none hover:bg-[#0077ed]">
                   <span className="font-semibold">{t('ukCheck.openSettings')}</span>
                   <Settings className="h-4 w-4" />
                 </Button>
               </Link>
               <Link href={`/${locale}/dashboard/history`}>
-                <Button variant="outline" className="h-12 w-full justify-between rounded-full border-black/10 bg-white px-5 hover:bg-black/[0.03]">
+                <Button variant="outline" className="h-12 w-full justify-between rounded-full border-black/10 bg-[#f5f5f7] px-5 hover:bg-[#ececf0]">
                   <span className="font-semibold">{t('ukCheck.viewHistory')}</span>
                   <History className="h-4 w-4" />
                 </Button>
               </Link>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-8 space-y-8">
-            <Card className="overflow-hidden rounded-[36px] border border-black/5 bg-white p-2 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
+            <Card className="overflow-hidden rounded-[40px] border border-black/[0.04] bg-white p-2 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
               <CardHeader className="p-8 pb-4">
                 <CardTitle className="flex items-center gap-3 text-[28px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                   {t('ukCheck.title')}
@@ -247,9 +266,9 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="p-6 pt-2 space-y-6">
                 {preferences ? (
-                  <div className="grid grid-cols-1 gap-6 rounded-[28px] bg-[#f5f5f7] p-6 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-6 rounded-[32px] border border-black/[0.04] bg-[#f7f7f8] p-6 md:grid-cols-2">
                     <div>
-                      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('ukCheck.monitoredCountries')}</p>
+                      <p className="mb-3 text-sm font-medium text-[#6e6e73]">{t('ukCheck.monitoredCountries')}</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.countries?.length > 0 ? (
                           preferences.countries.map((code: string) => {
@@ -268,7 +287,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div>
-                      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('ukCheck.targetCities')}</p>
+                      <p className="mb-3 text-sm font-medium text-[#6e6e73]">{t('ukCheck.targetCities')}</p>
                       <div className="flex flex-wrap gap-2">
                         {preferences.cities?.length > 0 ? (
                           preferences.cities.map((code: string) => {
@@ -387,7 +406,7 @@ export default function DashboardPage() {
 
           {/* Right Panel - Recent Appointments */}
           <div className="lg:col-span-4 space-y-8">
-            <Card className="flex h-full flex-col rounded-[32px] border border-black/5 bg-white p-2 shadow-[0_16px_36px_rgba(15,23,42,0.05)]">
+            <Card className="flex h-full flex-col rounded-[36px] border border-black/[0.04] bg-white p-2 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
               <CardHeader className="p-6">
                 <CardTitle className="text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">{t('recent.title')}</CardTitle>
                 <CardDescription className="text-sm leading-6 text-[#6e6e73]">{t('recent.description')}</CardDescription>

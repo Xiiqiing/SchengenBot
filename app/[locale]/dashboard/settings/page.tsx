@@ -3,10 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, TestTube, Bell, Globe, Clock, Mail, Settings } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/page-header';
-import { Badge } from '@/components/ui/badge';
 import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import { clearUserId, getOrCreateUserId } from '@/lib/user-id';
 import {
@@ -354,36 +353,9 @@ export default function SettingsPage() {
         icon={<Settings className="w-5 h-5 text-[#86868b]" />}
       />
 
-      <main className="container mx-auto px-4 py-10 max-w-4xl">
-        <div className="space-y-8">
-          <Card className="overflow-hidden rounded-[36px] border border-black/5 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-[#1d1d1f] shadow-[0_18px_60px_rgba(15,23,42,0.06)]">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-                <div className="max-w-xl">
-                  <h2 className="mt-3 text-[34px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[48px] md:leading-[0.98]">
-                    {t('title')}
-                  </h2>
-                  <p className="mt-4 max-w-2xl text-base leading-7 text-[#6e6e73]">
-                    {t('description')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-2.5">
-                <Badge className={`rounded-full border border-black/5 px-4 py-1.5 text-[12px] font-semibold shadow-sm ${preferences.telegram_enabled ? 'bg-white text-[#1d1d1f]' : 'bg-white/55 text-[#86868b]'}`}>
-                  Telegram {preferences.telegram_enabled ? t('summary.enabled') : t('summary.disabled')}
-                </Badge>
-                <Badge className={`rounded-full border border-black/5 px-4 py-1.5 text-[12px] font-semibold shadow-sm ${preferences.email_enabled ? 'bg-white text-[#1d1d1f]' : 'bg-white/55 text-[#86868b]'}`}>
-                  Email {preferences.email_enabled ? t('summary.enabled') : t('summary.disabled')}
-                </Badge>
-                <Badge className={`rounded-full border border-black/5 px-4 py-1.5 text-[12px] font-semibold shadow-sm ${preferences.web_enabled ? 'bg-white text-[#1d1d1f]' : 'bg-white/55 text-[#86868b]'}`}>
-                  Web Push {preferences.web_enabled ? t('summary.enabled') : t('summary.disabled')}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          <section className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
+      <main className="container mx-auto max-w-4xl px-4 pb-16">
+        <div className="space-y-12">
+          <section className="border-t border-black/[0.06] pt-8">
             <div className="mb-6">
               <h2 className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Globe className="h-5 w-5 text-[#86868b]" />
@@ -413,7 +385,7 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
+          <section className="border-t border-black/[0.06] pt-8">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 🇬🇧 {t('sections.cities.title')}
@@ -438,9 +410,9 @@ export default function SettingsPage() {
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </section>
 
-          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
+          <section className="border-t border-black/[0.06] pt-8">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Bell className="h-5 w-5 text-[#86868b]" />
@@ -500,9 +472,9 @@ export default function SettingsPage() {
                 </div>
               )}
             </CardContent>
-          </Card>
+          </section>
 
-          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
+          <section className="border-t border-black/[0.06] pt-8">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Mail className="h-5 w-5 text-[#86868b]" />
@@ -550,9 +522,9 @@ export default function SettingsPage() {
                 </div>
               )}
             </CardContent>
-          </Card>
+          </section>
 
-          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
+          <section className="border-t border-black/[0.06] pt-8">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Clock className="h-5 w-5 text-[#86868b]" />
@@ -608,9 +580,9 @@ export default function SettingsPage() {
                 </div>
               )}
             </CardContent>
-          </Card>
+          </section>
 
-          <Card className="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
+          <section className="border-t border-black/[0.06] pt-8">
             <CardHeader className="p-0 mb-6">
               <CardTitle className="flex items-center gap-2 text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 <Bell className="h-5 w-5 text-[#86868b]" />
@@ -687,29 +659,22 @@ export default function SettingsPage() {
                 </div>
               )}
             </CardContent>
-          </Card>
+          </section>
 
-          <Card className="rounded-[32px] border border-black/5 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
-            <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">
-                  {t('actions.save')}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-[#6e6e73]">
-                  {t('description')}
-                </p>
-              </div>
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                className="h-14 min-w-[220px] rounded-full bg-[#0071e3] text-white shadow-[0_10px_25px_rgba(0,113,227,0.24)] hover:bg-[#0077ed]"
-              >
-                {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="mr-2 h-5 w-5" /> {t('actions.save')}</>}
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="flex flex-col gap-4 border-t border-black/[0.06] pt-8 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-medium text-[#6e6e73]">{t('description')}</p>
+            </div>
+            <Button
+              onClick={handleSave}
+              disabled={saving}
+              className="h-14 min-w-[220px] rounded-full bg-[#0071e3] text-white shadow-[0_10px_25px_rgba(0,113,227,0.24)] hover:bg-[#0077ed]"
+            >
+              {saving ? <Clock className="animate-spin h-5 w-5" /> : <><Save className="mr-2 h-5 w-5" /> {t('actions.save')}</>}
+            </Button>
+          </div>
 
-          <div className="pt-2">
+          <div>
             <Button
               onClick={handleLogout}
               disabled={loggingOut}
