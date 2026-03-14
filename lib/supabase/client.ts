@@ -8,6 +8,7 @@ import type {
   UserPreferences,
   Appointment,
   NotificationHistory,
+  PushSubscriptionRecord,
   CheckHistory,
   UserStats
 } from './types';
@@ -316,6 +317,98 @@ export async function getUserNotifications(userId: string, limit = 100) {
 
   if (error) return [];
   return data as NotificationHistory[];
+}
+
+// ============================================
+// PUSH SUBSCRIPTION OPERATIONS
+// ============================================
+
+export async function getUserPushSubscriptions(userId: string) {
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from('push_subscriptions')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('active', true)
+    .order('updated_at', { ascending: false });
+
+  if (error) throw error;
+  return data as PushSubscriptionRecord[];
+}
+
+export async function upsertPushSubscription(
+  userId: string,
+  subscription: Pick<PushSubscriptionRecord, 'endpoint' | 'p256dh' | 'auth' | 'user_agent'>
+) {
+  if (!supabase) throw new Error('Supabase not initialized');
+
+  const payload = {
+    user_id: userId,
+    endpoint: subscription.endpoint,
+    p256dh: subscription.p256dh,
+    auth: subscription.auth,
+    user_agent: subscription.user_agent,
+    active: true,
+    updated_at: new Date().toISOString(),
+    last_used_at: new Date().toISOString(),
+  };
+
+  const { data, error } = await supabase
+    .from('push_subscriptions')
+    .upsert(payload, {
+      onConflict: 'endpoint',
+      ignoreDuplicates: false,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as PushSubscriptionRecord;
+}
+
+export async function deactivatePushSubscription(userId: string, endpoint: string) {
+  if (!supabase) throw new Error('Supabase not initialized');
+
+  const { error } = await supabase
+    .from('push_subscriptions')
+    .update({
+      active: false,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('user_id', userId)
+    .eq('endpoint', endpoint);
+
+  if (error) throw error;
+}
+
+export async function deactivatePushSubscriptionByEndpoint(endpoint: string) {
+  if (!supabase) throw new Error('Supabase not initialized');
+
+  const { error } = await supabase
+    .from('push_subscriptions')
+    .update({
+      active: false,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('endpoint', endpoint);
+
+  if (error) throw error;
+}
+
+export async function touchPushSubscription(endpoint: string) {
+  if (!supabase) throw new Error('Supabase not initialized');
+
+  const { error } = await supabase
+    .from('push_subscriptions')
+    .update({
+      last_used_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      active: true,
+    })
+    .eq('endpoint', endpoint);
+
+  if (error) throw error;
 }
 
 // ============================================

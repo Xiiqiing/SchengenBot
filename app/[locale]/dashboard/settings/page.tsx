@@ -10,6 +10,13 @@ import { Badge } from '@/components/ui/badge';
 import { COUNTRIES, UK_CITIES } from '@/lib/constants/countries';
 import Link from 'next/link';
 import { clearUserId, getOrCreateUserId } from '@/lib/user-id';
+import {
+  getExistingPushSubscription,
+  isWebPushSupported,
+  serializePushSubscription,
+  subscribeToPush,
+  unsubscribeFromPush,
+} from '@/lib/push/browser';
 
 import { useLocale, useTranslations } from 'next-intl';
 
@@ -40,10 +47,24 @@ export default function SettingsPage() {
   const [testing, setTesting] = useState(false);
   const [testingEmail, setTestingEmail] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [pushSupported, setPushSupported] = useState(false);
+  const [pushSubscribed, setPushSubscribed] = useState(false);
+  const [pushConfigReady, setPushConfigReady] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
+  const [pushTesting, setPushTesting] = useState(false);
+  const [vapidPublicKey, setVapidPublicKey] = useState('');
 
   useEffect(() => {
     loadPreferences();
   }, []);
+
+  useEffect(() => {
+    setPushSupported(isWebPushSupported());
+
+    if (typeof window !== 'undefined' && isWebPushSupported()) {
+      loadPushStatus();
+    }
+  }, [userId]);
 
   const loadPreferences = async () => {
     try {
@@ -59,6 +80,28 @@ export default function SettingsPage() {
       }
     } catch (error) {
       console.error('Error loading preferences:', error);
+    }
+  };
+
+  const loadPushStatus = async () => {
+    try {
+      const [apiResponse, existingSubscription] = await Promise.all([
+        fetch(`/api/push/subscription?userId=${userId}`),
+        getExistingPushSubscription(),
+      ]);
+
+      if (apiResponse.ok) {
+        const data = await apiResponse.json();
+        setPushConfigReady(!!data.configured);
+        setVapidPublicKey(data.vapidPublicKey || '');
+        const existingEndpoint = existingSubscription?.endpoint;
+        const matchedSubscription = data.subscriptions?.some(
+          (subscription: { endpoint: string }) => subscription.endpoint === existingEndpoint
+        );
+        setPushSubscribed(Boolean(existingEndpoint) && Boolean(matchedSubscription));
+      }
+    } catch (error) {
+      console.error('Error loading push status:', error);
     }
   };
 
@@ -187,6 +230,106 @@ export default function SettingsPage() {
       router.replace(`/${locale}`);
       router.refresh();
       setLoggingOut(false);
+    }
+  };
+
+  const handlePushSubscriptionToggle = async () => {
+    if (!pushSupported) {
+      alert(t('sections.webPush.unsupported'));
+      return;
+    }
+
+    if (!pushConfigReady || !vapidPublicKey) {
+      alert(t('alerts.pushUnavailable'));
+      return;
+    }
+
+    setPushLoading(true);
+
+    try {
+      if (pushSubscribed) {
+        const existingSubscription = await getExistingPushSubscription();
+
+        if (existingSubscription) {
+          const payload = serializePushSubscription(existingSubscription);
+
+          await fetch('/api/push/subscription', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId,
+              endpoint: payload.endpoint,
+            }),
+          });
+
+          await unsubscribeFromPush();
+        }
+
+        setPushSubscribed(false);
+        alert(t('alerts.pushUnsubscribed'));
+        return;
+      }
+
+      const subscription = await subscribeToPush(vapidPublicKey);
+      const payload = serializePushSubscription(subscription);
+
+      const response = await fetch('/api/push/subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          ...payload,
+          userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to subscribe');
+      }
+
+      setPushSubscribed(true);
+      alert(t('alerts.pushSubscribed'));
+    } catch (error: any) {
+      console.error('Push subscription error:', error);
+      alert(`${t('alerts.pushFailed')}${error.message || 'Unknown error'}`);
+    } finally {
+      setPushLoading(false);
+    }
+  };
+
+  const handleTestPush = async () => {
+    if (!pushSubscribed) {
+      alert(t('sections.webPush.statusNotReady'));
+      return;
+    }
+
+    setPushTesting(true);
+
+    try {
+      const existingSubscription = await getExistingPushSubscription();
+      const endpoint = existingSubscription?.endpoint;
+
+      const response = await fetch('/api/push/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          endpoint,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to send test push');
+      }
+
+      alert(t('alerts.pushTestSuccess'));
+    } catch (error: any) {
+      console.error('Push test error:', error);
+      alert(`${t('alerts.pushTestFailed')}${error.message || 'Unknown error'}`);
+    } finally {
+      setPushTesting(false);
     }
   };
 
@@ -430,6 +573,70 @@ export default function SettingsPage() {
                       {t('sections.autoCheck.sameSlotCooldownDescription')}
                     </p>
                   </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white rounded-2xl shadow-sm border-none p-6">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="text-xl font-black flex items-center gap-2">
+                <Bell className="w-6 h-6 text-secondary" />
+                {t('sections.webPush.title')}
+              </CardTitle>
+              <CardDescription className="text-sm font-medium text-on-surface-variant">
+                {t('sections.webPush.description')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0 space-y-4">
+              <div className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-xl">
+                <div className="space-y-0.5">
+                  <span className="body-large font-medium text-on-surface">{t('sections.webPush.enable')}</span>
+                  <p className="body-medium text-on-surface-variant">
+                    {pushSubscribed ? t('sections.webPush.statusReady') : t('sections.webPush.statusNotReady')}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setPreferences(prev => ({ ...prev, web_enabled: !prev.web_enabled }))}
+                  className={`relative inline-flex h-[31px] w-[51px] items-center rounded-full transition-colors duration-200 focus:outline-none ${preferences.web_enabled
+                    ? 'bg-[#0071e3]'
+                    : 'bg-[#E9E9EA]'}`}
+                >
+                  <span className={`inline-block h-[27px] w-[27px] transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${preferences.web_enabled
+                    ? 'translate-x-[22px]'
+                    : 'translate-x-[2px]'}`} />
+                </button>
+              </div>
+
+              {preferences.web_enabled && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                  <p className="text-sm text-on-surface-variant">
+                    {pushSupported ? t('sections.webPush.hint') : t('sections.webPush.unsupported')}
+                  </p>
+
+                  <Button
+                    onClick={handlePushSubscriptionToggle}
+                    disabled={pushLoading || !pushSupported}
+                    variant="outline"
+                    className="w-full h-12 font-bold"
+                  >
+                    {pushLoading
+                      ? <Clock className="animate-spin h-5 w-5" />
+                      : pushSubscribed
+                        ? t('sections.webPush.unsubscribe')
+                        : t('sections.webPush.subscribe')}
+                  </Button>
+
+                  <Button
+                    onClick={handleTestPush}
+                    disabled={pushTesting || !pushSupported || !pushSubscribed}
+                    variant="outline"
+                    className="w-full h-12 font-bold"
+                  >
+                    {pushTesting
+                      ? <Clock className="animate-spin h-5 w-5" />
+                      : t('sections.webPush.test')}
+                  </Button>
                 </div>
               )}
             </CardContent>

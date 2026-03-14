@@ -1,9 +1,11 @@
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { AuthError, requireAuthenticatedUserId } from '@/lib/auth/session';
 import { notificationService } from '@/lib/services/notification-service';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
+        await requireAuthenticatedUserId(request);
         const { email } = await request.json();
 
         if (!email) {
@@ -47,6 +49,13 @@ export async function POST(request: Request) {
             );
         }
     } catch (error: any) {
+        if (error instanceof AuthError) {
+            return NextResponse.json(
+                { success: false, error: error.message },
+                { status: error.status }
+            );
+        }
+
         console.error('Test email error:', error);
         return NextResponse.json(
             { success: false, error: error.message },

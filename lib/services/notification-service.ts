@@ -4,8 +4,14 @@
  */
 
 import { Resend } from 'resend';
-import { createNotification } from '../supabase/client';
+import {
+  createNotification,
+  deactivatePushSubscriptionByEndpoint,
+  getUserPushSubscriptions,
+  touchPushSubscription,
+} from '../supabase/client';
 import { formatDate, getCountryByCode } from '../constants/countries';
+import { sendWebPushNotification } from '../push/web-push';
 
 // Appointment data shape (previously from schengen-api, now defined locally)
 export interface AppointmentData {
@@ -33,6 +39,7 @@ interface NotificationOptions {
   };
   web?: {
     enabled: boolean;
+    targetUrl?: string;
   };
 }
 
@@ -157,9 +164,6 @@ export class NotificationService {
   ): Promise<{ delivered: boolean; results: Array<{ type: string; success: boolean; error?: string }> }> {
     const message = this.formatAppointmentMessage(appointments);
     const results: Array<{ type: string; success: boolean; error?: string }> = [];
-    const hasDirectChannel =
-      !!(options.telegram?.enabled && options.telegram.chatId && options.telegram.botToken) ||
-      !!(options.email?.enabled && options.email.address);
 
     // Telegram notification
     if (options.telegram?.enabled && options.telegram.chatId && options.telegram.botToken) {
@@ -236,26 +240,62 @@ export class NotificationService {
 
     // Web notification
     if (options.web?.enabled) {
-      results.push({ type: 'web', success: true });
+      const title = 'SchengenBot: New slot found';
+      const body = appointments
+        .slice(0, 2)
+        .map((appointment) => `${appointment.center_name} · ${formatDate(appointment.appointment_date)}`)
+        .join(' | ');
+
+      try {
+        const subscriptions = await getUserPushSubscriptions(options.userId);
+        let pushDelivered = false;
+
+        for (const subscription of subscriptions) {
+          const pushResult = await sendWebPushNotification(
+            {
+              endpoint: subscription.endpoint,
+              p256dh: subscription.p256dh,
+              auth: subscription.auth,
+            },
+            {
+              title,
+              body: body || 'A new visa slot is available.',
+              url: options.web.targetUrl || '/dashboard',
+              tag: appointments
+                .map((appointment) => `${appointment.mission_country}-${appointment.center_name}-${appointment.appointment_date}`)
+                .join('|'),
+            }
+          );
+
+          if (pushResult.success) {
+            pushDelivered = true;
+            await touchPushSubscription(subscription.endpoint).catch((error) =>
+              console.error('Error touching push subscription:', error)
+            );
+          } else if (pushResult.statusCode === 404 || pushResult.statusCode === 410) {
+            await deactivatePushSubscriptionByEndpoint(subscription.endpoint).catch((error) =>
+              console.error('Error deactivating stale push subscription:', error)
+            );
+          }
+        }
+
+        results.push({ type: 'web', success: pushDelivered });
+      } catch (error: any) {
+        results.push({ type: 'web', success: false, error: error.message });
+      }
 
       await createNotification({
         user_id: options.userId,
         appointment_id: options.appointmentId,
         type: 'web',
         message,
-        success: true,
+        success: results.some((result) => result.type === 'web' && result.success),
+        error_message: results.find((result) => result.type === 'web' && result.error)?.error,
       });
     }
 
     return {
-      delivered:
-        results.some(
-          (result) =>
-            result.success &&
-            (result.type === 'telegram' || result.type === 'email')
-        ) ||
-        (!hasDirectChannel &&
-          results.some((result) => result.success && result.type === 'web')),
+      delivered: results.some((result) => result.success),
       results,
     };
   }

@@ -4,10 +4,12 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { AuthError, requireAuthenticatedUserId } from '@/lib/auth/session';
 import { notificationService } from '@/lib/services/notification-service';
 
 export async function POST(request: NextRequest) {
   try {
+    await requireAuthenticatedUserId(request);
     const body = await request.json();
     const { chatId, botToken } = body;
 
@@ -38,6 +40,13 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      );
+    }
+
     console.error('Telegram test error:', error);
     return NextResponse.json(
       { error: error.message || 'Internal server error' },

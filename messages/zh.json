@@ -122,6 +122,18 @@
                 "address": "接收邮箱",
                 "test": "发送测试邮件"
             },
+            "webPush": {
+                "title": "桌面推送通知",
+                "enable": "开启 Web Push",
+                "description": "把网页加到 iPhone 主屏幕后，可接收 slot 推送提醒",
+                "statusReady": "当前设备已订阅推送",
+                "statusNotReady": "当前设备尚未订阅推送",
+                "unsupported": "当前浏览器不支持 Web Push，iPhone 请使用 Safari 并添加到主屏幕",
+                "subscribe": "启用此设备推送",
+                "unsubscribe": "关闭此设备推送",
+                "test": "发送测试推送",
+                "hint": "iOS 需使用 Safari 添加到主屏幕，再允许通知权限"
+            },
             "autoCheck": {
                 "title": "后台自动爬取",
                 "enable": "激活自动模式",
@@ -144,7 +156,13 @@
             "testError": "测试过程中发生错误!",
             "enterEmail": "请输入接收邮箱!",
             "testEmailSuccess": "✅ 测试邮件已发送! 请检查您的收件箱 (包括垃圾邮件文件夹)。",
-            "testEmailError": "❌ 发送失败: "
+            "testEmailError": "❌ 发送失败: ",
+            "pushSubscribed": "✅ 当前设备已开启推送通知",
+            "pushUnsubscribed": "已关闭当前设备推送通知",
+            "pushFailed": "推送设置失败: ",
+            "pushUnavailable": "服务端尚未配置 Web Push",
+            "pushTestSuccess": "✅ 测试推送已发送，请查看设备通知",
+            "pushTestFailed": "测试推送失败: "
         }
     },
     "Countries": {

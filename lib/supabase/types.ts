@@ -55,6 +55,19 @@ export interface NotificationHistory {
   error_message?: string;
 }
 
+export interface PushSubscriptionRecord {
+  id: string;
+  user_id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  user_agent?: string;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+  last_used_at?: string | null;
+}
+
 export interface CheckHistory {
   id: string;
   user_id: string;

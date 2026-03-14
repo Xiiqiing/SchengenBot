@@ -122,6 +122,18 @@
                 "address": "Email Address",
                 "test": "Send Test Email"
             },
+            "webPush": {
+                "title": "Home Screen Push",
+                "enable": "Enable Web Push",
+                "description": "After adding this app to your iPhone home screen, receive slot push alerts",
+                "statusReady": "This device is subscribed for push notifications",
+                "statusNotReady": "This device is not subscribed yet",
+                "unsupported": "This browser does not support Web Push. On iPhone, use Safari and add the app to Home Screen.",
+                "subscribe": "Enable Push On This Device",
+                "unsubscribe": "Disable Push On This Device",
+                "test": "Send Test Push",
+                "hint": "On iOS, add the site to Home Screen in Safari first, then allow notifications"
+            },
             "autoCheck": {
                 "title": "Background Auto-Crawl",
                 "enable": "Activate Auto Mode",
@@ -144,7 +156,13 @@
             "testError": "Error occurred during test!",
             "enterEmail": "Please enter email address!",
             "testEmailSuccess": "✅ Test email sent! Please check your inbox (including spam folder).",
-            "testEmailError": "❌ Send failed: "
+            "testEmailError": "❌ Send failed: ",
+            "pushSubscribed": "✅ Push notifications are enabled on this device",
+            "pushUnsubscribed": "Push notifications disabled on this device",
+            "pushFailed": "Push setup failed: ",
+            "pushUnavailable": "Web Push is not configured on the server",
+            "pushTestSuccess": "✅ Test push sent. Check your device notifications.",
+            "pushTestFailed": "Test push failed: "
         }
     },
     "Countries": {
