@@ -10,7 +10,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { appointmentService } from '@/lib/services/appointment-service';
 import { notificationService } from '@/lib/services/notification-service';
 import { supabase } from '@/lib/supabase';
-import { bulkCreateAppointments, createCheckHistory, filterAppointmentsByNotificationCooldown } from '@/lib/supabase/client';
+import {
+  bulkCreateAppointments,
+  createCheckHistory,
+  filterAppointmentsByNotificationCooldown,
+  markAppointmentNotified,
+} from '@/lib/supabase/client';
 import type { CheckResult } from '@/lib/services/appointment-service';
 import * as Sentry from '@sentry/nextjs';
 
@@ -241,10 +246,7 @@ export async function GET(request: NextRequest) {
                     .limit(1);
 
                   if (matchedApts && matchedApts.length > 0) {
-                    await supabase
-                      .from('appointments')
-                      .update({ notified: true })
-                      .eq('id', matchedApts[0].id);
+                    await markAppointmentNotified(matchedApts[0].id);
                   }
                 } catch (markErr) {
                   console.error('Error marking appointment notified:', markErr);
