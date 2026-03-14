@@ -58,10 +58,13 @@ export default function HistoryPage() {
         description={t('description')}
         backHref={`/${locale}/dashboard`}
         backLabel={t('backLabel') || 'Back'}
-        icon={<History className="w-5 h-5 text-[#f5f5f7]" />}
+        icon={<History className="w-5 h-5 text-[#86868b]" />}
       />
 
       <main className="container mx-auto max-w-6xl px-4 pb-12">
+        <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
+          Activity
+        </div>
         {/* Tabs */}
         <div className="mb-10 inline-flex w-fit gap-2 rounded-full border border-white/80 bg-white/72 p-1.5 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl">
           <button

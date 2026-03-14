@@ -175,18 +175,21 @@ export default function DashboardPage() {
           </div>
         </section>
 
+        <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
+          {t('ukCheck.summaryTitle')}
+        </div>
         <div className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <Card className="overflow-hidden rounded-[36px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(248,250,252,0.92)_100%)] text-[#1d1d1f] shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+          <Card className="overflow-hidden rounded-[40px] border border-white/70 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-[#1d1d1f] shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl">
             <CardContent className="p-7 md:p-8">
               <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
                 <div className="max-w-xl">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
-                    {t('ukCheck.quickActions')}
+                    {t('stats.autoMonitor')}
                   </p>
-                  <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d1d1f] md:text-5xl">
+                  <h2 className="mt-3 text-[34px] font-semibold tracking-[-0.05em] text-[#1d1d1f] md:text-[56px] md:leading-[0.95]">
                     {t('ukCheck.summaryDescription')}
                   </h2>
-                  <p className="mt-4 max-w-2xl text-sm leading-6 text-[#6e6e73]">
+                  <p className="mt-4 max-w-2xl text-base leading-7 text-[#6e6e73]">
                     {t('overview')}
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2.5">
@@ -202,12 +205,12 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 md:min-w-[260px]">
-                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+                <div className="grid grid-cols-2 gap-3 md:min-w-[280px]">
+                  <div className="rounded-[30px] border border-[#dbe7f7] bg-[#f7fbff] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.notificationsSent')}</p>
-                    <p className="mt-2 text-3xl font-semibold tracking-[-0.03em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
+                    <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">{stats?.total_notifications || 0}</p>
                   </div>
-                  <div className="rounded-[28px] border border-black/5 bg-white/84 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm">
+                  <div className="rounded-[30px] border border-black/5 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">{t('stats.autoMonitor')}</p>
                     <p className="mt-2 text-lg font-semibold text-[#1d1d1f]">{preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive')}</p>
                   </div>
@@ -216,7 +219,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-[36px] border border-white/70 bg-white/86 p-2 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+          <Card className="rounded-[34px] border border-white/70 bg-white/72 p-2 shadow-[0_16px_40px_rgba(15,23,42,0.06)] backdrop-blur-xl">
             <CardHeader className="p-6 pb-3">
               <CardTitle className="text-lg font-semibold tracking-[-0.02em] text-[#1d1d1f]">{t('ukCheck.quickActions')}</CardTitle>
             </CardHeader>
@@ -241,24 +244,29 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
+          Snapshot
+        </div>
+        <div className="mb-14 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
             { label: t('stats.totalChecks'), value: ukCheckCount + (stats?.total_appointments || 0), icon: TrendingUp },
             { label: t('stats.slotsFound'), value: appointments.length, icon: CheckCircle2 },
             { label: t('stats.notificationsSent'), value: stats?.total_notifications || 0, icon: History },
             { label: t('stats.autoMonitor'), value: preferences?.auto_check_enabled ? t('stats.active') : t('stats.inactive'), icon: Clock }
           ].map((stat, i) => (
-            <Card key={i} className="rounded-[30px] border border-white/70 bg-white/88 p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+            <Card key={i} className="rounded-[26px] border border-white/70 bg-white/76 p-5 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(15,23,42,0.08)]">
               <div className="flex flex-row items-center justify-between mb-4">
-                <span className="text-sm font-semibold tracking-[-0.01em] text-[#6e6e73]">{stat.label}</span>
+                <span className="text-xs font-semibold tracking-[0.08em] text-[#6e6e73]">{stat.label}</span>
                 <stat.icon className="h-5 w-5 text-[#86868b]" />
               </div>
-              <div className="text-3xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">{stat.value}</div>
+              <div className="text-[28px] font-semibold tracking-[-0.04em] text-[#1d1d1f]">{stat.value}</div>
             </Card>
           ))}
         </div>
 
+        <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#86868b]">
+          Monitor
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Panel - UK Check */}
           <div className="lg:col-span-8 space-y-8">
@@ -413,7 +421,7 @@ export default function DashboardPage() {
 
           {/* Right Panel - Recent Appointments */}
           <div className="lg:col-span-4 space-y-8">
-            <Card className="flex h-full flex-col rounded-[36px] border border-white/70 bg-white/88 p-2 shadow-[0_18px_50px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+            <Card className="flex h-full flex-col rounded-[32px] border border-white/70 bg-white/72 p-2 shadow-[0_16px_36px_rgba(15,23,42,0.05)] backdrop-blur-xl">
               <CardHeader className="p-6">
                 <CardTitle className="text-[24px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">{t('recent.title')}</CardTitle>
                 <CardDescription className="text-sm leading-6 text-[#6e6e73]">{t('recent.description')}</CardDescription>
